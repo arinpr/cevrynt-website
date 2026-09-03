@@ -104,8 +104,10 @@ const benefits = [
     linkLabel: "Bank statement analysis",
     figure: "financials",
     caption: "Cash-flow review",
-    image: "/media/placeholder/outcome-cashflow.webp",
+    image: "/media/placeholder/outcame1.png",
     imageAlt: "Cash-flow review: deposits, balances and negative days in one connected view",
+    imageWidth: 1600,
+    imageHeight: 1000,
   },
   {
     label: "Outcome 02",
@@ -116,8 +118,10 @@ const benefits = [
     linkLabel: "Fraud signals",
     figure: "verification",
     caption: "Verification review",
-    image: "/media/placeholder/outcome-verification.webp",
+    image: "/media/placeholder/outcame2.png",
     imageAlt: "Verification review: entity, officer and document checks with one conflict surfaced",
+    imageWidth: 1600,
+    imageHeight: 1000,
   },
   {
     label: "Outcome 03",
@@ -128,8 +132,10 @@ const benefits = [
     linkLabel: "Underwriting report",
     figure: "report",
     caption: "Decision record",
-    image: "/media/placeholder/outcome-report.webp",
+    image: "/media/placeholder/outcame3.png",
     imageAlt: "Decision record: findings, sources, notes and policy outcomes in one review",
+    imageWidth: 1600,
+    imageHeight: 1000,
   },
   {
     label: "Outcome 04",
@@ -140,8 +146,10 @@ const benefits = [
     linkLabel: "Policy engine",
     figure: "policy",
     caption: "Policy evaluation",
-    image: "/media/placeholder/outcome-policy.webp",
+    image: "/media/placeholder/outcame4.png",
     imageAlt: "Policy evaluation: lender criteria applied to a deal with one exception raised and an override recorded",
+    imageWidth: 1600,
+    imageHeight: 1000,
   },
 ];
 
@@ -358,7 +366,7 @@ export default function Home() {
         </div>
       </section>
 
-      <HowItWorks deal={deal} stages={stages} />
+      <HowItWorks stages={stages} />
 
       {/* 05 — Outcome rows */}
       <section className="bs band-light" aria-labelledby="benefits-heading">
@@ -530,9 +538,9 @@ export default function Home() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="14"
-          kicker="Founder-led walkthrough"
-          heading="Bring one real workflow. We'll map the review together."
-          lede="Define representative files, lender-specific review criteria, and a clear evaluation plan with the founder."
+          kicker="FOUNDER-LED WALKTHROUGH"
+          heading="Bring one underwriting workflow. Leave with a clear plan."
+          lede="Walk through how a deal moves through your team today. We’ll identify where Cevrynt fits, what should stay with your underwriters, and what a focused pilot would need to prove before you change anything."
           calendlyUrl={calendlyUrl}
           email="arin@cevrynt.com"
         />

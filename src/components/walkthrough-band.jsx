@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "@/components/icons";
+import { RevealLines } from "@/components/home/reveal-lines";
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 
@@ -7,7 +8,7 @@ export function WalkthroughBand() {
     <section className="walkthrough-band section-shell">
       <div>
         <p className="section-kicker">Founder-led walkthrough</p>
-        <h2>See how Cevrynt fits your underwriting process.</h2>
+        <RevealLines as="h2" text="See how Cevrynt fits your underwriting process." />
       </div>
       <div className="walkthrough-right">
         <p>Bring a representative workflow and the review questions your team needs answered.</p>

@@ -4,6 +4,7 @@ import { ArrowUpRight } from "@/components/icons";
 import { HeroMotion } from "@/components/hero-motion";
 import { PageHeroCopy } from "@/components/page-hero-copy";
 import { RainbowCta } from "@/components/ui/rainbow-cta";
+import { RevealLines } from "@/components/home/reveal-lines";
 import { workflow } from "@/content/site-pages";
 import { siteConfig } from "@/config/site";
 import { JsonLd } from "@/components/json-ld";
@@ -61,7 +62,7 @@ export function PageShell({ page }) {
       <section className="page-content section-shell">
         <div>
           <p className="section-kicker">What this page covers</p>
-          <h2>Built for reviewable decisions</h2>
+          <RevealLines as="h2" text="Built for reviewable decisions" />
         </div>
         <div className="point-grid">
           {page.points.map((point, index) => (
@@ -89,7 +90,7 @@ export function PageShell({ page }) {
         <section className="workflow-band">
           <div className="section-shell">
             <p className="section-kicker">Connected workflow</p>
-            <h2>From intake to a human decision</h2>
+            <RevealLines as="h2" text="From intake to a human decision" />
             <ol className="workflow-list">
               {workflow.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}
             </ol>

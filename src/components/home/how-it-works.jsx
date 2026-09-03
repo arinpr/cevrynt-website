@@ -37,7 +37,7 @@ const subscribeCoarse = subscribeQuery(COARSE);
  * Everything is server-rendered plain text. Without JavaScript the accordion
  * simply stays open on every card and the whole section still reads.
  */
-export function HowItWorks({ deal, stages }) {
+export function HowItWorks({ stages }) {
   const scope = useRef(null);
   const stripRef = useRef(null);
   const uid = useId();
@@ -167,7 +167,7 @@ export function HowItWorks({ deal, stages }) {
         <div className="hw-stage-col">
           <div className="hw-panel">
             <div className="hw-panel-top">
-              <span className="hx-mono hw-panel-deal">{deal}</span>
+              {/* <span className="hx-mono hw-panel-deal">{deal}</span> */}
               <span className="hx-mono hw-count">
                 <span className="hw-count-now">{String(active + 1).padStart(2, "0")}</span> / {total}
               </span>
@@ -218,11 +218,12 @@ export function HowItWorks({ deal, stages }) {
               })}
             </div>
 
-            <p className="hw-panel-note">Illustrative workspace. Not real borrower data.</p>
           </div>
         </div>
 
-        <div className="hw-strip" ref={stripRef}>
+        {/* The step count drives the horizontal track, so adding a stage does
+            not need a matching change in the stylesheet. */}
+        <div className="hw-strip" ref={stripRef} style={{ "--hw-steps": stages.length }}>
           {stages.map((item, index) => {
             const live = index === active;
             const headId = `${uid}-h${index}`;
@@ -277,6 +278,11 @@ export function HowItWorks({ deal, stages }) {
             );
           })}
         </div>
+
+        {/* Below the track rather than inside the panel. The track overlaps the
+            panel's foot now, and a disclaimer that something covers is no
+            disclaimer — here it reads as a footnote to the whole figure. */}
+        <p className="hw-panel-note">Illustrative workspace. Not real borrower data.</p>
       </div>
     </section>
   );

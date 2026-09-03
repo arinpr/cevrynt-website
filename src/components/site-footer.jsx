@@ -51,10 +51,10 @@ export function SiteFooter() {
         <div className="footer-top">
           <div className="footer-say">
             <p className="footer-statement">
-              From borrower documents to decision-ready underwriting.
+              Keep the evidence. Keep the context. Keep the decision yours.
             </p>
-            <a className="footer-mail" href="mailto:sales@cevrynt.com">
-              <span>sales@cevrynt.com</span>
+            <a className="footer-mail" href="mailto:arin@cevrynt.com">
+              <span>arin@cevrynt.com</span>
               <ArrowUpRight />
             </a>
             {/* Lives here rather than in the meta line. As a full sentence laid
@@ -63,7 +63,7 @@ export function SiteFooter() {
                 statement anyway. Moving it up also fills the dead space that
                 had opened under this column. */}
             <p className="footer-disclaimer">
-              Cevrynt is not a lender. Lenders retain final approval authority.
+              Cevrynt helps MCA funders and alternative lenders turn fragmented borrower files into structured, traceable underwriting reviews.
             </p>
           </div>
 

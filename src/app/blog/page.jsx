@@ -2,6 +2,7 @@ import Link from "next/link";
 import { posts, categories } from "@/content/blog";
 import { BlogThumb, BlogSideCard, BlogTags } from "@/components/blog-card";
 import { BlogExplorer } from "@/components/blog-explorer";
+import { RevealLines } from "@/components/home/reveal-lines";
 import { JsonLd } from "@/components/json-ld";
 import { ArrowRight } from "@/components/icons";
 import { siteConfig } from "@/config/site";
@@ -76,14 +77,14 @@ export default function BlogIndexPage() {
       <section className="blog-explore section-shell">
         <div className="blog-explore-heading">
           <p className="section-kicker">Explore more articles</p>
-          <h2>Every stage of the underwriting workflow, explained</h2>
+          <RevealLines as="h2" text="Every stage of the underwriting workflow, explained" />
         </div>
         <BlogExplorer posts={gridPosts.length ? gridPosts : restPosts} categories={categories} />
       </section>
 
       <section className="blog-cta-band">
         <div className="section-shell">
-          <h2>See how Cevrynt fits your underwriting process.</h2>
+          <RevealLines as="h2" text="See how Cevrynt fits your underwriting process." />
           <a className="cta-light" href="https://calendly.com/arin-cevrynt/cevrynt-demo" target="_blank" rel="noreferrer">
             Book a walkthrough <span><ArrowRight /></span>
           </a>

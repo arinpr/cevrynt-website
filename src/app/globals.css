@@ -666,7 +666,19 @@ body:has(.page-hero) .site-header { background: transparent; }
 
 /* -- 02 How it works ------------------------------------------------------- */
 .hw-body { margin-top: clamp(16px, 2.5vw, 32px); }
-.hw-stage-col { grid-column: 5 / span 8; grid-row: 1; align-self: start; }
+/* The panel spans the full column with the step track beneath it.
+
+   Deliberately NOT sticky here. Pinning made sense when the list below was eight
+   stacked rows taller than the screen — the panel held its view while you
+   scrolled the list. Against a 185px horizontal track it does the opposite: a
+   790px panel pinned at the top overlaps the track by its full height, and with
+   z-index above it the track is painted over and simply never seen. Sticky
+   survives only in the narrow fallback further down, where the list is tall
+   again and pinning earns its keep. */
+.hw-stage-col {
+  grid-column: 2 / span 11;
+  align-self: stretch;
+}
 .hw-panel {
   display: flex;
   flex-direction: column;
@@ -724,14 +736,29 @@ body:has(.page-hero) .site-header { background: transparent; }
 .hw-strip {
   position: relative;
   display: grid;
-  grid-column: 2 / span 3;
-  grid-row: 1;
+  grid-column: 2 / span 11;
+  /* Lifted over the panel rather than placed under it. The overlap is the
+     height this section gets back, and it costs the picture nothing: the panel
+     keeps its full natural height and only its lower margin sits behind the
+     track. z-index because the panel paints a background of its own. */
+  z-index: 2;
+  /* Deep enough to read as one surface meeting the picture rather than a card
+     resting near it. Still sized against the exports own outer margin — these
+     are 1600x760 with roughly 90px of dark margin below their content — so the
+     overlap rides mostly on that margin rather than over the panels inside. */
+  margin-top: clamp(-100px, -6.3vw, -60px);
   grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  /* Square at the top, rounded at the foot. The top edge is where this meets the
+     picture, and rounding it there would leave two slivers of image showing in
+     the corners — it reads as one surface rising out of the shot only if that
+     edge runs straight across. */
+  border-radius: 0 0 18px 18px;
   background: var(--surface);
-  box-shadow: 0 18px 44px rgba(1, 62, 55, 0.06);
+  /* Deeper than it was: the track is now sitting on top of a dark export, and a
+     faint shadow there reads as a seam rather than as a card above a picture. */
+  box-shadow: 0 -2px 0 rgba(255, 255, 255, 0.5), 0 22px 54px rgba(1, 62, 55, 0.16);
 }
 /* The flex ratios live here, not on `.is-ready`, so arming the accordion at
    hydration changes no layout value and animates nothing. Grid mode ignores
@@ -762,7 +789,7 @@ body:has(.page-hero) .site-header { background: transparent; }
 .hwc-name { font-size: clamp(0.94rem, 1vw, 1.06rem); font-weight: 620; letter-spacing: -0.014em; line-height: 1.26; }
 
 /* Indented to clear the dial, so the copy hangs off the title, not the number. */
-.hwc-panel-in { padding: 0 18px 12px 56px; }
+.hwc-panel-in { padding: 0 20px 20px; }
 .hwc-panel p { margin: 0; }
 .hwc-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--ink); font-size: 0.86rem; font-weight: 620; }
 .hwc-link svg { transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1); }
@@ -782,23 +809,52 @@ body:has(.page-hero) .site-header { background: transparent; }
    stretches to match it â so the box is exactly the shape of the export and no
    stage sits in bands. The floor stops eight rows being squeezed flat on a
    narrower screen, where the picture is shorter than the list needs. */
+/* The accordion, laid on its side.
+
+   This is the same flex mechanic the vertical version used — every cell takes an
+   equal share, the open one takes several — only the axis has turned. The open
+   stage widens in place and carries its own copy, rather than the copy living in
+   a separate strip underneath: a stage and its description stay one object.
+
+   A closed cell pushes its number to the top and its name to the foot, so the
+   row reads as a numbered track whichever cell happens to be open. */
 .hw.is-ready .hw-strip {
   display: flex;
-  min-height: 460px;
-  flex-direction: column;
-  flex-wrap: nowrap;
+  flex-direction: row;
   align-items: stretch;
+  min-height: clamp(188px, 14vw, 224px);
+  height: auto;
 }
 .hw.is-ready .hwc {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
   overflow: hidden;
-  contain: layout paint;
+  border-top: 0;
+  border-left: 1px solid var(--border);
   transition: flex-grow 640ms cubic-bezier(0.22, 1, 0.36, 1), background 380ms ease;
 }
+.hw.is-ready .hwc:first-of-type { border-left: 0; }
+.hw.is-ready .hwc.is-live { flex-grow: 3.4; background: var(--soft-blue); }
+.hw.is-ready .hwc:not(.is-live):hover { background: var(--background); }
+.hw.is-ready .hwc-btn {
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 18px 17px;
+  text-align: left;
+}
+/* The heading stops stretching once its stage opens, handing the rest of the
+   cell to the copy. Closed, it keeps stretching so the name stays at the foot. */
+.hw.is-ready .hwc.is-live .hwc-title { flex: 0 0 auto; }
 /* The open step never shrinks below its own copy. Without this the flex share
    of a short row clipped the "Explore capability" link, since the row hides
    its overflow to make the accordion work. */
-.hw.is-ready .hwc.is-live { min-height: 208px; background: var(--soft-blue); }
-.hw.is-ready .hwc:not(.is-live):hover { background: var(--background); }
+.hw.is-ready .hwc.is-live { min-height: 0; }
 
 /* `minmax(0, â¦)` because a bare `0fr` track still keeps its automatic minimum,
    which the panel's own padding would hold open. */
@@ -813,24 +869,31 @@ body:has(.page-hero) .site-header { background: transparent; }
 }
 .hw.is-ready .hwc.is-live .hwc-panel-in { opacity: 1; transform: none; transition-delay: 170ms; }
 
-/* Below this width the two columns stack: panel on top, list beneath it. The
-   list stops sharing the panel's height and each row sizes to its content. */
-@media (max-width: 1200px) {
-  /* Eight stacked rows are taller than a phone screen, so the stage panel
-     pins itself and the list scrolls beneath it â opening the last step
-     still leaves its view on screen. */
+/* Eight cells need roughly 110px each to stay legible. Below that the track
+   folds back into the vertical list it came from. */
+@media (max-width: 1000px) {
+  /* Eight cells need roughly 110px each even when closed, so below this the
+     track stands back up as the list it came from. The panel pins again here,
+     because that list is taller than the screen. */
   .hw-stage-col { position: sticky; z-index: 1; top: 84px; }
-  .hw-stage-col, .hw-strip { grid-column: 2 / span 11; grid-row: auto; }
-  /* Centring only makes sense against the list beside it. Once stacked, the
-     column is a flex item and `center` would shrink it to its content â which
-     is nothing, because the figures are absolutely positioned. */
-  .hw-stage-col { align-self: stretch; }
-  .hw-strip { margin-top: clamp(12px, 1.4vw, 18px); }
-  .hw.is-ready .hw-strip { display: block; height: auto; }
-  .hw.is-ready .hwc { contain: none; }
-  .hw.is-ready .hwc-btn { min-height: 60px; padding: 10px 18px; }
-  /* Stacked rows size to their own copy; the desktop floor would leave slack. */
-  .hw.is-ready .hwc.is-live { min-height: 0; }
+  /* No overlap here: the panel pins, so a track lifted over it would be dragged
+     across the picture for the whole scroll rather than resting on its foot.
+     With nothing to meet, the square top has nothing to explain it either, so
+     the card is rounded on all four corners again. */
+  .hw-strip { margin-top: clamp(12px, 1.4vw, 18px); border-radius: 18px; }
+  .hw.is-ready .hw-strip { display: block; min-height: 0; height: auto; }
+  .hw.is-ready .hwc { border-left: 0; border-top: 1px solid var(--border); }
+  .hw.is-ready .hwc:first-of-type { border-top: 0; }
+  .hw.is-ready .hwc-btn {
+    height: auto;
+    min-height: 60px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 18px;
+  }
+  .hw.is-ready .hwc.is-live .hwc-title { flex: 1 1 auto; }
   .hw.is-ready .hwc-panel-in { padding: 0 18px 16px 56px; }
 }
 
@@ -1540,7 +1603,6 @@ body:has(.page-hero) .site-header { background: transparent; }
   .st-meter-fill { transform: scaleY(1) !important; }
 }
 
-
 /* ==========================================================================
    Live-terminal effects
    Data ticks, draws and pulses; surfaces react to the pointer. Everything here
@@ -1665,7 +1727,6 @@ body:has(.page-hero) .site-header { background: transparent; }
   .au-full[data-pointer-field="on"] .ar-card { transform: none !important; }
 }
 
-
 /* ==========================================================================
    Structural scroll effects
    ========================================================================== */
@@ -1736,7 +1797,6 @@ body:has(.page-hero) .site-header { background: transparent; }
   .rl .rl-line, .rl .rl-char { transform: none !important; transition: none !important; }
 }
 
-
 /* ==========================================================================
    Product shots
    The frame reserves its aspect ratio before the image arrives, so the picture
@@ -1768,6 +1828,10 @@ body:has(.page-hero) .site-header { background: transparent; }
 
 /* Outcome rows: the shot is the right-hand column, so it needs room to breathe. */
 .br-figure .ps { max-width: 100%; }
+/* Image is shorter than the reserved container ratio — stretch it to fill so
+   no black gap appears at the bottom. object-position: top keeps the most
+   meaningful part of the UI (the header/title area) in view. */
+.br-figure .ps-shot img { height: 100%; object-fit: cover; object-position: top !important; }
 
 /* Scrollytelling: the shot replaces the code figure inside the sticky panel. */
 .hw-figure .ps-frame { border-radius: 12px; box-shadow: none; }
@@ -1775,7 +1839,6 @@ body:has(.page-hero) .site-header { background: transparent; }
 /* The shot's own chrome bar repeats the stage name the overlaid header already
    carries, and costs the picture ~40px. The header replaces it. */
 .hw-figure .ps-chrome { display: none; }
-
 
 /* Worked example: shot above the ledger. */
 .wk-shot { margin-bottom: var(--s-block); }
@@ -1789,7 +1852,6 @@ body:has(.page-hero) .site-header { background: transparent; }
   .ps, .ps-frame, .ps-shot { transform: none !important; clip-path: none !important; }
   .cp-card a:hover .cp-thumb img { transform: none; }
 }
-
 
 /* ==========================================================================
    Outcomes â sticky card stack
@@ -1857,7 +1919,6 @@ body:has(.page-hero) .site-header { background: transparent; }
   .br-card { position: static; transform: none !important; opacity: 1 !important; }
 }
 
-
 /* ==========================================================================
    Stacking decks â shared rules
    Cards must be OPAQUE. A translucent card lets the deck beneath show through,
@@ -1866,7 +1927,6 @@ body:has(.page-hero) .site-header { background: transparent; }
    container ends instead of the deck holding while you read it.
    ========================================================================== */
 .br { padding-bottom: clamp(16px, 5vh, 52px); }
-
 
 /* -- 02 How it works panel -------------------------------------------------- */
 .hw-panel { padding: 0; overflow: hidden; }
@@ -1882,14 +1942,14 @@ body:has(.page-hero) .site-header { background: transparent; }
    light surface, above and below the picture â not over it. They are part of
    the panel's chrome, and their height is what makes the panel taller than the
    picture alone. */
-.hw-panel-top { padding: 15px 22px 0; }
+.hw-panel-top { padding: 12px 22px 0; }
 .hw-panel-deal { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hw-stage-now { margin: 10px 22px 14px; }
+.hw-stage-now { margin: 8px 22px 11px; }
 .hw-stage-label {
   display: block;
   color: var(--ink);
   font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: clamp(1.2rem, 1.75vw, 1.62rem);
+  font-size: clamp(1.1rem, 1.5vw, 1.42rem);
   font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 1.12;
@@ -1908,6 +1968,10 @@ body:has(.page-hero) .site-header { background: transparent; }
    edge to edge with nothing left over above or below. Everything inside
    inherits that height. */
 /* The picture keeps the export ratio; the panel is that plus its chrome. */
+/* No max-height. Capping it did shorten the panel, but a 2.1:1 export inside a
+   shorter box has to fit by height instead of width, which left the shot
+   floating between margins. The height is reclaimed by the track overlapping
+   this panel's foot instead — nothing about the picture is touched. */
 .hw-figure-stack { aspect-ratio: 1600 / 760; border-top: 1px solid var(--border); }
 .hw-figure, .hw-figure .ps, .hw-figure .ps-frame { height: 100%; }
 .hw-figure .ps-frame { width: 100%; }
@@ -1935,10 +1999,16 @@ body:has(.page-hero) .site-header { background: transparent; }
 .hw-figure .ps-frame { border: 0; border-radius: 0; box-shadow: none; }
 .ps-shot.is-cropped img { height: 100%; object-fit: cover; object-position: top center; }
 .hw-panel { position: relative; }
-.hw-panel-note { margin: 0; border-top: 1px solid var(--border); padding: 12px 22px; background: var(--background); color: var(--label); }
-
-
-
+/* Sits under the track now, so it is a footnote to the figure rather than a
+   band inside the panel — no border, no fill, just the line. */
+.hw-panel-note {
+  grid-column: 2 / span 11;
+  margin: clamp(10px, 1.2vw, 14px) 0 0;
+  padding: 0;
+  border-top: 0;
+  background: none;
+  color: var(--label);
+}
 
 /* ==========================================================================
    06 Platform â serpentine roadmap
@@ -2082,7 +2152,6 @@ body:has(.page-hero) .site-header { background: transparent; }
 .wy-meta { margin: 0; max-width: 42ch; color: var(--muted); font-size: clamp(0.95rem, 1.1vw, 1.04rem); line-height: 1.7; }
 .wy-row:hover .wy-rule { background: var(--rail); }
 .wy-row:hover .wy-index { color: var(--rail); }
-
 
 /* Hover preview: raises the matching product view and trails the pointer. */
 .wy-row { position: relative; }
@@ -2834,58 +2903,916 @@ body:has(.error-404) .nav-feature-copy span.nav-feature-more { color: #0f6e5e; }
 .article-toc a.is-active { color: var(--ink); font-weight: 650; }
 .article-toc a.is-done { opacity: 0.45; }
 
-@media (max-width: 900px) {
-  .blog-featured { grid-template-columns: 1fr; }
-  .blog-featured-row { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .blog-thumb-fold { clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 0 18%); }
-  .blog-grid, .article-related-grid { grid-template-columns: 1fr; }
-  .blog-filter-row { flex-direction: column; align-items: stretch; }
-  .blog-filter-search, .blog-filter-select select { width: 100%; }
-  .blog-page-intro { padding-top: 130px; }
-  .article-header { padding-top: 130px; }
-  .article-header-inner { padding-left: 0; }
-  .article-content-shell { display: block; }
-  .article-sidebar { display: none; }
-  .article-faq { margin: 64px 0 0; }
-  .blog-cta-band { padding: 90px 0; margin-top: 80px; }
+/* -- 05 What crosses back --------------------------------------------------
+   Positioned, not stacked. The previous pass left five full-width bands in a
+   column — figures, findings, decision, then a 1318px letterbox screenshot —
+   which is monotonous by construction however well each band is made. So the
+   document now sits to one side and stays there while its findings are read
+   past it, which is a composition none of the other four sections use.
+
+   The picture is cropped to the memo's own findings column: a near-square
+   region of the export, 572 x 545 of its 1600 x 760. Shown at roughly 440px
+   that region is *downscaled*, so it is sharper than the full-width band was,
+   and about a third of its width.
+   -------------------------------------------------------------------------- */
+.mm {
+  display: grid;
+  align-items: start;
+  gap: clamp(26px, 4vw, 64px);
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+  margin: var(--s-block) 0 0;
 }
 
+/* Holds still while the findings scroll past. The section clips with clip-path
+   rather than overflow so this is not trapped in a scroll container. */
+/* Capped, so the document stays a document rather than growing into another
+   full-bleed panel on wide screens. */
+.mm-visual { position: sticky; top: clamp(88px, 11vh, 132px); max-width: 470px; margin: 0; }
+
+.mm-win {
+  position: relative;
+  overflow: hidden;
+  /* The cropped region's own aspect, so nothing is stretched. */
+  aspect-ratio: 572 / 545;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--ink-deeper);
+  box-shadow: 0 26px 56px rgba(1, 62, 55, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+/* 280% wide, then shifted so image-x 32.4% and image-y 19.7% land at the
+   window's top-left. Percentages on a transform are of the element itself,
+   which is what makes this hold at every width without a media query. */
+.mm-win img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280%;
+  /* The global img rule caps everything at max-width:100%, which silently
+     clamps the 280% back to the window width and un-crops the whole thing. */
+  max-width: none;
+  height: auto;
+  transform: translate(-32.4%, -19.7%);
+}
+.mm-caption {
+  margin: 11px 0 0;
+  color: var(--label);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mm-body { min-width: 0; }
+
+.mm-figures {
+  display: grid;
+  gap: clamp(10px, 1.4vw, 18px) clamp(14px, 2vw, 28px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 clamp(20px, 2.6vw, 30px);
+}
+.mm-figure { border-top: 1px solid var(--border); padding-top: 10px; }
+.mm-figure-k { margin: 0 0 5px; color: var(--label); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.mm-figure-v {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.04rem, 1.5vw, 1.3rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 540;
+  letter-spacing: -0.03em;
+}
+
+/* Stacked now rather than three across, so each finding gets a full measure and
+   its citation sits where the eye already is. */
+.mm-findings { display: grid; gap: clamp(10px, 1.4vw, 14px); margin: 0; padding: 0; list-style: none; }
+.mm-finding {
+  display: grid;
+  align-items: baseline;
+  gap: 4px clamp(14px, 2vw, 24px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 253, 252, 0.62));
+  box-shadow: 0 2px 5px rgba(1, 62, 55, 0.04);
+  padding: clamp(14px, 1.7vw, 19px) clamp(15px, 1.8vw, 21px);
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 380ms ease, border-color 380ms ease;
+}
+.mm-finding-title { grid-column: 1; margin: 0; color: var(--ink); font-size: 0.96rem; font-weight: 560; letter-spacing: -0.02em; }
+.mm-finding-body { grid-column: 1; margin: 0; color: var(--muted); font-size: 0.89rem; line-height: 1.55; }
+/* The citation gets its own column, so it reads as an attachment to the finding
+   rather than a footnote trailing it. */
+.mm-source {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  margin: 0;
+  border-left: 2px solid rgba(10, 92, 80, 0.24);
+  padding-left: 11px;
+  color: var(--rail);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  transition: border-color 380ms ease;
+}
+.mm-source-k { color: var(--label); font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; transition: color 380ms ease; }
+.mm-finding:hover {
+  border-color: rgba(10, 92, 80, 0.32);
+  box-shadow: 0 16px 30px rgba(1, 62, 55, 0.1);
+  transform: translateY(-3px);
+}
+.mm-finding:hover .mm-source { border-left-color: var(--rail); }
+.mm-finding:hover .mm-source-k { color: var(--rail); }
+
+.mm-decide {
+  margin: clamp(20px, 2.6vw, 28px) 0 0;
+  border-top: 1px solid var(--border);
+  padding-top: clamp(15px, 1.8vw, 20px);
+}
+.mm-decide-k { margin: 0 0 11px; color: var(--rail); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.mm-outcomes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+/* Listed, never offered — not controls, and they must not look like ones the
+   page can press. No hover, no cursor change, no button affordance. */
+.mm-outcome {
+  border: 1px dashed rgba(1, 62, 55, 0.26);
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+}
+.mm-decide-note { max-width: 60ch; margin: clamp(12px, 1.5vw, 16px) 0 0; color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+
+/* Arrival is scroll-driven and native, so the section still costs no
+   JavaScript. Guarded twice: without scroll-timeline support, and under reduced
+   motion, everything is simply already in place. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .mm-finding,
+    .mm-outcome {
+      /* backwards, and a from-only keyframe. With fill:both the animation would
+         keep asserting transform after it finished and the hover lift below
+         would never apply — animations outrank transitions. Ending at the
+         element's own computed style avoids that entirely. */
+      animation: mmArrive linear backwards;
+      animation-timeline: view();
+      animation-range: entry 4% cover 26%;
+    }
+    @keyframes mmArrive {
+      from { opacity: 0; transform: translateY(18px); }
+    }
+  }
+}
+
+/* This band gets its own weather, entering from a third position so the page's
+   three light sections never repeat the same sky. */
+/* clip-path, not overflow: overflow would make this a scroll container and
+   strand the sticky document inside it. Same approach .band-deep uses. */
+.ig-memo { clip-path: inset(0); }
+.ig-memo::before {
+  position: absolute;
+  z-index: 0;
+  inset: -18% -12%;
+  background:
+    radial-gradient(ellipse 44% 42% at 50% 6%, rgba(255, 239, 179, 0.42), transparent 66%),
+    radial-gradient(ellipse 50% 48% at 86% 88%, rgba(10, 92, 80, 0.1), transparent 68%);
+  content: "";
+  pointer-events: none;
+}
+.ig-memo > * { position: relative; z-index: 1; }
+
+/* ===========================================================================
+   Security page — the register
+
+   The previous pass drew all five sections as the same object: a rounded slab
+   with a soft gradient, a drifting aura, a long shadow and a thin lit rail
+   travelling through it. Materially competent, and the same object every other
+   product page draws — which is why a page whose whole argument is candour read
+   as a template.
+
+   This page is not a product surface. It is a vendor security file, and it is
+   already written as one: a scope sheet, a questionnaire with four answers and
+   three declared blanks, a retention schedule, an override entry, a chain of
+   custody. So the material here is paper and ink. There are no cards, no
+   ambient auras, no shadows and almost no radii — the structure is carried by
+   rules, a margin and monospace registers, the way it is on the document a risk
+   team actually reads.
+
+   Depth comes from ink density rather than blur: cool white paper, deep green
+   ink, and the cream used for exactly one job — the marker somebody drew
+   through the page with.
+   ======================================================================== */
+
+/* -- Section furniture ----------------------------------------------------- */
+/* One rule across the top of every section, with the index sitting on it, so
+   the six sections read as sheets of one document rather than six panels. */
+.sx-top {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-bottom: clamp(20px, 2.4vw, 30px);
+  background: var(--border);
+}
+.band-deep .sx-top { background: rgba(234, 243, 240, 0.16); }
+
+.sx .eg-rail { padding-top: 0.1em; font-size: 0.62rem; letter-spacing: 0.18em; }
+.band-deep.sx .eg-rail { color: rgba(234, 243, 240, 0.42); }
+
+.sx .hx-kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: clamp(14px, 1.7vw, 20px); }
+.sx .hx-kicker::before { width: 22px; height: 1px; background: currentcolor; content: ""; opacity: 0.55; }
+
+/* -- The four marks -------------------------------------------------------
+   LIFT, HELD, STRIKE and STAMP. Every resting state below is the finished
+   state, so the page is complete and readable with no JavaScript, with reduced
+   motion, and if a trigger never fires. Marks are only ever put back over the
+   content by script, and only while the section is below the fold.
+   -------------------------------------------------------------------------- */
+.mk-l {
+  --mk-ink: var(--ink);
+  --mk-mark: var(--yellow);
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.band-deep .mk-l { --mk-ink: #0b433c; --mk-mark: rgba(255, 239, 179, 0.18); }
+
+.mk-l-t { position: relative; z-index: 1; }
+
+/* The block of ink. It retracts toward its right edge, so the line under it is
+   uncovered left to right, in reading order. */
+.mk-bar {
+  position: absolute;
+  z-index: 2;
+  inset: -0.1em -0.22em -0.08em;
+  background: var(--mk-ink);
+  transform: scaleX(0);
+  transform-origin: right center;
+  pointer-events: none;
+}
+/* The marker pass that follows the bar off and leaves. */
+.mk-wash {
+  position: absolute;
+  z-index: 0;
+  inset: 0.14em -0.22em 0.04em;
+  background: var(--mk-mark);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* The blank that does not lift. */
+.mk-h { display: grid; margin: 0; gap: 12px; justify-items: start; }
+.mk-held {
+  display: block;
+  width: min(100%, 24ch);
+  height: 1.55em;
+  border: 1px dashed rgba(234, 243, 240, 0.3);
+  background: rgba(234, 243, 240, 0.03);
+  transform-origin: left center;
+}
+.band-light .mk-held, .band-white .mk-held { border-color: var(--neutral-depth); background: transparent; }
+.mk-h-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--yellow);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.band-light .mk-h-when, .band-white .mk-h-when { color: var(--rail); }
+.mk-h-when::before { flex: none; width: 18px; height: 1px; background: currentcolor; content: ""; }
+
+/* A hairline ruling itself in from the margin. Drawn by default. */
+.mk-rule { transform-origin: left center; }
+.mk-rule-v { transform-origin: top center; }
+
+/* -- 01 Reach — the scope sheet -------------------------------------------
+   Scoping a review is crossing things off a list, so that is what this is: the
+   deal that was sent named on the left with the screen it produced, and on the
+   right the four things a lender assumes a vendor quietly reaches, struck
+   through one after another.
+   -------------------------------------------------------------------------- */
+.sc { margin: var(--s-block) 0 0; }
+
+.sc-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1.58fr) 1px minmax(0, 1.02fr);
+  align-items: start;
+  gap: clamp(24px, 3.6vw, 56px);
+}
+.sc-seam { align-self: stretch; width: 1px; min-height: 100%; background: var(--border); }
+
+.sc-col {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 clamp(18px, 2.2vw, 26px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ink);
+}
+.sc-col .mk-stamp { color: var(--rail); font-size: 0.6rem; letter-spacing: 0.17em; text-transform: uppercase; }
+.sc-col-out { border-bottom-color: var(--border); }
+.sc-col-out .mk-stamp { color: var(--label); }
+.sc-col-n { color: var(--label); font-size: 0.58rem; letter-spacing: 0.13em; text-transform: uppercase; white-space: nowrap; }
+
+.sc-deal {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(1.5rem, 2.9vw, 2.25rem);
+  font-weight: 620;
+  letter-spacing: -0.036em;
+  line-height: 1.1;
+}
+.sc-ref { display: block; margin-top: 11px; color: var(--label); font-size: 0.59rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.sc-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2.105;
+  margin-top: clamp(20px, 2.6vw, 32px);
+  border: 1px solid var(--border);
+  background: var(--ink-deeper);
+}
+.sc-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left center; }
+.sc-meta { display: block; margin-top: 13px; color: var(--label); font-size: 0.59rem; letter-spacing: 0.13em; text-transform: uppercase; }
+
+.sc-out-list { margin: 0; padding: 0; list-style: none; }
+.sc-out-item {
+  --x: 1;
+  position: relative;
+  padding: clamp(15px, 1.9vw, 20px) 0;
+  border-bottom: 1px solid var(--border);
+}
+.sc-out-item:last-child { border-bottom: 0; }
+.sc-out-t {
+  display: block;
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1.1vw, 1.03rem);
+  line-height: 1.46;
+  opacity: calc(1 - var(--x) * 0.38);
+}
+/* The stroke through it. Placed on the first line rather than the box centre,
+   because that is where a stroke lands when somebody crosses an item off. */
+.sc-out-x {
+  position: absolute;
+  top: calc(clamp(15px, 1.9vw, 20px) + 0.72em);
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: color-mix(in srgb, var(--muted) 62%, transparent);
+  transform: scaleX(var(--x));
+  transform-origin: left center;
+}
+
+.sc-rules {
+  margin-top: clamp(28px, 3.4vw, 44px);
+  padding-top: clamp(20px, 2.4vw, 30px);
+  border-top: 1px solid var(--border);
+}
+.sc-rules-k { display: block; margin-bottom: clamp(16px, 2vw, 24px); color: var(--rail); font-size: 0.6rem; letter-spacing: 0.17em; text-transform: uppercase; }
+.sc-rules-list {
+  display: grid;
+  gap: clamp(14px, 1.7vw, 19px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-rule { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: baseline; gap: 12px; }
+.sc-rule-n { color: var(--rail); font-size: 0.6rem; letter-spacing: 0.12em; }
+.sc-rule-t { color: var(--ink); font-size: clamp(0.96rem, 1.12vw, 1.05rem); letter-spacing: -0.014em; line-height: 1.55; }
+
+@media (max-width: 900px) {
+  .sc-sheet { grid-template-columns: minmax(0, 1fr); gap: clamp(26px, 5vw, 36px); }
+  .sc-seam { display: none; }
+  .sc-out { padding-top: clamp(24px, 4vw, 32px); border-top: 1px solid var(--border); }
+  .sc-rules-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 1.8vw, 20px) clamp(28px, 4vw, 60px); }
+}
+
+@media (max-width: 640px) {
+  /* Two columns of rule text is unreadable at a phone width. */
+  .sc-rules-list { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* -- 02 Straight answers — the questionnaire ------------------------------
+   A risk team does not read a security page, it reads a form, and what it looks
+   for is which lines are filled. So this is the form: seven ruled rows, the
+   question on the left and the answer of record on the right. Four lift out
+   from under their bar; three keep theirs, hollow and dashed, with the moment
+   each one closes stamped underneath.
+   -------------------------------------------------------------------------- */
+.qf { margin: var(--s-block) 0 0; }
+
+.qf-head,
+.qf-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 0.94fr) minmax(0, 1.22fr);
+  align-items: start;
+  column-gap: clamp(18px, 2.6vw, 44px);
+}
+.qf-head { padding-bottom: 14px; border-bottom: 1px solid rgba(234, 243, 240, 0.3); }
+.qf-head .mk-stamp { color: rgba(234, 243, 240, 0.44); font-size: 0.58rem; letter-spacing: 0.17em; text-transform: uppercase; }
+
+.qf-list { margin: 0; padding: 0; list-style: none; }
+.qf-row { position: relative; padding: clamp(20px, 2.7vw, 34px) 0; }
+.qf-row:first-child .qf-r { display: none; }
+.qf-r {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(234, 243, 240, 0.15);
+}
+
+.qf-n { color: rgba(234, 243, 240, 0.4); font-size: 0.66rem; letter-spacing: 0.1em; }
+.qf-row.is-set .qf-n { color: var(--yellow); }
+.qf-q { margin: 0; color: rgba(234, 243, 240, 0.58); font-size: clamp(0.94rem, 1.1vw, 1.02rem); line-height: 1.5; }
+
+.qf-a {
+  margin: 0;
+  color: #f7fcfa;
+  font-size: clamp(1.02rem, 1.32vw, 1.2rem);
+  font-weight: 560;
+  letter-spacing: -0.024em;
+  line-height: 1.4;
+}
+.qf-blank { padding-top: 0.1em; }
+
+.qf-foot {
+  display: grid;
+  position: relative;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(24px, 4vw, 68px);
+  padding-top: clamp(26px, 3.2vw, 42px);
+}
+.qf-tally { display: flex; align-items: baseline; gap: 13px; margin: 0; }
+.qf-tally-n {
+  color: var(--yellow);
+  font-size: clamp(2.4rem, 5vw, 3.7rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.qf-tally-t { max-width: 13ch; color: rgba(234, 243, 240, 0.5); font-size: 0.58rem; letter-spacing: 0.15em; line-height: 1.6; text-transform: uppercase; }
+.qf-note { max-width: 62ch; margin: 0; color: rgba(234, 243, 240, 0.6); font-size: 0.96rem; line-height: 1.62; }
+
+@media (max-width: 860px) {
+  .qf-head { display: none; }
+  .qf-row { grid-template-columns: 44px minmax(0, 1fr); row-gap: 12px; }
+  .qf-a, .qf-blank { grid-column: 2; }
+  .qf-foot { grid-template-columns: minmax(0, 1fr); align-items: start; row-gap: 22px; }
+}
+
+/* -- 03 Surfaces — the retention schedule ---------------------------------
+   A page that answers "where does the document come to rest" with four feature
+   cards has already lost the argument. A schedule answers it, because a
+   schedule has a row for every surface and a column that cannot be left empty.
+   The last two rows carry the marker in the margin: they are the two the
+   caption is about.
+   -------------------------------------------------------------------------- */
+.rt { margin: var(--s-block) 0 0; }
+.rt-table { display: grid; }
+
+.rt-head,
+.rt-row {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 0.86fr) minmax(0, 1.3fr) minmax(0, 0.74fr);
+  align-items: start;
+  column-gap: clamp(18px, 2.6vw, 44px);
+}
+.rt-head { padding-bottom: 14px; border-bottom: 1px solid var(--ink); }
+.rt-h { color: var(--rail); font-size: 0.58rem; letter-spacing: 0.17em; text-transform: uppercase; }
+.rt-h-clock { justify-self: end; text-align: right; }
+
+.rt-row { position: relative; padding: clamp(22px, 2.9vw, 36px) 0; }
+.rt-row:nth-child(2) .rt-r { display: none; }
+.rt-r { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: var(--border); }
+
+/* The marker somebody drew down the margin against the two rows that matter. */
+.rt-row.is-quiet::before {
+  position: absolute;
+  top: clamp(14px, 1.8vw, 22px);
+  bottom: clamp(14px, 1.8vw, 22px);
+  left: calc(-1 * clamp(12px, 1.4vw, 20px));
+  width: 2px;
+  background: var(--yellow);
+  content: "";
+}
+
+.rt-n { color: var(--rail); font-size: 0.64rem; letter-spacing: 0.12em; }
+.rt-name {
+  color: var(--ink);
+  font-size: clamp(1.08rem, 1.6vw, 1.34rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.rt-what { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+.rt-clock {
+  justify-self: end;
+  max-width: 22ch;
+  color: var(--rail);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.rt-foot {
+  position: relative;
+  margin: clamp(24px, 3vw, 38px) 0 0;
+  padding-top: clamp(20px, 2.4vw, 30px);
+}
+.rt-foot-t { display: block; max-width: 72ch; color: var(--muted); font-size: 0.97rem; line-height: 1.62; }
+
+@media (max-width: 860px) {
+  .rt-head { display: none; }
+  .rt-row { grid-template-columns: 44px minmax(0, 1fr); row-gap: 10px; }
+  .rt-what, .rt-clock { grid-column: 2; }
+  .rt-clock { justify-self: start; max-width: none; text-align: left; }
+  .rt-row.is-quiet::before { left: -12px; }
+}
+
+/* -- 04 Accountability — the entry, and the reader's redaction -------------
+   Every other section uses the lift on the reader's behalf. This one hands the
+   bar over: drag across the original and a block of ink follows the pointer,
+   let go and it comes straight back off. Two of the three figures below can
+   never move. The middle one climbs every time the reader tries, which is the
+   only honest way to demonstrate the claim rather than assert it.
+   -------------------------------------------------------------------------- */
+.nr { margin: var(--s-block) 0 0; }
+
+.nr-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  border: 1px solid rgba(255, 239, 179, 0.32);
+  color: var(--yellow);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.nr-field::before { flex: none; width: 6px; height: 6px; background: var(--yellow); content: ""; }
+
+.nr-entry { margin-top: clamp(30px, 3.8vw, 52px); }
+.nr-k { display: block; color: rgba(234, 243, 240, 0.42); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.nr-v {
+  max-width: 18ch;
+  margin: 13px 0 0;
+  font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.55rem);
+  font-weight: 620;
+  letter-spacing: -0.036em;
+  line-height: 1.08;
+}
+.nr-now .nr-v { color: #f9fdfb; }
+.nr-by { display: block; margin-top: 15px; color: var(--yellow); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.nr-target { position: relative; display: inline-block; max-width: 100%; }
+.nr[data-draw="on"] .nr-target { cursor: crosshair; touch-action: pan-y; }
+.nr-v-was { color: rgba(150, 176, 169, 0.66); }
+.nr-ink {
+  position: absolute;
+  top: -0.08em;
+  bottom: -0.06em;
+  left: 0;
+  width: 100%;
+  background: #0b433c;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+/* The retract. A transition rather than a tween so the bar comes off even if
+   the ticker is stalled or the tab is throttled — see no-removal.jsx. */
+.nr-ink.is-lifting { transition: transform 460ms cubic-bezier(0.16, 1, 0.3, 1); }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  /* The aurora holds its composition; only the drift stops. */
-  .hero-aurora span { animation: none; will-change: auto; }
-  /* Static fallbacks: every scroll-driven surface resolves to its finished state. */
-  [data-reveal] { opacity: 1 !important; transform: none !important; }
-  [data-reveal] .hx-word-inner { transform: none !important; }
-  .ss-word { --lit: 1; }
-  /* The stage panel still follows the open card â it just cuts rather than
-     crossfades, and the strip never advances on its own. */
-  .hw-figure-stack { min-height: 0; }
+  .nr-ink.is-lifting { transition: none; }
+}
+
+.nr-hint { display: none; }
+.nr[data-draw="on"] .nr-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 17px;
+  color: rgba(234, 243, 240, 0.42);
+  font-size: 0.57rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.nr-hint::before { width: 16px; height: 1px; background: currentcolor; content: ""; }
+
+.nr-ledger {
+  display: grid;
+  position: relative;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 52px);
+  margin-top: clamp(46px, 5.6vw, 78px);
+  padding-top: clamp(22px, 2.8vw, 36px);
+}
+.nr-r { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: rgba(234, 243, 240, 0.15); }
+.nr-count { display: grid; align-content: start; gap: 13px; }
+.nr-fig {
+  color: rgba(234, 243, 240, 0.46);
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.nr-tries { color: var(--yellow); }
+
+.nr-foot {
+  display: grid;
+  position: relative;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: clamp(24px, 4vw, 64px);
+  row-gap: 18px;
+  margin-top: clamp(32px, 3.8vw, 50px);
+  padding-top: clamp(22px, 2.8vw, 36px);
+}
+.nr-reason { display: grid; max-width: 58ch; gap: 11px; }
+.nr-reason-v { color: rgba(234, 243, 240, 0.82); font-size: 1rem; line-height: 1.66; }
+.nr-note { color: rgba(234, 243, 240, 0.34); font-size: 0.57rem; letter-spacing: 0.1em; text-align: right; }
+
+@media (max-width: 760px) {
+  .nr-ledger { grid-template-columns: minmax(0, 1fr); row-gap: 24px; }
+  .nr-foot { grid-template-columns: minmax(0, 1fr); }
+  .nr-note { text-align: left; }
+  .nr-v { max-width: none; }
+}
+
+/* -- 05 Custody — the register, and the seal -------------------------------
+   Each holder is named the way everything on this page is named: a bar lifts
+   off it. Then the seal arrives, and it is the one block of ink on this page
+   that never lifts. Four sections have taught the reader that a bar here comes
+   off, so the one that does not carries the weight without a word.
+   -------------------------------------------------------------------------- */
+.cs { margin: var(--s-block) 0 0; }
+.cs-list { margin: 0; padding: 0; list-style: none; }
+
+.cs-holder {
+  display: grid;
+  position: relative;
+  grid-template-columns: 54px minmax(0, 0.8fr) minmax(0, 1.28fr) minmax(0, 0.5fr);
+  align-items: start;
+  column-gap: clamp(18px, 2.6vw, 44px);
+  padding: clamp(20px, 2.7vw, 32px) 0;
+}
+.cs-holder:first-child { border-top: 1px solid var(--ink); }
+.cs-holder:first-child .cs-r { display: none; }
+.cs-r { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: var(--border); }
+
+.cs-n { color: var(--rail); font-size: 0.64rem; letter-spacing: 0.12em; }
+.cs-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.08rem, 1.6vw, 1.32rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.cs-what { margin: 0; color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+.cs-role { justify-self: end; color: var(--label); font-size: 0.57rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.cs-seal {
+  position: relative;
+  margin-top: clamp(26px, 3.2vw, 42px);
+  padding: clamp(28px, 3.6vw, 48px) clamp(24px, 3vw, 42px);
+}
+.cs-seal-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(102deg, var(--ink) 0%, var(--ink-deep) 100%);
+  transform-origin: left center;
+}
+.cs-seal-body { display: grid; position: relative; max-width: 64ch; gap: 13px; }
+.cs-seal-k { color: var(--yellow); font-size: 0.58rem; letter-spacing: 0.17em; text-transform: uppercase; }
+.cs-seal-name {
+  margin: 0;
+  color: #f7fcfa;
+  font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 620;
+  letter-spacing: -0.036em;
+  line-height: 1.1;
+}
+.cs-seal-what { max-width: 54ch; margin: 0; color: rgba(234, 243, 240, 0.72); font-size: 1rem; line-height: 1.62; }
+
+@media (max-width: 860px) {
+  .cs-holder { grid-template-columns: 44px minmax(0, 1fr); row-gap: 10px; }
+  .cs-what, .cs-role { grid-column: 2; }
+  .cs-role { justify-self: start; }
+}
+
+/* -- 06 Close — the sign-off ----------------------------------------------
+   Five sections have shown a scope sheet, a form with three declared blanks, a
+   schedule, an entry that will not lift and a chain with a seal on it. Only the
+   two quietest gestures are used here: a close that shouts undoes a page whose
+   argument is restraint.
+   -------------------------------------------------------------------------- */
+.sec-close { position: relative; padding-block: var(--s-band); background: var(--background); }
+
+.sg { max-width: 82ch; }
+.sg-head { display: grid; gap: clamp(12px, 1.4vw, 18px); }
+.sg-k { display: inline-flex; align-items: center; gap: 10px; color: var(--rail); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.sg-k::before { flex: none; width: 22px; height: 1px; background: currentcolor; content: ""; opacity: 0.55; }
+.sg-heading { max-width: 18ch; font-size: clamp(2.3rem, 5vw, 3.5rem); }
+.sg-lede { max-width: 60ch; font-size: clamp(1.02rem, 1.2vw, 1.14rem); }
+
+.sg-steps { margin: clamp(30px, 3.8vw, 50px) 0 0; padding: 0; list-style: none; }
+.sg-step {
+  display: grid;
+  position: relative;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 16px;
+  padding: clamp(16px, 2vw, 24px) 0;
+}
+.sg-close { position: relative; height: 1px; }
+.sg-r { position: absolute; top: 0; right: 0; left: 0; height: 1px; background: var(--border); }
+.sg-n { color: var(--rail); font-size: 0.62rem; letter-spacing: 0.14em; }
+.sg-t { color: var(--ink); font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.58; }
+
+.sg-actions { display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 2.6vw, 34px); margin: clamp(30px, 3.8vw, 50px) 0 0; }
+.sg-mail { padding-bottom: 2px; border-bottom: 1px solid rgba(10, 92, 80, 0.4); color: var(--rail); font-size: 0.98rem; text-decoration: none; }
+.sg-mail:hover { border-bottom-color: var(--ink); color: var(--ink); }
+
+@media (max-width: 640px) {
+  .sg-step { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; }
 }
 
 @media (pointer: coarse) {
-  .hero-spotlight { display: none; }
+  .pk-ambient, .hl-ambient {
+    animation: none;
+    will-change: auto;
+  }
+  .pk-key, .hl-key {
+    display: none;
+  }
 }
-
-.rainbow-border-glow { position: relative; display: inline-flex; align-items: center; isolation: isolate; --glow-radius: 12px; }
-.rainbow-border-glow::before, .rainbow-border-glow::after { position: absolute; z-index: -1; top: -2px; left: -2px; width: calc(100% + 4px); height: calc(100% + 4px); border-radius: var(--glow-radius); background: linear-gradient(45deg, #013e37, #0a6b5c, #ffefb3, #0a6b5c, #013e37, #0a6b5c, #ffefb3, #0a6b5c, #013e37); background-size: 400%; content: ""; animation: rainbow-border-spin 32s linear infinite; }
-.rainbow-border-glow::after { opacity: 0.85; filter: blur(28px); }
+@media (max-width: 900px) {
+  .blog-featured {
+    grid-template-columns: 1fr;
+  }
+  .blog-featured-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .blog-thumb-fold {
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%, 0 18%);
+  }
+  .blog-grid, .article-related-grid {
+    grid-template-columns: 1fr;
+  }
+  .blog-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .blog-filter-search, .blog-filter-select select {
+    width: 100%;
+  }
+  .blog-page-intro {
+    padding-top: 130px;
+  }
+  .article-header {
+    padding-top: 130px;
+  }
+  .article-header-inner {
+    padding-left: 0;
+  }
+  .article-content-shell {
+    display: block;
+  }
+  .article-sidebar {
+    display: none;
+  }
+  .article-faq {
+    margin: 64px 0 0;
+  }
+  .blog-cta-band {
+    padding: 90px 0;
+    margin-top: 80px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-aurora span {
+    animation: none;
+    will-change: auto;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  [data-reveal] .hx-word-inner {
+    transform: none !important;
+  }
+  .ss-word {
+    --lit: 1;
+  }
+  .hw-figure-stack {
+    min-height: 0;
+  }
+}
+@media (pointer: coarse) {
+  .hero-spotlight {
+    display: none;
+  }
+}
+.rainbow-border-glow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  isolation: isolate;
+  --glow-radius: 12px;
+}
+.rainbow-border-glow::before, .rainbow-border-glow::after {
+  position: absolute;
+  z-index: -1;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border-radius: var(--glow-radius);
+  background: linear-gradient(45deg, #013e37, #0a6b5c, #ffefb3, #0a6b5c, #013e37, #0a6b5c, #ffefb3, #0a6b5c, #013e37);
+  background-size: 400%;
+  content: "";
+  animation: rainbow-border-spin 32s linear infinite;
+}
+.rainbow-border-glow::after {
+  opacity: 0.85;
+  filter: blur(28px);
+}
 @keyframes rainbow-border-spin {
-  0% { background-position: 0 0; }
-  50% { background-position: 400% 0; }
-  100% { background-position: 0 0; }
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
-.rainbow-border-button { display: inline-flex; height: 40px; width: 140px; align-items: center; justify-content: center; gap: 10px; border: none; border-radius: 12px; background: #002f2b; padding: 0 16px; color: white; font-weight: 800; cursor: pointer; }
-.hero-primary-cta-glow { --glow-radius: 14px; }
-
-.dev-hard-refresh-button { display: none; }
-
+.rainbow-border-button {
+  display: inline-flex;
+  height: 40px;
+  width: 140px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  border-radius: 12px;
+  background: #002f2b;
+  padding: 0 16px;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hero-primary-cta-glow {
+  --glow-radius: 14px;
+}
+.dev-hard-refresh-button {
+  display: none;
+}
 @media (max-width: 767px) {
-  .dev-hard-refresh-button { position: fixed; z-index: 100; right: 12px; bottom: 12px; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 44px; padding: 0 14px; border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; background: rgba(1,35,31,0.92); color: #ffefb3; font-family: var(--font-geist-sans), sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em; box-shadow: 0 10px 24px rgba(1,20,18,0.35); }
+  .dev-hard-refresh-button {
+    position: fixed;
+    z-index: 100;
+    right: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 999px;
+    background: rgba(1,35,31,0.92);
+    color: #ffefb3;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 10px 24px rgba(1,20,18,0.35);
+  }
 }
-
-/* Light header on blog index and article pages */
 body:has(.blog-page-intro) .site-header,
 body:has(.article-header) .site-header {
   background: var(--background);
@@ -2897,15 +3824,21 @@ body:has(.article-header) .site-header[data-compact] {
   -webkit-backdrop-filter: blur(12px);
 }
 body:has(.blog-page-intro) .header-shell::before,
-body:has(.article-header) .header-shell::before { display: none; }
+body:has(.article-header) .header-shell::before {
+  display: none;
+}
 body:has(.blog-page-intro) .brand-wordmark,
-body:has(.article-header) .brand-wordmark { filter: none; }
+body:has(.article-header) .brand-wordmark {
+  filter: none;
+}
 body:has(.blog-page-intro) .nav-link,
 body:has(.blog-page-intro) .nav-menu > button,
 body:has(.blog-page-intro) .signin-link,
 body:has(.article-header) .nav-link,
 body:has(.article-header) .nav-menu > button,
-body:has(.article-header) .signin-link { color: var(--muted); }
+body:has(.article-header) .signin-link {
+  color: var(--muted);
+}
 body:has(.blog-page-intro) .nav-link:hover,
 body:has(.blog-page-intro) .nav-menu > button:hover,
 body:has(.blog-page-intro) .nav-menu.is-open > button,
@@ -2913,10 +3846,14 @@ body:has(.blog-page-intro) .signin-link:hover,
 body:has(.article-header) .nav-link:hover,
 body:has(.article-header) .nav-menu > button:hover,
 body:has(.article-header) .nav-menu.is-open > button,
-body:has(.article-header) .signin-link:hover { color: var(--ink); }
+body:has(.article-header) .signin-link:hover {
+  color: var(--ink);
+}
 body:has(.blog-page-intro) .site-header .header-cta,
-body:has(.article-header) .site-header .header-cta { border: 1.5px solid var(--border); background: var(--surface); }
-/* Light mega menu panels on blog pages */
+body:has(.article-header) .site-header .header-cta {
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+}
 body:has(.blog-page-intro) .nav-panel-content,
 body:has(.article-header) .nav-panel-content {
   background: var(--surface);
@@ -2924,46 +3861,51 @@ body:has(.article-header) .nav-panel-content {
   box-shadow: 0 20px 50px rgba(1,62,55,0.08);
 }
 body:has(.blog-page-intro) .nav-panel-label,
-body:has(.article-header) .nav-panel-label { color: var(--muted); }
+body:has(.article-header) .nav-panel-label {
+  color: var(--muted);
+}
 body:has(.blog-page-intro) .nav-panel-grid > div > a,
-body:has(.article-header) .nav-panel-grid > div > a { color: var(--ink); }
+body:has(.article-header) .nav-panel-grid > div > a {
+  color: var(--ink);
+}
 body:has(.blog-page-intro) .nav-panel-grid > div > a:hover,
-body:has(.article-header) .nav-panel-grid > div > a:hover { background: var(--soft-blue); }
+body:has(.article-header) .nav-panel-grid > div > a:hover {
+  background: var(--soft-blue);
+}
 body:has(.blog-page-intro) .nav-item-copy small,
-body:has(.article-header) .nav-item-copy small { color: var(--muted); }
+body:has(.article-header) .nav-item-copy small {
+  color: var(--muted);
+}
 body:has(.blog-page-intro) .nav-use-cases a,
-body:has(.article-header) .nav-use-cases a { color: var(--muted); }
+body:has(.article-header) .nav-use-cases a {
+  color: var(--muted);
+}
 body:has(.blog-page-intro) .nav-use-cases a:hover,
-body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
-
+body:has(.article-header) .nav-use-cases a:hover {
+  color: var(--ink);
+}
 @media (max-width: 860px) {
   body:has(.blog-page-intro) .site-header,
-  body:has(.article-header) .site-header { background: var(--background); }
+  body:has(.article-header) .site-header {
+    background: var(--background);
+  }
   body:has(.blog-page-intro) .mobile-quick-cta,
-  body:has(.article-header) .mobile-quick-cta { color: var(--ink); }
+  body:has(.article-header) .mobile-quick-cta {
+    color: var(--ink);
+  }
   body:has(.blog-page-intro) .mobile-trigger,
-  body:has(.article-header) .mobile-trigger { border-color: var(--border); color: var(--ink); }
+  body:has(.article-header) .mobile-trigger {
+    border-color: var(--border);
+    color: var(--ink);
+  }
   body:has(.blog-page-intro) .site-header[data-compact] .mobile-trigger,
-  body:has(.article-header) .site-header[data-compact] .mobile-trigger { background: var(--surface); border-color: var(--border); color: var(--ink); box-shadow: 0 8px 24px rgba(1,62,55,0.1); }
+  body:has(.article-header) .site-header[data-compact] .mobile-trigger {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--ink);
+    box-shadow: 0 8px 24px rgba(1,62,55,0.1);
+  }
 }
-
-
-/* ==========================================================================
-   Platform page
-   Namespaced `plt-` for sections and short codes per component, all verified
-   unique against the rest of this sheet. Reuses the .eg grid, type scale,
-   band surfaces and spacing tokens â no parallel layout system.
-   ========================================================================== */
-
-/* -- 01 The four layers ------------------------------------------------------
-   A stack, not a track: this page is about what the system is composed of,
-   while the homepage covers the order a deal moves through. The slabs are set
-   in deep green against the light band so they read as solid pieces of the
-   system rather than as cards.
-
-   The resting state below is the readable one â full spacing, no transform.
-   The fanning effect is layered on top by GSAP only when motion is welcome,
-   so no-JS and reduced-motion readers get four legible slabs. */
 .ly {
   display: flex;
   flex-direction: column;
@@ -2983,15 +3925,20 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding: clamp(22px, 2.4vw, 34px) clamp(22px, 2.6vw, 38px);
   background: var(--ink-deeper);
   color: #eaf3f0;
-  /* Each slab composites on its own plane so the fan stays smooth. */
   transform-origin: center top;
   will-change: transform;
 }
-/* Only while the deck is fanning does depth need faking; a flat resting stack
-   with shadows on every slab would read as clutter. */
-.ly[data-stacked] .ly-plane { box-shadow: 0 -1px 0 rgba(234, 243, 240, 0.12), 0 24px 60px rgba(1, 31, 28, 0.28); }
-
-.ly-num { grid-row: 1 / span 2; align-self: start; padding-top: 0.35em; color: var(--yellow); font-size: 0.72rem; letter-spacing: 0.14em; }
+.ly[data-stacked] .ly-plane {
+  box-shadow: 0 -1px 0 rgba(234, 243, 240, 0.12), 0 24px 60px rgba(1, 31, 28, 0.28);
+}
+.ly-num {
+  grid-row: 1 / span 2;
+  align-self: start;
+  padding-top: 0.35em;
+  color: var(--yellow);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
 .ly-name {
   margin: 0;
   color: #f6fbf9;
@@ -3000,32 +3947,44 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.03em;
   line-height: 1.05;
 }
-.ly-q { margin: 0; color: var(--yellow); font-size: 0.86rem; letter-spacing: -0.005em; }
-.ly-body { grid-column: 2; margin: 10px 0 0; max-width: 66ch; color: rgba(234, 243, 240, 0.62); font-size: 0.94rem; line-height: 1.62; }
-
-@media (max-width: 860px) {
-  .ly-plane { grid-template-columns: minmax(0, 1fr); row-gap: 4px; }
-  .ly-num { grid-row: auto; padding-top: 0; }
-  .ly-body { grid-column: 1; }
+.ly-q {
+  margin: 0;
+  color: var(--yellow);
+  font-size: 0.86rem;
+  letter-spacing: -0.005em;
 }
-
-
-/* -- 02 Evidence layer: values, and what is underneath them ------------------
-   Built in the layer stack's vocabulary — solid planes, one large typographic
-   element each, one physical transformation — but inverted. 01 is deep slabs
-   on the light band; this is paper-white planes on the deep one, which is what
-   makes the two read as a pair rather than as a repeat.
-
-   The planes are meant to read as paper. That is the job a photograph was
-   being asked to do here, and abstracting it keeps the section explaining the
-   claim rather than decorating the band.
-
-   Resting state is open: the source strip is unclipped and every citation is
-   legible without JS or with reduced motion. */
-.pv { display: flex; flex-direction: column; gap: clamp(16px, 2vw, 26px); margin: var(--s-block) 0 0; padding: 0; list-style: none; }
-.pv-item { position: relative; }
-
-/* The paper. */
+.ly-body {
+  grid-column: 2;
+  margin: 10px 0 0;
+  max-width: 66ch;
+  color: rgba(234, 243, 240, 0.62);
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+@media (max-width: 860px) {
+  .ly-plane {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 4px;
+  }
+  .ly-num {
+    grid-row: auto;
+    padding-top: 0;
+  }
+  .ly-body {
+    grid-column: 1;
+  }
+}
+.pv {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 26px);
+  margin: var(--s-block) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pv-item {
+  position: relative;
+}
 .pv-card {
   position: relative;
   z-index: 1;
@@ -3036,12 +3995,19 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   border-radius: 16px;
   padding: clamp(24px, 2.8vw, 38px) clamp(22px, 2.6vw, 38px);
   background: var(--surface);
-  /* Sits above its own source strip, so the lift reads as a lift. */
   box-shadow: 0 18px 46px rgba(1, 20, 18, 0.44);
   will-change: transform;
 }
-.pv-index { color: var(--label); font-size: 0.7rem; letter-spacing: 0.14em; }
-.pv-field { color: var(--muted); font-size: clamp(0.9rem, 1.2vw, 1.02rem); letter-spacing: -0.008em; }
+.pv-index {
+  color: var(--label);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+}
+.pv-field {
+  color: var(--muted);
+  font-size: clamp(0.9rem, 1.2vw, 1.02rem);
+  letter-spacing: -0.008em;
+}
 .pv-value {
   color: var(--ink);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -3051,9 +4017,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   line-height: 1;
   white-space: nowrap;
 }
-
-/* What the value was read from, unfolding beneath the paper. Height is always
-   reserved and only the clip changes, so nothing reflows as it opens. */
 .pv-source {
   position: relative;
   z-index: 0;
@@ -3069,8 +4032,20 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   gap: 4px clamp(16px, 2vw, 28px);
   padding: calc(14px + clamp(14px, 1.6vw, 20px)) clamp(22px, 2.6vw, 38px) clamp(16px, 1.8vw, 22px);
 }
-.pv-source-k { grid-column: 1; color: var(--yellow); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.pv-source-doc { grid-column: 1; margin: 0; color: rgba(234, 243, 240, 0.74); font-size: 0.86rem; line-height: 1.5; }
+.pv-source-k {
+  grid-column: 1;
+  color: var(--yellow);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.pv-source-doc {
+  grid-column: 1;
+  margin: 0;
+  color: rgba(234, 243, 240, 0.74);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
 .pv-quote {
   grid-column: 1;
   margin: 4px 0 0;
@@ -3091,41 +4066,65 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
-
 @media (max-width: 860px) {
-  /* Single column here: nothing occupies a second track once the value spans,
-     and an auto track collapses to 0 while still paying for its gap. */
-  .pv-card { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .pv-index { grid-column: 1; }
-  .pv-field { grid-column: 1; }
-  .pv-value { font-size: clamp(1.6rem, 8vw, 2.2rem); }
-  .pv-source-in { grid-template-columns: minmax(0, 1fr); }
-  .pv-conf { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 10px; }
+  .pv-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .pv-index {
+    grid-column: 1;
+  }
+  .pv-field {
+    grid-column: 1;
+  }
+  .pv-value {
+    font-size: clamp(1.6rem, 8vw, 2.2rem);
+  }
+  .pv-source-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pv-conf {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    margin-top: 10px;
+  }
 }
-
-
-
-/* -- 03 Analysis layer: the tree that will not close -------------------------
-   The branching idea from the previous version, rebuilt in the layer stack's
-   vocabulary: few, large, solid nodes rather than twelve small cards in two
-   columns. Top to bottom, so the shape can carry the argument — one root fans
-   into three families, the families converge on a single decision, and that
-   last node is an open dashed outline that never fills.
-
-   Edges are measured from real node positions and rebuilt on resize. Below the
-   breakpoint they are dropped and the same markup reads as a plain outline. */
-.tr { margin-top: var(--s-block); }
-.tr-board { display: grid; justify-items: center; gap: clamp(26px, 3.4vw, 52px); }
-.tr-wires { display: none; }
-.tr[data-tree="on"] .tr-board { position: relative; }
-.tr[data-tree="on"] .tr-wires { position: absolute; z-index: 0; inset: 0; display: block; overflow: visible; pointer-events: none; }
-.tr-edge { stroke: var(--rail); stroke-width: 1.2; opacity: 0.4; }
-/* The converging half is drawn lighter — it is heading somewhere that stays
-   deliberately unfinished. */
-.tr-edge-end { stroke-dasharray: 4 5; opacity: 0.3; }
-
-.tr-root, .tr-decision, .tr-family { position: relative; z-index: 1; }
-
+.tr {
+  margin-top: var(--s-block);
+}
+.tr-board {
+  display: grid;
+  justify-items: center;
+  gap: clamp(26px, 3.4vw, 52px);
+}
+.tr-wires {
+  display: none;
+}
+.tr[data-tree="on"] .tr-board {
+  position: relative;
+}
+.tr[data-tree="on"] .tr-wires {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+.tr-edge {
+  stroke: var(--rail);
+  stroke-width: 1.2;
+  opacity: 0.4;
+}
+.tr-edge-end {
+  stroke-dasharray: 4 5;
+  opacity: 0.3;
+}
+.tr-root, .tr-decision, .tr-family {
+  position: relative;
+  z-index: 1;
+}
 .tr-root {
   display: grid;
   justify-items: center;
@@ -3135,9 +4134,18 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: var(--ink-deeper);
   text-align: center;
 }
-.tr-root-k { color: var(--yellow); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.tr-root-name { color: #f6fbf9; font-size: clamp(1.1rem, 1.7vw, 1.44rem); font-weight: 620; letter-spacing: -0.024em; }
-
+.tr-root-k {
+  color: var(--yellow);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.tr-root-name {
+  color: #f6fbf9;
+  font-size: clamp(1.1rem, 1.7vw, 1.44rem);
+  font-weight: 620;
+  letter-spacing: -0.024em;
+}
 .tr-families {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3161,7 +4169,14 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.022em;
   line-height: 1.2;
 }
-.tr-signals { display: flex; flex-direction: column; gap: 9px; margin: clamp(14px, 1.6vw, 20px) 0 0; padding: 0; list-style: none; }
+.tr-signals {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: clamp(14px, 1.6vw, 20px) 0 0;
+  padding: 0;
+  list-style: none;
+}
 .tr-signals li {
   position: relative;
   padding-left: 15px;
@@ -3180,8 +4195,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   opacity: 0.6;
   content: "";
 }
-
-/* The node that never fills — outlined, never solid, unlike every node above. */
 .tr-decision {
   display: grid;
   justify-items: center;
@@ -3193,8 +4206,18 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: transparent;
   text-align: center;
 }
-.tr-decision-k { color: var(--rail); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.tr-decision-name { color: var(--ink); font-size: clamp(1.1rem, 1.7vw, 1.44rem); font-weight: 620; letter-spacing: -0.024em; }
+.tr-decision-k {
+  color: var(--rail);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.tr-decision-name {
+  color: var(--ink);
+  font-size: clamp(1.1rem, 1.7vw, 1.44rem);
+  font-weight: 620;
+  letter-spacing: -0.024em;
+}
 .tr-note {
   max-width: 62ch;
   margin: clamp(18px, 2vw, 26px) auto 0;
@@ -3203,25 +4226,22 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   line-height: 1.6;
   text-align: center;
 }
-
 @media (max-width: 860px) {
-  .tr-families { grid-template-columns: minmax(0, 1fr); }
-  .tr-root, .tr-decision { width: 100%; }
-  .tr-note { text-align: left; }
+  .tr-families {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tr-root, .tr-decision {
+    width: 100%;
+  }
+  .tr-note {
+    text-align: left;
+  }
 }
-
-/* -- 04 Control layer: the policy sheet --------------------------------------
-   One sheet rather than a stack of planes. The claim is that this is the
-   lender's own policy document applied as written, and five sections in, the
-   page needs a composition that is not another row of cards.
-
-   The transformation is measurement: each meter fills to its observed value and
-   lands relative to a fixed threshold mark. Direction is stated per rule,
-   because a bar past the mark passes a minimum and fails a maximum.
-
-   Resting state is measured — full bars, outcomes visible — so nothing depends
-   on the scrub having run. */
-.cl { position: relative; margin-top: var(--s-block); padding-bottom: clamp(70px, 8vw, 104px); }
+.cl {
+  position: relative;
+  margin-top: var(--s-block);
+  padding-bottom: clamp(70px, 8vw, 104px);
+}
 .cl-sheet {
   border: 1px solid rgba(234, 243, 240, 0.16);
   border-radius: 20px;
@@ -3236,17 +4256,52 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding: clamp(20px, 2.4vw, 30px) clamp(22px, 2.6vw, 36px);
   border-bottom: 1px solid rgba(234, 243, 240, 0.13);
 }
-.cl-policy-name { margin: 0; color: #f6fbf9; font-size: clamp(1.02rem, 1.5vw, 1.26rem); font-weight: 620; letter-spacing: -0.022em; }
-.cl-policy-meta { margin: 4px 0 0; color: rgba(234, 243, 240, 0.44); font-size: 0.6rem; letter-spacing: 0.1em; }
-
-.cl-summary { display: flex; flex-wrap: wrap; gap: clamp(16px, 2.4vw, 38px); margin: 0; padding: 0; list-style: none; }
-.cl-stat { display: grid; gap: 2px; }
-.cl-stat-value { color: #f6fbf9; font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: clamp(1.1rem, 1.7vw, 1.44rem); font-weight: 620; letter-spacing: -0.02em; }
-.cl-stat-label { color: rgba(234, 243, 240, 0.42); font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; }
-/* The one that matters most on this page. */
-.cl-stat.is-emphasis .cl-stat-value { color: var(--yellow); }
-
-.cl-rules { margin: 0; padding: 0; list-style: none; }
+.cl-policy-name {
+  margin: 0;
+  color: #f6fbf9;
+  font-size: clamp(1.02rem, 1.5vw, 1.26rem);
+  font-weight: 620;
+  letter-spacing: -0.022em;
+}
+.cl-policy-meta {
+  margin: 4px 0 0;
+  color: rgba(234, 243, 240, 0.44);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+.cl-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(16px, 2.4vw, 38px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cl-stat {
+  display: grid;
+  gap: 2px;
+}
+.cl-stat-value {
+  color: #f6fbf9;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: clamp(1.1rem, 1.7vw, 1.44rem);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+}
+.cl-stat-label {
+  color: rgba(234, 243, 240, 0.42);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.cl-stat.is-emphasis .cl-stat-value {
+  color: var(--yellow);
+}
+.cl-rules {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .cl-rule {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) auto minmax(180px, 1.15fr) 92px;
@@ -3255,8 +4310,14 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding: clamp(18px, 2vw, 26px) clamp(22px, 2.6vw, 36px);
   border-bottom: 1px solid rgba(234, 243, 240, 0.07);
 }
-.cl-rule:last-child { border-bottom: none; }
-.cl-rule-name { color: rgba(234, 243, 240, 0.7); font-size: 0.92rem; letter-spacing: -0.008em; }
+.cl-rule:last-child {
+  border-bottom: none;
+}
+.cl-rule-name {
+  color: rgba(234, 243, 240, 0.7);
+  font-size: 0.92rem;
+  letter-spacing: -0.008em;
+}
 .cl-observed {
   color: #f6fbf9;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -3265,11 +4326,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.026em;
   white-space: nowrap;
 }
-
-/* The disallowed side of each threshold, hatched. Direction is part of the
-   rule, so it is drawn rather than left to colour: on a minimum rule the zone
-   sits below the mark, on a maximum rule above it, and an exception is a bar
-   that ends inside the hatching. */
 .cl-zone {
   position: absolute;
   top: 13px;
@@ -3281,12 +4337,27 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
     transparent 2px 5px
   );
 }
-.cl-zone[data-dir="min"] { left: 0; width: var(--mark); }
-.cl-zone[data-dir="max"] { left: var(--mark); right: 0; }
-
-/* The meter: a track, a fixed threshold mark, and a fill that measures to it. */
-.cl-meter { position: relative; height: 30px; }
-.cl-track { position: absolute; top: 13px; left: 0; right: 0; height: 3px; border-radius: 999px; background: rgba(234, 243, 240, 0.12); }
+.cl-zone[data-dir="min"] {
+  left: 0;
+  width: var(--mark);
+}
+.cl-zone[data-dir="max"] {
+  left: var(--mark);
+  right: 0;
+}
+.cl-meter {
+  position: relative;
+  height: 30px;
+}
+.cl-track {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(234, 243, 240, 0.12);
+}
 .cl-fill {
   position: absolute;
   top: 13px;
@@ -3297,8 +4368,18 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: var(--rail);
   transform-origin: left center;
 }
-.cl-rule.is-exception .cl-fill { background: var(--yellow); }
-.cl-mark { position: absolute; top: 6px; left: var(--mark); width: 1px; height: 17px; background: rgba(234, 243, 240, 0.55); transform-origin: center top; }
+.cl-rule.is-exception .cl-fill {
+  background: var(--yellow);
+}
+.cl-mark {
+  position: absolute;
+  top: 6px;
+  left: var(--mark);
+  width: 1px;
+  height: 17px;
+  background: rgba(234, 243, 240, 0.55);
+  transform-origin: center top;
+}
 .cl-threshold {
   position: absolute;
   top: 0;
@@ -3319,9 +4400,10 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.cl-rule.is-exception .cl-outcome { border-color: rgba(255, 239, 179, 0.45); color: var(--yellow); }
-
-/* A person, on top of the machine output — overlapping the sheet on purpose. */
+.cl-rule.is-exception .cl-outcome {
+  border-color: rgba(255, 239, 179, 0.45);
+  color: var(--yellow);
+}
 .cl-override {
   position: absolute;
   right: clamp(16px, 3vw, 48px);
@@ -3333,34 +4415,66 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: #07211e;
   box-shadow: 0 24px 60px rgba(1, 20, 18, 0.55);
 }
-.cl-override-k { color: var(--yellow); font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.cl-override-line { margin: 9px 0 0; color: #f6fbf9; font-size: 0.92rem; }
-.cl-override-line strong { font-weight: 640; }
-.cl-override-reason { margin: 7px 0 0; color: rgba(234, 243, 240, 0.6); font-size: 0.86rem; line-height: 1.55; }
-.cl-override-code { display: inline-block; margin-top: 11px; color: rgba(234, 243, 240, 0.4); font-size: 0.55rem; letter-spacing: 0.08em; }
-
+.cl-override-k {
+  color: var(--yellow);
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cl-override-line {
+  margin: 9px 0 0;
+  color: #f6fbf9;
+  font-size: 0.92rem;
+}
+.cl-override-line strong {
+  font-weight: 640;
+}
+.cl-override-reason {
+  margin: 7px 0 0;
+  color: rgba(234, 243, 240, 0.6);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.cl-override-code {
+  display: inline-block;
+  margin-top: 11px;
+  color: rgba(234, 243, 240, 0.4);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+}
 @media (max-width: 980px) {
-  .cl-rule { grid-template-columns: minmax(0, 1fr) auto; row-gap: 12px; }
-  .cl-rule-name { grid-column: 1; }
-  .cl-observed { grid-column: 1; }
-  .cl-outcome { grid-column: 2; grid-row: 1; justify-self: end; }
-  .cl-meter { grid-column: 1 / -1; }
+  .cl-rule {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 12px;
+  }
+  .cl-rule-name {
+    grid-column: 1;
+  }
+  .cl-observed {
+    grid-column: 1;
+  }
+  .cl-outcome {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .cl-meter {
+    grid-column: 1 / -1;
+  }
 }
 @media (max-width: 860px) {
-  .cl { padding-bottom: 0; }
-  .cl-override { position: static; width: auto; margin-top: 16px; }
+  .cl {
+    padding-bottom: 0;
+  }
+  .cl-override {
+    position: static;
+    width: auto;
+    margin-top: 16px;
+  }
 }
-
-/* -- 05 Record layer: what moved --------------------------------------------
-   The transformation is the change itself: each reading rolls from its previous
-   value to its current one inside a clipped window, and the delta arrives after
-   it lands. Audit convention keeps the previous value beside the new one rather
-   than replacing it silently, so "was" stays on the card.
-
-   A grid, not another stack — the rhythm has to change by the fifth section,
-   and the roll needs a compact box to read as a mechanism. */
-.rc { margin-top: var(--s-block); }
-
+.rc {
+  margin-top: var(--s-block);
+}
 .rc-versions {
   display: flex;
   flex-wrap: wrap;
@@ -3369,10 +4483,35 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   gap: clamp(18px, 2.4vw, 36px);
   padding-bottom: clamp(22px, 2.6vw, 34px);
 }
-.rc-track { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 80px); flex: 1 1 420px; margin: 0; padding: 0; list-style: none; }
-.rc-track-line { position: absolute; top: 5px; left: 6px; right: 6px; height: 1px; background: var(--border); }
-.rc-track-fill { display: block; width: 100%; height: 100%; background: var(--rail); transform-origin: left center; }
-.rc-version { position: relative; padding-top: 20px; }
+.rc-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 80px);
+  flex: 1 1 420px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rc-track-line {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  right: 6px;
+  height: 1px;
+  background: var(--border);
+}
+.rc-track-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--rail);
+  transform-origin: left center;
+}
+.rc-version {
+  position: relative;
+  padding-top: 20px;
+}
 .rc-version::before {
   position: absolute;
   top: 0;
@@ -3384,12 +4523,34 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: var(--background);
   content: "";
 }
-.rc-version.is-current::before { border-color: var(--rail); background: var(--rail); }
-.rc-version-label { display: block; color: var(--label); font-size: 0.6rem; letter-spacing: 0.1em; }
-.rc-version.is-current .rc-version-label { color: var(--rail); }
-.rc-version-note { display: block; margin-top: 4px; color: var(--muted); font-size: 0.86rem; line-height: 1.45; }
-
-.rc-summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.rc-version.is-current::before {
+  border-color: var(--rail);
+  background: var(--rail);
+}
+.rc-version-label {
+  display: block;
+  color: var(--label);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+.rc-version.is-current .rc-version-label {
+  color: var(--rail);
+}
+.rc-version-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.rc-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .rc-summary-item {
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -3399,8 +4560,14 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
-
-.rc-changes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); margin: 0; padding: 0; list-style: none; }
+.rc-changes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .rc-change {
   min-width: 0;
   border: 1px solid var(--border);
@@ -3408,12 +4575,22 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding: clamp(18px, 2vw, 26px);
   background: var(--surface);
 }
-.rc-name { display: block; color: var(--muted); font-size: 0.8rem; letter-spacing: -0.004em; }
-
-/* The window is exactly one reading tall and holds two, so the roll shifts by
-   half its own height: the previous leaves as the current arrives. */
-.rc-window { display: block; overflow: hidden; height: 1.12em; margin-top: 12px; font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
-.rc-roll { display: block; }
+.rc-name {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: -0.004em;
+}
+.rc-window {
+  display: block;
+  overflow: hidden;
+  height: 1.12em;
+  margin-top: 12px;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+}
+.rc-roll {
+  display: block;
+}
 .rc-reading {
   display: block;
   height: 1.12em;
@@ -3424,10 +4601,22 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
-.rc-reading-prev { color: var(--neutral-depth); }
-
-.rc-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 14px; }
-.rc-was { color: var(--label); font-size: 0.56rem; letter-spacing: 0.08em; }
+.rc-reading-prev {
+  color: var(--neutral-depth);
+}
+.rc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+}
+.rc-was {
+  color: var(--label);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+}
 .rc-delta {
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -3436,73 +4625,80 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.56rem;
   letter-spacing: 0.08em;
 }
-.rc-delta.is-better { border-color: rgba(10, 92, 80, 0.4); color: var(--rail); }
-
+.rc-delta.is-better {
+  border-color: rgba(10, 92, 80, 0.4);
+  color: var(--rail);
+}
 @media (max-width: 1080px) {
-  .rc-changes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rc-changes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 620px) {
-  .rc-changes { grid-template-columns: minmax(0, 1fr); }
-  .rc-track { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .rc-track-line { display: none; }
+  .rc-changes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rc-track {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .rc-track-line {
+    display: none;
+  }
 }
-
-
-/* ==========================================================================
-   Why Cevrynt page
-
-   No boxes on this page. Nothing here has a border on four sides, a filled
-   background or a corner radius — every earlier attempt was containers with
-   text inside, and that is the thing being avoided. Both sections are built
-   from strokes, hairlines, type and space.
-
-   The two are a pair, not a repeat. They share a vocabulary — hairlines, mono
-   micro-labels, rail green for Cevrynt, the secondary held back for whatever
-   survives, one scroll scalar driving everything — and invert each other in
-   every other respect. 01 is wide, sparse and light, and sweeps left to right
-   while one whole thing comes apart across six months. 02 is centred, dense
-   and deep, anchored to a real product export, and gathers four separate
-   readings inward onto one thread.
-   ========================================================================== */
-
-/* -- 01 Five lanes across six months -----------------------------------------
-   A small-multiples field, not a chart. Each of the five things a review leaves
-   behind gets a lane; each lane carries the same three tracks in the same
-   order, so after the key, position alone identifies an approach. A track runs
-   while that approach can still produce that thing, breaks on a tick, and
-   continues as a dotted remnant — the information stopped being retrievable
-   rather than ceasing to exist, and a bare gap would read as a rendering fault
-   instead of a loss.
-
-   A playhead sweeps the whole stack as you scroll, so tracks are cut as it
-   reaches them rather than being revealed already broken.
-   -------------------------------------------------------------------------- */
-
-/* The lane-name column, shared by the lanes, the overlay and the axis so all
-   three agree. Deliberately not in ch units: those resolve against the *using*
-   element's own font, and the axis is mono at 0.56rem while a lane name is the
-   text face at ~0.97rem — the same 21ch came out 74px narrower on the axis and
-   threw the first station a hundred pixels left of where the lanes start. */
-.ln { --ln-label: clamp(140px, 16vw, 246px); --ln-gap: clamp(16px, 2.4vw, 34px); margin: var(--s-block) 0 0; }
-
-.ln-clock-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: clamp(18px, 2.2vw, 26px); }
-.ln-clock-k { color: var(--label); font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; }
-.ln-clock { color: var(--rail); font-size: 0.72rem; letter-spacing: 0.12em; }
-
-/* -- The key. Named once; the lanes never repeat these labels. -------------- */
-.ln-key { display: flex; flex-wrap: wrap; gap: 10px clamp(18px, 2.4vw, 34px); margin-bottom: clamp(20px, 2.6vw, 30px); }
-.ln-key-item { display: inline-flex; align-items: center; gap: 9px; }
-.ln-key-mark { display: block; width: 26px; height: 8px; overflow: visible; }
-.ln-key-name { color: var(--label); font-size: 0.62rem; letter-spacing: 0.11em; text-transform: uppercase; }
-.ln-key-item.is-lead .ln-key-name { color: var(--ink); }
-
-/* -- The lanes -------------------------------------------------------------- */
-/* Positioned so the playhead overlay has something to be absolute against. */
-.ln-lanes { position: relative; display: flex; flex-direction: column; }
-
-/* The overlay: period rules and the travelling playhead, drawn once for the
-   whole stack so both are continuous lines through all five lanes rather than
-   five segments kept in step. Inset to start exactly where a plot column does. */
+.ln {
+  --ln-label: clamp(140px, 16vw, 246px);
+  --ln-gap: clamp(16px, 2.4vw, 34px);
+  margin: var(--s-block) 0 0;
+}
+.ln-clock-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: clamp(18px, 2.2vw, 26px);
+}
+.ln-clock-k {
+  color: var(--label);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ln-clock {
+  color: var(--rail);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+.ln-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px clamp(18px, 2.4vw, 34px);
+  margin-bottom: clamp(20px, 2.6vw, 30px);
+}
+.ln-key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.ln-key-mark {
+  display: block;
+  width: 26px;
+  height: 8px;
+  overflow: visible;
+}
+.ln-key-name {
+  color: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.ln-key-item.is-lead .ln-key-name {
+  color: var(--ink);
+}
+.ln-lanes {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
 .ln-head {
   position: absolute;
   z-index: 2;
@@ -3512,12 +4708,13 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   left: calc(var(--ln-label) + var(--ln-gap));
   pointer-events: none;
 }
-.ln-period { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
-
-/* Authored parked at the right — month six, the conclusion — so the resting
-   state without JS is the finished argument. Parked with "left", not a percent
-   transform: this element is 1px wide, so translateX(100%) would move it one
-   pixel. The effect re-anchors it to left 0 and drives "x" in pixels. */
+.ln-period {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
 .ln-head-line {
   position: absolute;
   top: -7px;
@@ -3527,8 +4724,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: var(--rail);
   will-change: transform;
 }
-/* A tick at each end, so the head reads as an instrument rather than as a stray
-   rule that happens to cross the lanes. */
 .ln-head-line::before,
 .ln-head-line::after {
   position: absolute;
@@ -3538,9 +4733,12 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: var(--rail);
   content: "";
 }
-.ln-head-line::before { top: 0; }
-.ln-head-line::after { bottom: 0; }
-
+.ln-head-line::before {
+  top: 0;
+}
+.ln-head-line::after {
+  bottom: 0;
+}
 .ln-lane {
   display: grid;
   grid-template-columns: minmax(0, var(--ln-label)) minmax(0, 1fr);
@@ -3549,35 +4747,66 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   border-top: 1px solid var(--border);
   padding: clamp(9px, 1.1vw, 14px) 0;
 }
-.ln-lanes .ln-lane:last-child { border-bottom: 1px solid var(--border); }
-.ln-lane-name { margin: 0; color: var(--ink); font-size: clamp(0.86rem, 1vw, 0.97rem); letter-spacing: -0.012em; line-height: 1.32; text-wrap: balance; }
-
-/* Stretched to the column, so strokes must opt out of the distortion. Every
-   mark in here is a line element for that reason — a circle would squash. */
-.ln-lane-plot { display: block; width: 100%; height: 46px; overflow: visible; }
-.ln-lane-plot line { vector-effect: non-scaling-stroke; }
-
-.ln-held { stroke: var(--neutral-depth); stroke-width: 1.5; stroke-linecap: butt; }
-.ln-gone { stroke: var(--neutral-depth); stroke-width: 1; stroke-dasharray: 2 6; opacity: 0.45; }
-.ln-stopmark { stroke: var(--neutral-depth); stroke-width: 1.5; }
-.ln-key-line { stroke: var(--neutral-depth); stroke-width: 1.5; }
-
-/* Three tracks that have to be told apart at a hairline weight. Position in the
-   lane is the primary cue, but position alone left the first two identical, so
-   they are graded light to heavy — which is also the order of how much each one
-   keeps. */
-.ln-t0.ln-held, .ln-t0.ln-key-line { stroke-width: 1.2; opacity: 0.5; }
-.ln-t0.ln-stopmark { opacity: 0.5; }
-.ln-t1.ln-held, .ln-t1.ln-key-line { stroke-width: 1.7; opacity: 0.85; }
-.ln-t1.ln-stopmark { opacity: 0.85; }
-/* The track this page argues for, weighted without dimming the others into
-   strawmen. */
-.ln-t2.ln-held, .ln-t2.ln-key-line { stroke: var(--rail); stroke-width: 3; }
-.ln-t2.ln-stopmark { stroke: var(--rail); }
-
-/* Every period is named and sits under its own rule, so the sweep has stations
-   rather than only two ends. Inset by the same label column the overlay uses,
-   which is what keeps a mark and its rule on the same pixel. */
+.ln-lanes .ln-lane:last-child {
+  border-bottom: 1px solid var(--border);
+}
+.ln-lane-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(0.86rem, 1vw, 0.97rem);
+  letter-spacing: -0.012em;
+  line-height: 1.32;
+  text-wrap: balance;
+}
+.ln-lane-plot {
+  display: block;
+  width: 100%;
+  height: 46px;
+  overflow: visible;
+}
+.ln-lane-plot line {
+  vector-effect: non-scaling-stroke;
+}
+.ln-held {
+  stroke: var(--neutral-depth);
+  stroke-width: 1.5;
+  stroke-linecap: butt;
+}
+.ln-gone {
+  stroke: var(--neutral-depth);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+  opacity: 0.45;
+}
+.ln-stopmark {
+  stroke: var(--neutral-depth);
+  stroke-width: 1.5;
+}
+.ln-key-line {
+  stroke: var(--neutral-depth);
+  stroke-width: 1.5;
+}
+.ln-t0.ln-held, .ln-t0.ln-key-line {
+  stroke-width: 1.2;
+  opacity: 0.5;
+}
+.ln-t0.ln-stopmark {
+  opacity: 0.5;
+}
+.ln-t1.ln-held, .ln-t1.ln-key-line {
+  stroke-width: 1.7;
+  opacity: 0.85;
+}
+.ln-t1.ln-stopmark {
+  opacity: 0.85;
+}
+.ln-t2.ln-held, .ln-t2.ln-key-line {
+  stroke: var(--rail);
+  stroke-width: 3;
+}
+.ln-t2.ln-stopmark {
+  stroke: var(--rail);
+}
 .ln-axis {
   position: relative;
   height: 1.5em;
@@ -3587,12 +4816,18 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.56rem;
   letter-spacing: 0.12em;
 }
-.ln-axis-mark { position: absolute; top: 0; white-space: nowrap; transform: translateX(-50%); }
-/* The outer two would hang off the plot if they were centred like the rest. */
-.ln-axis-mark:first-child { transform: none; }
-.ln-axis-mark:last-child { transform: translateX(-100%); }
-
-/* -- The count, which is what the old chart ended on ------------------------ */
+.ln-axis-mark {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.ln-axis-mark:first-child {
+  transform: none;
+}
+.ln-axis-mark:last-child {
+  transform: translateX(-100%);
+}
 .ln-score {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3601,7 +4836,13 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   border-top: 1px solid var(--border);
   padding-top: clamp(18px, 2.2vw, 26px);
 }
-.ln-score-item { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 8px; margin: 0; }
+.ln-score-item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  margin: 0;
+}
 .ln-score-value {
   color: var(--neutral-depth);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -3611,62 +4852,94 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.04em;
   line-height: 1;
 }
-.ln-score-of { color: var(--label); font-size: 0.8rem; }
-.ln-score-name { flex: 1 0 100%; margin-top: 8px; color: var(--label); font-size: 0.62rem; letter-spacing: 0.11em; text-transform: uppercase; }
-.ln-score-item.is-lead .ln-score-value { color: var(--rail); }
-.ln-score-item.is-lead .ln-score-name { color: var(--ink); }
-
-.ln-note { max-width: 62ch; margin: clamp(26px, 3.2vw, 42px) 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.62; }
-
-@media (max-width: 860px) {
-  /* The lane name moves above its own plot: a label column beside the plot
-     leaves it too narrow to show where a track stops. */
-  .ln-lane { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 6px; padding: clamp(12px, 3vw, 16px) 0; }
-  .ln-lane-plot { height: 40px; }
-  /* The label column is gone, so the overlay and the axis both start at the
-     lane own left edge. */
-  .ln-head { left: 0; }
-  .ln-axis { margin-left: 0; }
-  .ln-score { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .ln-score-name { flex: 1 1 auto; margin-top: 0; }
+.ln-score-of {
+  color: var(--label);
+  font-size: 0.8rem;
 }
-
-/* -- 02 Four readings of one page -------------------------------------------
-   Deliberately the inverse of the section above it. That one is wide, sparse,
-   on a light band, and sweeps left to right while one whole thing comes apart
-   over six months. This one is centred, dense, on a deep band, anchored to a
-   real product export, and gathers four separate readings inward onto a single
-   thread. Same vocabulary, opposite motion.
-
-   The export already carries its own dark ground, close to the band it sits on,
-   so the picture reads as part of the page rather than as something pasted onto
-   it. No frame, no radius, no shadow: the only things drawn over it are four
-   markers and the thread that eventually joins them.
-   -------------------------------------------------------------------------- */
-.rv { margin: var(--s-block) 0 0; }
-
+.ln-score-name {
+  flex: 1 0 100%;
+  margin-top: 8px;
+  color: var(--label);
+  font-size: 0.62rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+.ln-score-item.is-lead .ln-score-value {
+  color: var(--rail);
+}
+.ln-score-item.is-lead .ln-score-name {
+  color: var(--ink);
+}
+.ln-note {
+  max-width: 62ch;
+  margin: clamp(26px, 3.2vw, 42px) 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.62;
+}
+@media (max-width: 860px) {
+  .ln-lane {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 6px;
+    padding: clamp(12px, 3vw, 16px) 0;
+  }
+  .ln-lane-plot {
+    height: 40px;
+  }
+  .ln-head {
+    left: 0;
+  }
+  .ln-axis {
+    margin-left: 0;
+  }
+  .ln-score {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .ln-score-name {
+    flex: 1 1 auto;
+    margin-top: 0;
+  }
+}
+.rv {
+  margin: var(--s-block) 0 0;
+}
 .rv-stage {
   display: grid;
   grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr);
   align-items: start;
   gap: clamp(26px, 3.6vw, 58px);
 }
-
-/* -- The page everyone is reading ------------------------------------------ */
-.rv-shot { min-width: 0; }
-/* The ratio is reserved before the picture arrives, so the markers never land
-   on a collapsed box and nothing shifts while it loads. */
-.rv-frame { position: relative; aspect-ratio: 1600 / 760; overflow: hidden; }
-.rv-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
-
-.rv-overlay { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-
-/* The four markers. Circles rather than strokes because they have to carry a
-   letter that ties them to the list beside the picture — that tie is what makes
-   leader lines unnecessary, and leader lines across a screenshot are what make
-   this kind of figure unreadable on a phone. */
-.rv-node-halo { fill: rgba(1, 31, 28, 0.72); stroke: rgba(234, 243, 240, 0.24); stroke-width: 1.5; }
-.rv-node-dot { fill: var(--rail); }
+.rv-shot {
+  min-width: 0;
+}
+.rv-frame {
+  position: relative;
+  aspect-ratio: 1600 / 760;
+  overflow: hidden;
+}
+.rv-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.rv-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.rv-node-halo {
+  fill: rgba(1, 31, 28, 0.72);
+  stroke: rgba(234, 243, 240, 0.24);
+  stroke-width: 1.5;
+}
+.rv-node-dot {
+  fill: var(--rail);
+}
 .rv-node-key {
   fill: #f6fbf9;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -3674,8 +4947,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-weight: 620;
   text-anchor: middle;
 }
-
-/* The gather. The only secondary on the band, and it arrives last. */
 .rv-thread {
   stroke: var(--yellow);
   stroke-width: 2;
@@ -3683,7 +4954,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   stroke-linejoin: round;
   opacity: 0.85;
 }
-
 .rv-shot-note {
   margin: 10px 0 0;
   border-top: 1px solid rgba(234, 243, 240, 0.14);
@@ -3693,9 +4963,11 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
-/* -- What each of them keyed on -------------------------------------------- */
-.rv-list { margin: 0; padding: 0; list-style: none; }
+.rv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .rv-row {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
@@ -3706,12 +4978,21 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   opacity: 1;
   transition: opacity 460ms ease;
 }
-.rv-list .rv-row:last-child { border-bottom: 1px solid rgba(234, 243, 240, 0.14); }
-/* Dimming is what the effect adds. The markup ships every row lit, so a reader
-   without JS gets four legible rows rather than four faint ones. */
-.rv-row.is-dim { opacity: 0.32; }
-.rv-row-key { color: var(--yellow); font-size: 0.78rem; font-weight: 620; }
-.rv-row-body { display: block; min-width: 0; }
+.rv-list .rv-row:last-child {
+  border-bottom: 1px solid rgba(234, 243, 240, 0.14);
+}
+.rv-row.is-dim {
+  opacity: 0.32;
+}
+.rv-row-key {
+  color: var(--yellow);
+  font-size: 0.78rem;
+  font-weight: 620;
+}
+.rv-row-body {
+  display: block;
+  min-width: 0;
+}
 .rv-row-read {
   display: block;
   color: #f6fbf9;
@@ -3729,8 +5010,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
-
-/* -- The acts, and the residue --------------------------------------------- */
 .rv-marks {
   display: flex;
   flex-wrap: wrap;
@@ -3743,10 +5022,16 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
-.rv-mark { color: rgba(234, 243, 240, 0.72); transition: color 420ms ease; }
-.rv-marks .rv-mark:last-child { color: var(--yellow); }
-.rv-mark.is-dim, .rv-marks .rv-mark:last-child.is-dim { color: rgba(234, 243, 240, 0.26); }
-
+.rv-mark {
+  color: rgba(234, 243, 240, 0.72);
+  transition: color 420ms ease;
+}
+.rv-marks .rv-mark:last-child {
+  color: var(--yellow);
+}
+.rv-mark.is-dim, .rv-marks .rv-mark:last-child.is-dim {
+  color: rgba(234, 243, 240, 0.26);
+}
 .rv-note {
   max-width: 62ch;
   margin: clamp(24px, 3.2vw, 40px) 0 0;
@@ -3754,43 +5039,45 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.96rem;
   line-height: 1.68;
 }
-
 @media (max-width: 900px) {
-  /* The list drops under the picture. The letters are what tie a row to its
-     marker, so nothing is lost by separating the two. */
-  .rv-stage { grid-template-columns: minmax(0, 1fr); gap: clamp(18px, 4vw, 28px); }
-  .rv-node-key { font-size: 30px; }
-  .rv-thread { stroke-width: 3; }
-  .rv-marks { justify-content: flex-start; gap: 8px 16px; }
+  .rv-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(18px, 4vw, 28px);
+  }
+  .rv-node-key {
+    font-size: 30px;
+  }
+  .rv-thread {
+    stroke-width: 3;
+  }
+  .rv-marks {
+    justify-content: flex-start;
+    gap: 8px 16px;
+  }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  /* Neither effect runs, so both authored states stand: every track drawn to
-     its own end with the playhead parked at month six, and the picture whole
-     with all four markers showing and the thread drawn. */
-  .ln-stopmark { opacity: 1; }
-  .rv-frame { clip-path: none !important; }
-  .rv-node { opacity: 1 !important; visibility: visible !important; transform: none !important; }
-  .rv-thread { stroke-dashoffset: 0 !important; }
-  .rv-row { opacity: 1 !important; }
+  .ln-stopmark {
+    opacity: 1;
+  }
+  .rv-frame {
+    clip-path: none !important;
+  }
+  .rv-node {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+  .rv-thread {
+    stroke-dashoffset: 0 !important;
+  }
+  .rv-row {
+    opacity: 1 !important;
+  }
 }
-
-
-/* -- 03 One file, two policies ----------------------------------------------
-   A third geometry rather than a third instance of one. 01 runs horizontally
-   across time and comes apart; 02 is centred on a product export and gathers
-   inward; this descends and divides.
-
-   The deal's own facts hold the centre column the whole way down while the two
-   policy paths kink outward in the margins — the file never moves, the policies
-   do. Paths and text never share space: the outer sixth of the width on each
-   side is path band only, and every column inside that is type only.
-   -------------------------------------------------------------------------- */
-/* One column template for the whole figure. The heads, every criterion row and
-   the two outcomes all sit on it, which is what lets a lender's conclusion land
-   directly beneath that lender's own column of thresholds. */
-.pd { --pd-cols: 16% minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr) 16%; margin: var(--s-block) 0 0; }
-
+.pd {
+  --pd-cols: 16% minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr) 16%;
+  margin: var(--s-block) 0 0;
+}
 .pd-heads {
   display: grid;
   grid-template-columns: var(--pd-cols);
@@ -3801,31 +5088,57 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.pd-head-a { grid-column: 2; }
-.pd-head-file { grid-column: 3; justify-self: center; color: var(--rail); }
-.pd-head-b { grid-column: 4; text-align: right; }
-
-/* The rows are laid out in exactly the pixel values the SVG uses as viewBox
-   units, so a tick authored at a row's centre lands on that row's centre. Break
-   that and the diagram silently drifts out of register with its own labels. */
+.pd-head-a {
+  grid-column: 2;
+}
+.pd-head-file {
+  grid-column: 3;
+  justify-self: center;
+  color: var(--rail);
+}
+.pd-head-b {
+  grid-column: 4;
+  text-align: right;
+}
 .pd-body {
   position: relative;
   height: calc(var(--pd-head) + var(--pd-rows) * var(--pd-row) + var(--pd-foot));
 }
-.pd-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.pd-lines path, .pd-lines line { vector-effect: non-scaling-stroke; }
-
-.pd-path { stroke: var(--neutral-depth); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.pd-tick { stroke: var(--neutral-depth); stroke-width: 2.4; transition: opacity 260ms ease; }
-/* Arming is added by the effect, so the server-rendered diagram is complete and
-   only a browser that is actually going to animate ever hides anything. */
-.pd[data-armed] .pd-tick { opacity: 0; }
-.pd[data-armed] .pd-tick.is-on { opacity: 1; }
-/* An exception is the only state worth colouring: it is the one a human has to
-   resolve, and it is what this whole page is about keeping visible. */
-.pd-tick.is-exception { stroke: var(--rail); stroke-width: 3.4; }
-.pd-tick.is-fail { stroke: var(--neutral-depth); stroke-width: 1.2; }
-
+.pd-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.pd-lines path, .pd-lines line {
+  vector-effect: non-scaling-stroke;
+}
+.pd-path {
+  stroke: var(--neutral-depth);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.pd-tick {
+  stroke: var(--neutral-depth);
+  stroke-width: 2.4;
+  transition: opacity 260ms ease;
+}
+.pd[data-armed] .pd-tick {
+  opacity: 0;
+}
+.pd[data-armed] .pd-tick.is-on {
+  opacity: 1;
+}
+.pd-tick.is-exception {
+  stroke: var(--rail);
+  stroke-width: 3.4;
+}
+.pd-tick.is-fail {
+  stroke: var(--neutral-depth);
+  stroke-width: 1.2;
+}
 .pd-rows {
   position: relative;
   z-index: 1;
@@ -3842,20 +5155,44 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   opacity: 1;
   transition: opacity 460ms ease;
 }
-.pd-rows .pd-row:last-child { border-bottom: 1px solid var(--border); }
-/* Dimming is what the effect adds; the markup ships every row legible. */
-.pd-row.is-dim { opacity: 0.3; }
-
-.pd-side { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.pd-side-a { grid-column: 2; }
-.pd-side-b { grid-column: 4; text-align: right; }
-.pd-rule { color: var(--muted); font-size: clamp(0.8rem, 0.92vw, 0.9rem); line-height: 1.3; }
-.pd-verdict { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; }
-.pd-verdict.is-pass { color: var(--label); }
-.pd-verdict.is-exception { color: var(--rail); }
-.pd-verdict.is-fail { color: var(--neutral-depth); }
-
-/* The constant. Everything else on the row is policy; this is the file. */
+.pd-rows .pd-row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+.pd-row.is-dim {
+  opacity: 0.3;
+}
+.pd-side {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.pd-side-a {
+  grid-column: 2;
+}
+.pd-side-b {
+  grid-column: 4;
+  text-align: right;
+}
+.pd-rule {
+  color: var(--muted);
+  font-size: clamp(0.8rem, 0.92vw, 0.9rem);
+  line-height: 1.3;
+}
+.pd-verdict {
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.pd-verdict.is-pass {
+  color: var(--label);
+}
+.pd-verdict.is-exception {
+  color: var(--rail);
+}
+.pd-verdict.is-fail {
+  color: var(--neutral-depth);
+}
 .pd-fact {
   grid-column: 3;
   display: flex;
@@ -3865,33 +5202,31 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding-inline: clamp(12px, 2vw, 30px);
   text-align: center;
 }
-.pd-crit { color: var(--label); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; }
-.pd-value { color: var(--ink); font-size: clamp(0.95rem, 1.15vw, 1.1rem); font-weight: 560; letter-spacing: -0.02em; overflow-wrap: anywhere; }
-
-/* Was two equal halves spanning the full width, which put Lender A's conclusion
-   hard against the left edge and Lender B's against the right — neither lined up
-   with anything above them. On the shared template each one sits in its own
-   lender's column instead. */
-/* The leaves.
-
-   They sit on the figure's shared column template so each conclusion lands under
-   its own lender's thresholds. And they carry the rule a branch terminates on:
-   the diagram's last coordinate is the outer edge of one of these columns, and a
-   zero top margin is load-bearing for that — it keeps the rule flush against the
-   bottom of the plot, so the line meets it exactly instead of pointing at a gap. */
-/* The footer has its own proportions rather than the table's. Borrowing the
-   five-column template put each conclusion in a narrow inner column and left
-   about half the width empty — dead margins outside both and a dead centre
-   between them. Two halves and a slim gutter fill it, and the branches land on
-   the outer tip of each rule. */
+.pd-crit {
+  color: var(--label);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.pd-value {
+  color: var(--ink);
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
 .pd-outcomes {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(40px, 6vw, 104px) minmax(0, 1fr);
   align-items: start;
   margin: 0;
 }
-.pd-outcome-a { grid-column: 1; }
-.pd-outcome-b { grid-column: 3; }
+.pd-outcome-a {
+  grid-column: 1;
+}
+.pd-outcome-b {
+  grid-column: 3;
+}
 .pd-outcome {
   display: flex;
   flex-direction: column;
@@ -3902,21 +5237,35 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   transition: opacity 500ms ease, transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
     border-color 500ms ease;
 }
-/* A branch has just landed on this rule, so it reads as arrival rather than as
-   one more divider. */
-.pd-outcome.is-on { border-top-color: var(--rail); }
-.pd[data-armed] .pd-outcome { opacity: 0; transform: translateY(14px); }
-.pd[data-armed] .pd-outcome.is-on { opacity: 1; transform: none; }
-.pd[data-armed] .pd-outcome-b { transition-delay: 90ms; }
-.pd-outcome-b { text-align: right; }
-.pd-outcome-who { color: var(--rail); font-size: 0.6rem; letter-spacing: 0.13em; text-transform: uppercase; }
-.pd-outcome-text { color: var(--ink); font-size: clamp(0.95rem, 1.15vw, 1.08rem); line-height: 1.45; letter-spacing: -0.016em; }
-
-/* Indented to the same 16% the criterion text starts at, so the closing note
-   reads as part of the figure rather than as loose copy hanging off its left
-   edge. */
-/* The closing row: the reconciliation on the left, the next step on the right.
-   The note on its own left the whole right-hand side of the footer empty. */
+.pd-outcome.is-on {
+  border-top-color: var(--rail);
+}
+.pd[data-armed] .pd-outcome {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.pd[data-armed] .pd-outcome.is-on {
+  opacity: 1;
+  transform: none;
+}
+.pd[data-armed] .pd-outcome-b {
+  transition-delay: 90ms;
+}
+.pd-outcome-b {
+  text-align: right;
+}
+.pd-outcome-who {
+  color: var(--rail);
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.pd-outcome-text {
+  color: var(--ink);
+  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
+  line-height: 1.45;
+  letter-spacing: -0.016em;
+}
 .pd-foot {
   display: flex;
   align-items: flex-end;
@@ -3931,9 +5280,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.92rem;
   line-height: 1.62;
 }
-/* The same gesture as the closing link on the deep bands — text, arrow, and a
-   nudge on hover — retoned for a light surface. The rule is drawn on hover
-   rather than held, so the row stays quiet until it is wanted. */
 .pd-cta {
   display: inline-flex;
   flex: none;
@@ -3947,17 +5293,29 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   white-space: nowrap;
   transition: color 260ms ease, border-color 260ms ease;
 }
-.pd-cta svg { transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1); }
-.pd-cta:hover { color: var(--ink); border-bottom-color: currentColor; }
-.pd-cta:hover svg { transform: translate(3px, -3px); }
-
+.pd-cta svg {
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pd-cta:hover {
+  color: var(--ink);
+  border-bottom-color: currentColor;
+}
+.pd-cta:hover svg {
+  transform: translate(3px, -3px);
+}
 @media (max-width: 860px) {
-  /* The diagram goes. Two paths kinking apart inside a 360px column says
-     nothing, and the criteria carry the argument on their own. */
-  .pd-heads { display: none; }
-  .pd-lines { display: none; }
-  .pd-body { height: auto; }
-  .pd-rows { padding-top: 0; }
+  .pd-heads {
+    display: none;
+  }
+  .pd-lines {
+    display: none;
+  }
+  .pd-body {
+    height: auto;
+  }
+  .pd-rows {
+    padding-top: 0;
+  }
   .pd-row {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: start;
@@ -3965,39 +5323,41 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
     gap: 10px clamp(14px, 4vw, 24px);
     padding: clamp(16px, 4vw, 22px) 0;
   }
-  /* The fact leads, then the two policies read against it side by side. */
-  .pd-fact { grid-column: 1 / -1; padding-inline: 0; text-align: left; }
-  .pd-side-a { grid-column: 1; }
-  .pd-side-b { grid-column: 2; text-align: right; }
-  .pd-outcomes { grid-template-columns: minmax(0, 1fr); gap: 22px; margin-top: 26px; }
-  .pd-outcome-a, .pd-outcome-b { grid-column: 1; }
-  .pd-outcome-b { text-align: left; }
-  /* Stacked: a nowrap link and a paragraph will not share a phone's width. */
-  .pd-foot { flex-direction: column; align-items: flex-start; gap: 22px; }
-  /* The text alone is a 26px target. The project floor for a tap is 44. */
-  .pd-cta { min-height: 44px; }
+  .pd-fact {
+    grid-column: 1 / -1;
+    padding-inline: 0;
+    text-align: left;
+  }
+  .pd-side-a {
+    grid-column: 1;
+  }
+  .pd-side-b {
+    grid-column: 2;
+    text-align: right;
+  }
+  .pd-outcomes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    margin-top: 26px;
+  }
+  .pd-outcome-a, .pd-outcome-b {
+    grid-column: 1;
+  }
+  .pd-outcome-b {
+    text-align: left;
+  }
+  .pd-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+  }
+  .pd-cta {
+    min-height: 44px;
+  }
 }
-
-
-/* -- 04 When the file changes -----------------------------------------------
-   This section performs the re-run rather than describing it.
-
-   The first version was a product view across the top with two columns of prose
-   underneath — the brochure pattern, where the picture sits being looked at
-   while the words work somewhere else. What replaced it is the delta the product
-   itself produces: every signal, its value at version one, its value at version
-   two, and what moved. The figures count from old to new as the version stamp
-   flips, which is motion answering the one question the section exists to answer.
-
-   Argument first, proof second. The export comes after the table, not before it,
-   so the section opens on the thing that moves rather than on a static image.
-
-   A real table, because this is genuinely two versions compared row by row.
-   Ruled with hairlines, never boxed.
-   -------------------------------------------------------------------------- */
-.fr { margin: var(--s-block) 0 0; }
-
-/* -- Which pass you are looking at ----------------------------------------- */
+.fr {
+  margin: var(--s-block) 0 0;
+}
 .fr-versions {
   display: flex;
   flex-wrap: wrap;
@@ -4006,21 +5366,48 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   padding: 0;
   list-style: none;
 }
-.fr-stamp { display: flex; flex-direction: column; gap: 5px; opacity: 0.42; transition: opacity 460ms ease; }
-.fr-stamp.is-live { opacity: 1; }
-.fr-stamp-label { color: var(--label); font-size: 0.64rem; letter-spacing: 0.13em; text-transform: uppercase; transition: color 460ms ease; }
-.fr-stamp.is-live .fr-stamp-label { color: var(--rail); }
-.fr-stamp-note { color: var(--muted); font-size: 0.86rem; line-height: 1.4; }
-
-/* -- The delta -------------------------------------------------------------- */
-/* Fixed layout with declared column widths. Left to itself the signal column
-   absorbed every spare pixel, which pushed the names to the far right of a very
-   wide cell and left the whole left-hand side of the table empty. */
-.fr-delta { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.fr-delta col.fr-c-signal { width: 44%; }
-.fr-delta col.fr-c-was { width: 15%; }
-.fr-delta col.fr-c-now { width: 19%; }
-.fr-delta col.fr-c-moved { width: 22%; }
+.fr-stamp {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  opacity: 0.42;
+  transition: opacity 460ms ease;
+}
+.fr-stamp.is-live {
+  opacity: 1;
+}
+.fr-stamp-label {
+  color: var(--label);
+  font-size: 0.64rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transition: color 460ms ease;
+}
+.fr-stamp.is-live .fr-stamp-label {
+  color: var(--rail);
+}
+.fr-stamp-note {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+.fr-delta {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.fr-delta col.fr-c-signal {
+  width: 44%;
+}
+.fr-delta col.fr-c-was {
+  width: 15%;
+}
+.fr-delta col.fr-c-now {
+  width: 19%;
+}
+.fr-delta col.fr-c-moved {
+  width: 22%;
+}
 .fr-delta thead th {
   border-bottom: 1px solid var(--border);
   padding: 0 0 clamp(10px, 1.2vw, 14px);
@@ -4032,18 +5419,17 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   text-align: right;
   text-transform: uppercase;
 }
-.fr-delta thead th:first-child { text-align: left; }
-
-.fr-row { border-bottom: 1px solid var(--border); }
+.fr-delta thead th:first-child {
+  text-align: left;
+}
+.fr-row {
+  border-bottom: 1px solid var(--border);
+}
 .fr-row td, .fr-row th {
   padding: clamp(14px, 1.7vw, 21px) 0;
   text-align: right;
   vertical-align: baseline;
 }
-
-/* Scoped to out-specify `.fr-row th`, which sets every cell right. Without the
-   extra class the signal name inherited that and sat at the far edge of its own
-   column with nothing to its left. */
 .fr-row th.fr-signal {
   color: var(--ink);
   font-size: clamp(0.94rem, 1.1vw, 1.04rem);
@@ -4051,17 +5437,20 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: -0.016em;
   text-align: left;
 }
-
-/* Both figures are mono and tabular so the column cannot jitter while a value is
-   counting — the whole effect falls apart if the digits change width. */
 .fr-prev, .fr-num {
   font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
-.fr-prev { color: var(--neutral-depth); font-size: clamp(0.92rem, 1.1vw, 1.02rem); }
-.fr-num { color: var(--ink); font-size: clamp(1.02rem, 1.35vw, 1.24rem); font-weight: 620; }
-
+.fr-prev {
+  color: var(--neutral-depth);
+  font-size: clamp(0.92rem, 1.1vw, 1.02rem);
+}
+.fr-num {
+  color: var(--ink);
+  font-size: clamp(1.02rem, 1.35vw, 1.24rem);
+  font-weight: 620;
+}
 .fr-moved {
   color: var(--label);
   font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -4070,22 +5459,34 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   text-transform: uppercase;
   white-space: nowrap;
 }
-/* The only colour in the table. Every row here moved in the borrower's favour,
-   which is a property of this particular file rather than a claim about the
-   product, so it stays a quiet rail green and not a success green. */
-.fr-moved.is-up { color: var(--rail); }
-
-/* Armed by the effect, so the server-rendered table is already settled. */
-.fr[data-armed] .fr-row { opacity: 0; transform: translateY(10px); }
-.fr-row { transition: opacity 460ms ease, transform 460ms cubic-bezier(0.16, 1, 0.3, 1); }
-.fr[data-armed] .fr-row.is-on { opacity: 1; transform: none; }
-
-/* -- The proof -------------------------------------------------------------- */
-.fr-shot { margin: clamp(34px, 4.2vw, 60px) 0 0; }
-/* Ratio reserved before the picture arrives, so nothing shifts as it loads and
-   the wipe has a stable box to clip against. */
-.fr-frame { position: relative; aspect-ratio: 1600 / 760; overflow: hidden; }
-.fr-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.fr-moved.is-up {
+  color: var(--rail);
+}
+.fr[data-armed] .fr-row {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fr-row {
+  transition: opacity 460ms ease, transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fr[data-armed] .fr-row.is-on {
+  opacity: 1;
+  transform: none;
+}
+.fr-shot {
+  margin: clamp(34px, 4.2vw, 60px) 0 0;
+}
+.fr-frame {
+  position: relative;
+  aspect-ratio: 1600 / 760;
+  overflow: hidden;
+}
+.fr-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .fr-caption {
   margin: 10px 0 0;
   border-top: 1px solid var(--border);
@@ -4095,7 +5496,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
 .fr-note {
   max-width: 66ch;
   margin: clamp(30px, 3.6vw, 50px) 0 0;
@@ -4103,13 +5503,18 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.92rem;
   line-height: 1.62;
 }
-
 @media (max-width: 860px) {
-  /* Four columns will not fit a phone, so each row becomes a small block: the
-     signal on its own line, then was / now / moved beneath it. The header row
-     goes, since each cell carries its own label here. */
-  .fr-delta thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
-  .fr-delta, .fr-delta tbody, .fr-row { display: block; width: 100%; }
+  .fr-delta thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .fr-delta, .fr-delta tbody, .fr-row {
+    display: block;
+    width: 100%;
+  }
   .fr-row {
     display: grid;
     grid-template-columns: auto auto minmax(0, 1fr);
@@ -4117,37 +5522,45 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
     gap: 6px 14px;
     padding: clamp(15px, 4vw, 20px) 0;
   }
-  .fr-row td, .fr-row th { padding: 0; text-align: left; }
-  .fr-row th.fr-signal { grid-column: 1 / -1; text-align: left; }
-  .fr-prev::after { content: " \\2192"; color: var(--neutral-depth); }
-  .fr-moved { justify-self: end; }
+  .fr-row td, .fr-row th {
+    padding: 0;
+    text-align: left;
+  }
+  .fr-row th.fr-signal {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+  .fr-prev::after {
+    content: " \\2192";
+    color: var(--neutral-depth);
+  }
+  .fr-moved {
+    justify-self: end;
+  }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  /* The effect never runs, so the authored state stands: every figure already at
-     its version-two value and the picture whole. */
-  .fr-row { opacity: 1 !important; transform: none !important; }
-  .fr-frame { clip-path: none !important; }
-  .fr-stamp { opacity: 1; }
+  .fr-row {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .fr-frame {
+    clip-path: none !important;
+  }
+  .fr-stamp {
+    opacity: 1;
+  }
 }
-
-/* -- 05 What it will not do -------------------------------------------------
-   No diagram. Three graphic sections precede this one, and a fourth would have
-   made the page monotonous however good it was — rhythm comes from varying
-   density and tone, not from repeating the strongest idea.
-
-   The one drawn element is the rule that strikes each assumption out, which is
-   how this stays part of a page built from strokes while changing register
-   completely: the line draws through a sentence instead of through data.
-   -------------------------------------------------------------------------- */
-.bd { --bd-idx: clamp(30px, 3.2vw, 46px); --bd-gap: clamp(18px, 2.8vw, 52px); margin: var(--s-block) 0 0; }
-
-/* The boundary. One continuous hairline the height of the list, present from the
-   first frame — a limit is not something that gets drawn while you watch, and
-   this is the only section on the page whose defining mark does not animate.
-   Its x is the exact middle of the gap between the claim and answer columns,
-   derived from the same two custom properties the grid uses. */
-.bd-list { position: relative; margin: 0; padding: 0; list-style: none; }
+.bd {
+  --bd-idx: clamp(30px, 3.2vw, 46px);
+  --bd-gap: clamp(18px, 2.8vw, 52px);
+  margin: var(--s-block) 0 0;
+}
+.bd-list {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .bd-list::before {
   position: absolute;
   top: 0;
@@ -4157,9 +5570,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   background: rgba(234, 243, 240, 0.3);
   content: "";
 }
-
-/* Assumption on the left pressing against the line, correction on the right.
-   Nothing crosses it. */
 .bd-row {
   display: grid;
   grid-template-columns: var(--bd-idx) minmax(0, 1fr) minmax(0, 1fr);
@@ -4168,8 +5578,9 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   border-top: 1px solid rgba(234, 243, 240, 0.14);
   padding: clamp(26px, 3.6vw, 48px) 0;
 }
-.bd-list .bd-row:last-child { border-bottom: 1px solid rgba(234, 243, 240, 0.14); }
-
+.bd-list .bd-row:last-child {
+  border-bottom: 1px solid rgba(234, 243, 240, 0.14);
+}
 .bd-index {
   grid-column: 1;
   color: rgba(234, 243, 240, 0.34);
@@ -4177,9 +5588,15 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   letter-spacing: 0.13em;
   transition: color 620ms ease;
 }
-.bd-row.is-struck .bd-index { color: var(--yellow); }
-
-.bd-claim { position: relative; grid-column: 2; margin: 0; text-align: right; }
+.bd-row.is-struck .bd-index {
+  color: var(--yellow);
+}
+.bd-claim {
+  position: relative;
+  grid-column: 2;
+  margin: 0;
+  text-align: right;
+}
 .bd-claim-text {
   color: #f6fbf9;
   font-size: clamp(1.5rem, 3.3vw, 2.85rem);
@@ -4188,28 +5605,16 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   line-height: 1.08;
   text-wrap: balance;
 }
-
-/* The section's whole idea in one typographic move: the thing people believe is
-   literally hollow, and the correction beneath it is the only solid text on the
-   row. Reuses the outlined-numeral treatment the design system already has
-   rather than importing a new one.
-
-   Guarded, because without text-stroke a transparent fill is invisible type
-   rather than outline type. */
 @supports (-webkit-text-stroke: 1px currentColor) {
   .bd-claim-text {
     color: transparent;
     -webkit-text-stroke: 1px rgba(234, 243, 240, 0.66);
     transition: -webkit-text-stroke-color 620ms ease;
   }
-  .bd-row.is-struck .bd-claim-text { -webkit-text-stroke-color: rgba(234, 243, 240, 0.26); }
+  .bd-row.is-struck .bd-claim-text {
+    -webkit-text-stroke-color: rgba(234, 243, 240, 0.26);
+  }
 }
-/* Sits on the text's own optical middle. Scaled from the left rather than drawn
-   with a dash array, so it stays a compositor transform.
-
-   It runs half the gutter past the claim column so it terminates exactly on the
-   boundary — the strike travels toward the line and is stopped by it, which is
-   the section's argument rendered as one piece of timing. */
 .bd-strike {
   position: absolute;
   top: 52%;
@@ -4220,7 +5625,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   transform: scaleX(1);
   transform-origin: left center;
 }
-
 .bd-answer {
   grid-column: 3;
   max-width: 46ch;
@@ -4229,7 +5633,6 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: clamp(0.95rem, 1.15vw, 1.06rem);
   line-height: 1.62;
 }
-
 .bd-note {
   max-width: 62ch;
   margin: clamp(30px, 3.6vw, 48px) 0 0;
@@ -4237,27 +5640,1023 @@ body:has(.article-header) .nav-use-cases a:hover { color: var(--ink); }
   font-size: 0.96rem;
   line-height: 1.66;
 }
-
 @media (max-width: 860px) {
-  /* Two columns either side of a boundary needs width neither side has here, so
-     the line goes and the rows stack. The strike still stops where the claim
-     ends, which is the same gesture at a smaller scale. */
-  .bd-list::before { display: none; }
-  .bd-row { grid-template-columns: minmax(0, 1fr); row-gap: 12px; }
-  .bd-index { display: none; }
-  .bd-claim, .bd-answer { grid-column: 1; }
-  .bd-claim { grid-row: 1; text-align: left; }
-  .bd-answer { grid-row: 2; max-width: none; }
-  .bd-strike { right: 0; }
+  .bd-list::before {
+    display: none;
+  }
+  .bd-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+  .bd-index {
+    display: none;
+  }
+  .bd-claim, .bd-answer {
+    grid-column: 1;
+  }
+  .bd-claim {
+    grid-row: 1;
+    text-align: left;
+  }
+  .bd-answer {
+    grid-row: 2;
+    max-width: none;
+  }
+  .bd-strike {
+    right: 0;
+  }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  /* Neither effect runs, so both authored states stand: every policy path drawn
-     with its verdicts showing, and every assumption already struck through. */
-  .pd-path { stroke-dashoffset: 0 !important; }
-  .pd-tick { opacity: 1 !important; visibility: visible !important; }
-  .pd-row, .pd-outcome { opacity: 1 !important; transform: none !important; }
-  .bd-strike { transform: scaleX(1) !important; }
-  .bd-claim, .bd-answer { opacity: 1 !important; transform: none !important; }
-  .bd-index { color: var(--yellow); }
+  .pd-path {
+    stroke-dashoffset: 0 !important;
+  }
+  .pd-tick {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  .pd-row, .pd-outcome {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bd-strike {
+    transform: scaleX(1) !important;
+  }
+  .bd-claim, .bd-answer {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bd-index {
+    color: var(--yellow);
+  }
+}
+.ig-grain {
+  position: fixed;
+  z-index: 2;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='150' height='150' filter='url(%23g)' opacity='0.42'/></svg>");
+  background-repeat: repeat;
+  opacity: 0.055;
+  pointer-events: none;
+}
+.ig-arrive,
+.ig-access {
+  overflow: hidden;
+}
+.ig-arrive::before,
+.ig-access::before {
+  position: absolute;
+  z-index: 0;
+  inset: -18% -12%;
+  content: "";
+  pointer-events: none;
+}
+.ig-arrive > *,
+.ig-access > * {
+  position: relative;
+  z-index: 1;
+}
+.ig-arrive::before {
+  background: radial-gradient(ellipse 46% 44% at 78% 12%, rgba(255, 239, 179, 0.5), transparent 66%),
+    radial-gradient(ellipse 52% 50% at 12% 78%, rgba(10, 92, 80, 0.09), transparent 68%);
+}
+.ig-access::before {
+  background: radial-gradient(ellipse 44% 46% at 14% 16%, rgba(10, 92, 80, 0.11), transparent 66%),
+    radial-gradient(ellipse 48% 44% at 88% 84%, rgba(255, 239, 179, 0.4), transparent 66%);
+}
+.pk {
+  --pk-unit: clamp(0.85px, 0.115vw, 1.55px);
+  --pk-depth: 13px;
+  margin: var(--s-block) 0 0;
+}
+.pk-field {
+  display: block;
+}
+.pk-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--soft-green, #edf5f3) 100%),
+    var(--surface);
+  box-shadow: 0 30px 70px rgba(1, 62, 55, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  padding: clamp(28px, 4vw, 52px) clamp(20px, 3.4vw, 46px) 0;
+}
+.pk-ambient {
+  position: absolute;
+  inset: -30% -10%;
+  background: radial-gradient(ellipse 44% 52% at 24% 18%, rgba(10, 92, 80, 0.09), transparent 62%),
+    radial-gradient(ellipse 40% 48% at 82% 34%, rgba(255, 239, 179, 0.34), transparent 64%);
+  animation: pkDrift 26s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
+}
+@keyframes pkDrift {
+  from {
+    transform: translate3d(-2%, -1.5%, 0);
+  }
+  to {
+    transform: translate3d(2.5%, 2%, 0);
+  }
+}
+.pk-key {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px circle at var(--px, 62%) var(--py, 30%), rgba(255, 239, 179, 0.4), transparent 68%);
+  opacity: 0.9;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.pk-readout {
+  position: relative;
+  z-index: 2;
+}
+.pk-readout-k {
+  margin: 0 0 4px;
+  color: var(--rail);
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.pk-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0;
+}
+.pk-figure-value {
+  min-width: 2ch;
+  color: var(--ink);
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.048em;
+  line-height: 0.86;
+}
+.pk-figure-unit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--label);
+  font-size: 0.84rem;
+}
+.pk-figure-pc {
+  border-left: 1px solid var(--border);
+  padding-left: 10px;
+  color: var(--rail);
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+}
+.pk-stacks {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-items: end;
+  gap: clamp(10px, 2.2vw, 34px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: clamp(26px, 4vw, 46px) 0 0;
+  padding: 0 0 clamp(18px, 2.4vw, 26px);
+  list-style: none;
+  min-height: calc(120 * var(--pk-unit) + 78px);
+}
+.pk-item {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+.pk-stack {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pk-stack:focus-visible {
+  outline: 3px solid var(--rail);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+.pk-paper {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(var(--pages) * var(--pk-unit));
+  min-height: 5px;
+  margin-bottom: calc(var(--pk-depth) + 12px);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1), filter 620ms ease;
+}
+.pk-edge {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(1, 62, 55, 0.22);
+  background: repeating-linear-gradient(180deg, rgba(1, 62, 55, 0.26) 0 1px, rgba(255, 255, 255, 0) 1px calc(100% / var(--pages))),
+    linear-gradient(180deg, #ffffff 0%, #eef4f1 100%);
+  box-shadow: 0 14px 26px rgba(1, 62, 55, 0.16), inset -6px 0 12px rgba(1, 62, 55, 0.05);
+  transition: box-shadow 620ms ease, border-color 500ms ease, background 500ms ease;
+}
+.pk-top {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: var(--pk-depth);
+  border: 1px solid rgba(1, 62, 55, 0.22);
+  border-bottom: 0;
+  background: linear-gradient(160deg, #ffffff 0%, #e7efec 100%);
+  transform: skewX(-45deg);
+  transform-origin: bottom left;
+  transition: background 500ms ease, border-color 500ms ease;
+}
+.pk-stack.is-live {
+  transform: translateY(-14px);
+}
+.pk-stack.is-live .pk-edge {
+  border-color: rgba(10, 92, 80, 0.55);
+  box-shadow: 0 30px 46px rgba(1, 62, 55, 0.24), 0 0 0 1px rgba(10, 92, 80, 0.12), inset -6px 0 14px rgba(1, 62, 55, 0.06);
+}
+.pk-stack.is-live .pk-top {
+  background: linear-gradient(160deg, #ffffff 0%, var(--yellow) 190%);
+  border-color: rgba(10, 92, 80, 0.5);
+}
+.pk-stack:hover:not(.is-live) {
+  transform: translateY(-6px);
+}
+.pk-stack:hover:not(.is-live) .pk-edge {
+  box-shadow: 0 20px 34px rgba(1, 62, 55, 0.2);
+}
+.pk-stacks:not(:hover) .pk-stack:not(.is-live) .pk-paper {
+  filter: saturate(0.9) brightness(0.985);
+}
+.pk-name {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: clamp(0.66rem, 0.85vw, 0.78rem);
+  letter-spacing: -0.008em;
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+  transition: color 400ms ease;
+}
+.pk-count {
+  margin-top: 3px;
+  color: var(--label);
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  transition: color 400ms ease;
+}
+.pk-stack.is-live .pk-name {
+  color: var(--ink);
+  font-weight: 560;
+}
+.pk-stack.is-live .pk-count {
+  color: var(--rail);
+}
+.pk-surface {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 78px;
+  background: linear-gradient(180deg, rgba(216, 230, 226, 0) 0%, rgba(216, 230, 226, 0.5) 32%, rgba(237, 245, 243, 0.9) 100%);
+  border-top: 1px solid var(--border);
+  pointer-events: none;
+}
+.pk.is-ready:not(.is-drawn) .pk-paper {
+  transform: scaleY(0.04);
+  transform-origin: bottom;
+}
+.pk.is-ready:not(.is-drawn) .pk-name,
+.pk.is-ready:not(.is-drawn) .pk-count {
+  opacity: 0;
+}
+.pk.is-ready.is-drawn .pk-paper {
+  transition-delay: calc(var(--pages) * 0ms + 60ms);
+}
+.pk-panels {
+  margin: clamp(26px, 3.4vw, 42px) 0 0;
+}
+.pk-panel-for {
+  margin: 0 0 10px;
+  color: var(--rail);
+  font-size: 0.6rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.pk.is-ready .pk-panel-for {
+  display: none;
+}
+.pk:not(.is-ready) .pk-panel + .pk-panel {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.pk.is-ready .pk-panel {
+  animation: pkPanel 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pkPanel {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pk-panel-summary {
+  max-width: 62ch;
+  margin: 0 0 clamp(16px, 2vw, 22px);
+  color: var(--ink);
+  font-size: clamp(1.04rem, 1.4vw, 1.3rem);
+  letter-spacing: -0.022em;
+  line-height: 1.48;
+  text-wrap: pretty;
+}
+.pk-reads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pk-read {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 13px;
+  background: var(--surface);
+  box-shadow: 0 2px 6px rgba(1, 62, 55, 0.05);
+  color: var(--muted);
+  font-size: 0.63rem;
+  letter-spacing: 0.07em;
+}
+.pk.is-ready .pk-panel.is-live .pk-read {
+  animation: pkRead 460ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i) * 55ms);
+}
+@keyframes pkRead {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.96);
+  }
+}
+.pk-shot {
+  margin: clamp(28px, 3.6vw, 46px) 0 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 1600 / 560;
+  box-shadow: 0 22px 50px rgba(1, 62, 55, 0.13);
+}
+.pk-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 84%;
+}
+.pk-caption {
+  margin: 11px 0 0;
+  color: var(--label);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hl {
+  margin: var(--s-block) 0 0;
+}
+.hl-field {
+  display: block;
+}
+.hl-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2vw, 26px);
+  margin-bottom: clamp(22px, 2.8vw, 32px);
+}
+.hl-seg {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid rgba(234, 243, 240, 0.24);
+  border-radius: 999px;
+  padding: 3px;
+  background: rgba(1, 42, 38, 0.6);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+.hl:not(.is-ready) .hl-seg {
+  display: none;
+}
+.hl-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--yellow);
+  box-shadow: 0 4px 14px rgba(255, 239, 179, 0.26);
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hl[data-mode="connected"] .hl-thumb {
+  transform: translateX(100%);
+}
+.hl-opt {
+  position: relative;
+  z-index: 1;
+  min-width: 118px;
+  min-height: 44px;
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgba(234, 243, 240, 0.66);
+  cursor: pointer;
+  font-size: 0.78rem;
+  transition: color 320ms ease;
+}
+.hl-opt:hover {
+  color: #f6fbf9;
+}
+.hl-opt.is-live {
+  color: var(--ink);
+}
+.hl-opt:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 4px;
+}
+.hl-caveat {
+  max-width: 44ch;
+  margin: 0;
+  color: rgba(234, 243, 240, 0.6);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.hl-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(234, 243, 240, 0.13);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(10, 92, 80, 0.16), rgba(1, 31, 28, 0.34));
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(234, 243, 240, 0.08);
+  padding: clamp(22px, 3vw, 34px) clamp(16px, 2.6vw, 32px) clamp(16px, 2.4vw, 26px);
+}
+.hl-ambient {
+  position: absolute;
+  inset: -28% -10%;
+  background: radial-gradient(ellipse 42% 50% at 20% 16%, rgba(10, 124, 106, 0.42), transparent 62%),
+    radial-gradient(ellipse 40% 46% at 84% 82%, rgba(255, 239, 179, 0.11), transparent 62%);
+  animation: pkDrift 24s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
+}
+.hl-key {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(380px circle at var(--px, 50%) var(--py, 24%), rgba(255, 239, 179, 0.11), transparent 70%);
+  pointer-events: none;
+}
+.hl-tally {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 clamp(14px, 1.8vw, 20px);
+  border-bottom: 1px solid rgba(234, 243, 240, 0.15);
+  padding-bottom: 14px;
+}
+.hl-tally-n {
+  color: #f6fbf9;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.hl-tally-hand {
+  color: var(--yellow);
+  text-shadow: 0 0 22px rgba(255, 239, 179, 0.3);
+}
+.hl-tally-l {
+  color: rgba(234, 243, 240, 0.55);
+  font-size: 0.78rem;
+}
+.hl-tally-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 5px;
+  background: rgba(234, 243, 240, 0.22);
+}
+.hl-log {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: hlstep;
+}
+.hl-step {
+  display: grid;
+  grid-template-rows: 1fr;
+  counter-increment: hlstep;
+  transition: grid-template-rows 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hl-step-inner {
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+}
+.hl-step-card {
+  display: grid;
+  align-items: baseline;
+  border: 1px solid rgba(234, 243, 240, 0.1);
+  border-radius: 12px;
+  margin-top: 7px;
+  background: rgba(234, 243, 240, 0.06);
+  box-shadow: 0 1px 0 rgba(234, 243, 240, 0.06) inset;
+  gap: clamp(10px, 1.5vw, 20px);
+  grid-template-columns: auto 6rem minmax(0, 1fr) auto;
+  padding: 14px clamp(13px, 1.6vw, 20px);
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1), opacity 420ms ease,
+    background 380ms ease, border-color 380ms ease;
+}
+.hl-step-card:hover {
+  background: rgba(234, 243, 240, 0.075);
+  border-color: rgba(234, 243, 240, 0.16);
+}
+.hl-step-no {
+  color: rgba(234, 243, 240, 0.34);
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+}
+.hl-step-no::before {
+  content: counter(hlstep, decimal-leading-zero);
+}
+.hl-step-actor {
+  color: rgba(234, 243, 240, 0.56);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hl-step-text {
+  color: rgba(234, 243, 240, 0.84);
+  font-size: 0.93rem;
+  line-height: 1.55;
+}
+.hl-step-flag {
+  align-self: center;
+  border: 1px solid rgba(255, 239, 179, 0.36);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(255, 239, 179, 0.08);
+  color: var(--yellow);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hl.is-ready .hl-step.is-manual .hl-step-card {
+  border-color: rgba(255, 239, 179, 0.2);
+  background: rgba(255, 239, 179, 0.05);
+}
+.hl.is-ready[data-mode="connected"] .hl-step.is-manual {
+  grid-template-rows: 0fr;
+  counter-increment: none;
+}
+.hl.is-ready[data-mode="connected"] .hl-step.is-manual .hl-step-card {
+  opacity: 0;
+  transform: translateY(-16px) scale(0.96);
+}
+.hl-close {
+  max-width: 64ch;
+  margin: clamp(20px, 2.4vw, 28px) 0 0;
+  color: rgba(234, 243, 240, 0.62);
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+.ac {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  margin: var(--s-block) 0 0;
+  background: linear-gradient(180deg, rgba(237, 245, 243, 0.72), rgba(251, 253, 252, 0.92));
+  box-shadow: inset 0 0 0 1px var(--border), inset 0 2px 22px rgba(1, 62, 55, 0.07);
+  padding: clamp(20px, 3vw, 38px) clamp(18px, 3vw, 40px) clamp(8px, 1.4vw, 16px);
+}
+.ac-glow {
+  position: absolute;
+  inset: -40% 46% -40% -14%;
+  background: radial-gradient(ellipse 50% 46% at 40% 50%, rgba(255, 239, 179, 0.4), transparent 68%);
+  pointer-events: none;
+}
+.ac-terms {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ac-terms thead th {
+  padding: 0 0 clamp(12px, 1.4vw, 16px);
+  text-align: left;
+}
+.ac-terms thead th:last-child {
+  padding-left: clamp(18px, 2.6vw, 42px);
+}
+.ac-h {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--rail);
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ac-h::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rail);
+  box-shadow: 0 0 0 3px rgba(10, 92, 80, 0.15);
+  content: "";
+}
+.ac-h-never {
+  color: var(--label);
+}
+.ac-h-never::before {
+  background: transparent;
+  border: 1px solid var(--neutral-depth);
+  box-shadow: none;
+}
+.ac-term {
+  transition: opacity 320ms ease;
+}
+.ac-term td {
+  position: relative;
+  padding: clamp(15px, 1.9vw, 22px) 0;
+  border-top: 1px solid var(--border);
+  font-size: clamp(0.94rem, 1.1vw, 1.04rem);
+  line-height: 1.45;
+  vertical-align: top;
+  transition: color 320ms ease, background 320ms ease;
+}
+.ac-asks {
+  padding-right: clamp(18px, 2.6vw, 42px) !important;
+  padding-left: 26px !important;
+  color: var(--ink);
+  letter-spacing: -0.016em;
+}
+.ac-asks::before {
+  position: absolute;
+  top: calc(clamp(15px, 1.9vw, 22px) + 0.52em);
+  left: 1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rail);
+  box-shadow: 0 0 0 3px rgba(10, 92, 80, 0.14);
+  content: "";
+  transition: box-shadow 320ms ease;
+}
+.ac-never {
+  padding-left: calc(clamp(18px, 2.6vw, 42px) + 26px) !important;
+  border-left: 1px solid rgba(10, 92, 80, 0.28);
+  background-color: rgba(1, 62, 55, 0.028);
+  background-image: repeating-linear-gradient(-45deg, rgba(1, 62, 55, 0.045) 0 1px, transparent 1px 7px);
+  box-shadow: -10px 0 22px -10px rgba(10, 92, 80, 0.3);
+  color: var(--muted);
+}
+.ac-never::before {
+  position: absolute;
+  top: calc(clamp(15px, 1.9vw, 22px) + 0.5em);
+  left: clamp(18px, 2.6vw, 42px);
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--neutral-depth);
+  border-radius: 50%;
+  content: "";
+}
+.ac-never::after {
+  position: absolute;
+  top: calc(clamp(15px, 1.9vw, 22px) + 0.5em + 4px);
+  left: clamp(18px, 2.6vw, 42px);
+  width: 11px;
+  height: 1px;
+  background: var(--neutral-depth);
+  content: "";
+  transform: rotate(-45deg);
+  transform-origin: center;
+}
+@media (hover: hover) {
+  .ac-terms tbody:hover .ac-term {
+    opacity: 0.42;
+  }
+  .ac-terms tbody:hover .ac-term:hover {
+    opacity: 1;
+  }
+  .ac-term:hover .ac-asks {
+    background: rgba(255, 239, 179, 0.3);
+  }
+  .ac-term:hover .ac-asks::before {
+    box-shadow: 0 0 0 5px rgba(10, 92, 80, 0.18);
+  }
+  .ac-term:hover .ac-never {
+    background-color: rgba(1, 62, 55, 0.055);
+    color: var(--ink);
+  }
+}
+.sc {
+  margin: var(--s-block) 0 0;
+}
+.sc-steps {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-rail {
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 21px;
+  width: 2px;
+  border-radius: 2px;
+  background: rgba(234, 243, 240, 0.14);
+}
+.sc-rail-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--yellow), rgba(255, 239, 179, 0.35));
+  box-shadow: 0 0 14px rgba(255, 239, 179, 0.4);
+  transform-origin: top;
+}
+.sc-step {
+  position: relative;
+  display: grid;
+  align-items: start;
+  gap: clamp(14px, 2vw, 24px);
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+.sc-step + .sc-step {
+  margin-top: clamp(18px, 2.4vw, 28px);
+}
+.sc-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(234, 243, 240, 0.18);
+  border-radius: 50%;
+  background: rgba(1, 31, 28, 0.9);
+  box-shadow: inset 0 1px 0 rgba(234, 243, 240, 0.08);
+  place-items: center;
+}
+.sc-node-glow {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(255, 239, 179, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 0 22px rgba(255, 239, 179, 0.22);
+  content: "";
+  opacity: 0;
+}
+.sc-node-n {
+  position: relative;
+  color: rgba(234, 243, 240, 0.6);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+.sc-card {
+  border: 1px solid rgba(234, 243, 240, 0.1);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(234, 243, 240, 0.055), rgba(234, 243, 240, 0.022));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(234, 243, 240, 0.06);
+  padding: clamp(17px, 2.2vw, 26px) clamp(18px, 2.4vw, 30px);
+  transition: border-color 420ms ease, background 420ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .sc-card:hover {
+    border-color: rgba(255, 239, 179, 0.26);
+    background: linear-gradient(180deg, rgba(234, 243, 240, 0.08), rgba(234, 243, 240, 0.03));
+    transform: translateY(-3px);
+  }
+}
+.sc-marker {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--yellow);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.sc-title {
+  margin: 0 0 10px;
+  color: #f6fbf9;
+  font-size: clamp(1.02rem, 1.4vw, 1.26rem);
+  font-weight: 500;
+  letter-spacing: -0.026em;
+  line-height: 1.24;
+  text-wrap: balance;
+}
+.sc-body {
+  max-width: 64ch;
+  margin: 0;
+  color: rgba(234, 243, 240, 0.72);
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+.sc-note {
+  max-width: 66ch;
+  margin: clamp(28px, 3.4vw, 46px) 0 0;
+  border-left: 2px solid rgba(255, 239, 179, 0.5);
+  padding-left: clamp(16px, 2vw, 22px);
+  color: var(--yellow);
+  font-size: 0.96rem;
+  line-height: 1.66;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sc-rail-fill {
+      animation: scFill linear both;
+      animation-timeline: view();
+      animation-range: cover 16% cover 68%;
+    }
+    @keyframes scFill {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+    .sc-step {
+      animation: scArrive linear both;
+      animation-timeline: view();
+      animation-range: entry 6% cover 30%;
+    }
+    @keyframes scArrive {
+      from {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    .sc-node-glow {
+      animation: scNode linear both;
+      animation-timeline: view();
+      animation-range: entry 14% cover 34%;
+    }
+    @keyframes scNode {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
+}
+@media (max-width: 900px) {
+  .pk {
+    --pk-unit: clamp(0.5px, 0.42vw, 0.9px);
+    --pk-depth: 8px;
+  }
+  .pk-stacks {
+    gap: 6px;
+    min-height: calc(120 * var(--pk-unit) + 92px);
+  }
+  .pk-name {
+    font-size: 0.58rem;
+  }
+  .pk-stage {
+    border-radius: 16px;
+  }
+  .hl-step-card {
+    gap: 4px 12px;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .hl-step-actor {
+    grid-column: 2;
+  }
+  .hl-step-text {
+    grid-column: 2;
+  }
+  .hl-step-flag {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 6px;
+  }
+  .ac-terms thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .ac-terms, .ac-terms tbody, .ac-term, .ac-term td {
+    display: block;
+    width: 100%;
+  }
+  .ac-term {
+    border-top: 1px solid var(--border);
+    padding: clamp(15px, 4vw, 20px) 0;
+  }
+  .ac-term td {
+    border-top: 0;
+    padding: 0 !important;
+  }
+  .ac-asks {
+    padding-left: 26px !important;
+  }
+  .ac-never {
+    margin-top: 9px;
+    border-left: 1px solid rgba(10, 92, 80, 0.28);
+    padding: 10px 12px 10px 38px !important;
+    box-shadow: none;
+    font-size: 0.9rem;
+  }
+  .ac-never::before {
+    top: 14px;
+    left: 14px;
+  }
+  .ac-never::after {
+    top: 18px;
+    left: 14px;
+  }
+  .ac-glow {
+    inset: -30% 30% 40% -20%;
+  }
+  .pk-shot {
+    aspect-ratio: auto;
+  }
+  .pk-shot img {
+    height: auto;
+    object-fit: fill;
+  }
+  .mm {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(22px, 5vw, 30px);
+  }
+  .mm-visual {
+    position: static;
+  }
+  .mm-finding {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .mm-source {
+    grid-row: auto;
+    grid-column: 1;
+    align-self: start;
+    margin-top: 6px;
+  }
+  .sc-step {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 14px;
+  }
+  .sc-node {
+    width: 36px;
+    height: 36px;
+  }
+  .sc-rail {
+    top: 18px;
+    bottom: 18px;
+    left: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-ambient, .hl-ambient {
+    animation: none !important;
+  }
+  .pk.is-ready:not(.is-drawn) .pk-paper {
+    transform: none !important;
+  }
+  .pk.is-ready:not(.is-drawn) .pk-name,
+  .pk.is-ready:not(.is-drawn) .pk-count {
+    opacity: 1 !important;
+  }
+  .pk-stack, .pk-paper, .pk-edge, .pk-top, .pk-key {
+    transition: none !important;
+  }
+  .pk.is-ready .pk-panel, .pk.is-ready .pk-panel.is-live .pk-read {
+    animation: none !important;
+  }
+  .hl-thumb, .hl-step, .hl-step-card {
+    transition: none !important;
+  }
 }

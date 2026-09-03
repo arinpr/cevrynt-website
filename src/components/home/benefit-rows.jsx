@@ -86,8 +86,8 @@ export function BenefitRows({ rows }) {
               <ProductShot
                 src={row.image}
                 alt={row.imageAlt}
-                width={1600}
-                height={1000}
+                width={row.imageWidth || 1600}
+                height={row.imageHeight || 1000}
                 label={row.caption}
                 sizes="(max-width: 860px) 88vw, 42vw"
                 parallax={false}
