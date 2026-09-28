@@ -82,10 +82,10 @@ pnpm dev:mobile     # listen on the LAN at port 3001 for device testing
 | Script | Purpose |
 | --- | --- |
 | `pnpm dev` | Local development server (no-cache headers, no stale content) |
-| `pnpm build` | Production Next.js build |
+| `pnpm build` | Production build: runs `next build`, then bundles the Cloudflare Worker into `.open-next/` |
+| `pnpm build:next` | Plain Next.js build only |
 | `pnpm start` | Serve the production build with Node |
 | `pnpm lint` | ESLint |
-| `pnpm cf:build` | Build the Cloudflare Worker bundle into `.open-next/` |
 | `pnpm preview` | Build for Workers and run it locally in the Workers runtime |
 | `pnpm run deploy` | Build for Workers and deploy to Cloudflare |
 | `pnpm run upload` | Build for Workers and upload a new version without promoting it |
@@ -133,7 +133,7 @@ Connect this repository under **Workers & Pages → Create → Import a reposito
 
 | Setting | Value |
 | --- | --- |
-| Build command | `pnpm run cf:build` |
+| Build command | `pnpm run build` |
 | Deploy command | `pnpm exec opennextjs-cloudflare deploy` |
 | Non-production branch deploy command | `pnpm exec opennextjs-cloudflare upload` |
 
