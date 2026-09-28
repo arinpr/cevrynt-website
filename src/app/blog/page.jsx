@@ -17,7 +17,7 @@ import { productViews, productViewOf } from "@/content/product-views";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 export const metadata = buildMetadata({
   path: "blog",
@@ -539,11 +539,11 @@ export default function BlogIndexPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="05"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="See what these articles look like on your own files."
           lede="If an article describes a problem your team knows well, a walkthrough shows how Cevrynt handles it — against your criteria, with your underwriters making every decision."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

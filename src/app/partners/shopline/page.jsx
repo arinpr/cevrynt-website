@@ -17,7 +17,7 @@ import { pageByPath } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("partners/shopline");
 
@@ -536,7 +536,7 @@ const readerRoutes = [
     means:
       "An example of how a development and referral partnership can be structured: workflow development and coordinated referrals, with every credit decision left with lenders.",
     not: "Not a programme to join or an integration to switch on. Any conversation starts from your own merchants, your permissions and the lenders involved.",
-    go: [{ label: "Talk to the founder", href: "mailto:arin@cevrynt.com", external: true }],
+    go: [{ label: "Talk to our team", href: "mailto:sales@cevrynt.com", external: true }],
   },
 ];
 
@@ -552,7 +552,7 @@ const readerReadout = {
   saidK: "Why the merchant's route ends at information",
   saidB: [
     "A page about a platform partnership is easy for a merchant to read as an invitation to apply. It is not one, and the kindest thing the page can do is say so before anybody fills in a form expecting funding.",
-    "Lenders and platforms get a conversation, because a walkthrough or a founder call is genuinely where their questions get answered. A merchant gets the FAQ and the explanation of how e-commerce files are reviewed — because the decision about their financing belongs to a lender, not to Cevrynt or SHOPLINE.",
+    "Lenders and platforms get a conversation, because a walkthrough or a call with the team is genuinely where their questions get answered. A merchant gets the FAQ and the explanation of how e-commerce files are reviewed — because the decision about their financing belongs to a lender, not to Cevrynt or SHOPLINE.",
   ],
 };
 
@@ -560,7 +560,7 @@ const readerAside = {
   title: "Who to contact, for what",
   items: [
     { k: "Walkthroughs", v: "Calendly" },
-    { k: "Partnership questions", v: "arin@cevrynt.com" },
+    { k: "Partnership questions", v: "sales@cevrynt.com" },
     { k: "Sales enquiries", v: "sales@cevrynt.com" },
     { k: "Funding applications", v: "Not taken" },
   ],
@@ -809,11 +809,11 @@ export default function ShoplinePartnerPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="07"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Ask what the partnership covers — and what it does not."
           lede="If you lend to e-commerce merchants and want to understand where this work is heading, we will walk you through what the partnership documents, what is still being developed, and where your own policy stays in charge of every decision."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

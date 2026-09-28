@@ -25,7 +25,7 @@ const descriptions = {
   "E-commerce Merchant Underwriting": "Review commerce-context workflows.",
   About: "Meet the team building Cevrynt.",
   Investors: "Review the company vision and opportunity.",
-  Contact: "Start a focused conversation with the founder.",
+  Contact: "Start a focused conversation with our team.",
   Resources: "Explore practical underwriting guidance.",
   Blog: "Read product and market perspectives.",
   FAQ: "Get concise answers about Cevrynt.",
@@ -43,7 +43,7 @@ const secondaryNavigation = {
   Platform: ["Workflow", [["Document intake", "/product/document-intelligence"], ["Financial review", "/product/bank-statement-analysis"], ["Human decision", "/platform"]]],
   Product: ["For underwriting teams", [["MCA funders", "/solutions/merchant-cash-advance"], ["Risk and operations", "/why-cevrynt"], ["Policy review", "/product/policy-engine"]]],
   Solutions: ["By use case", useCases],
-  Company: ["Company", [["Founder-led pilot", "/pilot"], ["Contact", "/contact"], ["Investors", "/investors"]]],
+  Company: ["Company", [["Pilot", "/pilot"], ["Contact", "/contact"], ["Investors", "/investors"]]],
   Resources: ["Explore", [["Resource hub", "/resources"], ["Compare tools", "/compare"], ["Blog", "/blog"], ["FAQ", "/faq"]]],
 };
 
@@ -51,7 +51,7 @@ const visualCopy = {
   Platform: ["Connected workflow", "Intake to human decision, in one review path."],
   Product: ["Evidence-linked analysis", "Move from documents to evidence-backed review."],
   Solutions: ["Lender-controlled", "Adapt the workflow to the way your team underwrites."],
-  Company: ["Founder-led", "Build the future of explainable underwriting with us."],
+  Company: ["Cevrynt, Inc.", "Build the future of explainable underwriting with us."],
   Resources: ["Underwriting intelligence", "Practical context for modern lending teams."],
 };
 

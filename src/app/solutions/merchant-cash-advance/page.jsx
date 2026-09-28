@@ -389,11 +389,11 @@ export default function MerchantCashAdvancePage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="05"
-          kicker="FOUNDER-LED MCA WALKTHROUGH"
+          kicker="MCA WALKTHROUGH"
           heading="Bring an MCA file your team already knows."
           lede="Walk through the statements, existing positions, cash-flow signals, lender policy, and exceptions with Cevrynt. Compare what the platform surfaces with the underwriting work your team already trusts."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

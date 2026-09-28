@@ -45,15 +45,6 @@ const nextConfig = {
         destination: "https://www.cevrynt.com/:path*",
         permanent: true,
       },
-      // URLs from the previous cevrynt.com site, which search engines and old
-      // links may still point at.
-      { source: "/market", destination: "/investors", permanent: true },
-      { source: "/roadmap", destination: "/investors", permanent: true },
-      { source: "/process", destination: "/platform", permanent: true },
-      { source: "/team", destination: "/about", permanent: true },
-      { source: "/cevrynt-favicon.png", destination: "/brand/cevrynt-favicon-96.png", permanent: true },
-      { source: "/cevrynt-whitebg.png", destination: "/brand/cevrynt-logo-v2.png", permanent: true },
-      { source: "/cevrynt-whitebg-removebg-preview.png", destination: "/brand/cevrynt-logo-v2.png", permanent: true },
       // Paths people commonly guess.
       { source: "/company/:page(about|investors|contact)", destination: "/:page", permanent: true },
       { source: "/demo", destination: "https://calendly.com/arin-cevrynt/cevrynt-demo", permanent: false },

@@ -17,7 +17,7 @@ import { pageByPath, workflow } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("pilot");
 
@@ -557,11 +557,11 @@ export default function PilotPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="07"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring the workflow you would want a pilot to prove."
           lede="Walk through how a deal moves through your team today. We'll agree which stages a focused pilot should cover, what it would be compared against, and what would count as a result worth acting on."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

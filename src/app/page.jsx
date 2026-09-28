@@ -548,7 +548,7 @@ export default function Home() {
           <SectionHead
             index="11"
             id="pilot-heading"
-            kicker="Founder-led pilot"
+            kicker="Scoped pilot"
             heading="Test Cevrynt on files your underwriters already know."
             lede="A pilot starts small on purpose. Pick one underwriting workflow, agree what a useful result looks like, then run Cevrynt against representative historical files your team has already reviewed."
           />
@@ -561,8 +561,8 @@ export default function Home() {
           </div>
           <div className="eg sec-cta">
             <p className="eg-head t-lede">Bring a workflow and a small set of representative files.</p>
-            <a className="inline-cta" href="mailto:arin@cevrynt.com">
-              arin@cevrynt.com <ArrowUpRight />
+            <a className="inline-cta" href="mailto:sales@cevrynt.com">
+              sales@cevrynt.com <ArrowUpRight />
             </a>
           </div>
         </section>
@@ -594,11 +594,11 @@ export default function Home() {
           <div className="fn-glow" aria-hidden="true" />
           <FounderClose
             index="14"
-            kicker="FOUNDER-LED WALKTHROUGH"
+            kicker="UNDERWRITING WALKTHROUGH"
             heading="Bring one underwriting workflow. Leave with a clear plan."
             lede="Walk through how a deal moves through your team today. We’ll identify where Cevrynt fits, what should stay with your underwriters, and what a focused pilot would need to prove before you change anything."
             calendlyUrl={calendlyUrl}
-            email="arin@cevrynt.com"
+            email="sales@cevrynt.com"
           />
         </section>
       </Suspense>

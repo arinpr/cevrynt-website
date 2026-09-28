@@ -17,7 +17,7 @@ import { pageByPath } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("product/policy-engine");
 
@@ -846,11 +846,11 @@ export default function PolicyEnginePage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="07"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring the rule nobody can write down."
           lede="Every credit team has one: the condition everybody applies and nobody has put into words, the exception that gets made for a particular kind of deal, the threshold that is really two thresholds depending on the season. Describe one of those and we will work out together whether it belongs in a policy engine or in front of a person."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

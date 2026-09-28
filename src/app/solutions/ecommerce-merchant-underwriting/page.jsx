@@ -369,11 +369,11 @@ export default function EcommerceMerchantUnderwritingPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="05"
-          kicker="FOUNDER-LED E-COMMERCE UNDERWRITING REVIEW"
+          kicker="E-COMMERCE UNDERWRITING REVIEW"
           heading="Bring an e-commerce merchant your team already knows."
           lede="Walk through the merchant’s commerce activity, bank settlements, borrower documents, business verification, existing obligations, and lender policy in one evidence-linked review. See what the evidence supports, what still needs judgment, and where the final decision stays with your team."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

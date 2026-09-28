@@ -98,11 +98,11 @@ export default function ComparePage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="→"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Compare it on your own files."
           lede="Bring a real MCA or small-business file. We will show what Cevrynt structures, what it flags, and what it leaves for your underwriters to decide."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

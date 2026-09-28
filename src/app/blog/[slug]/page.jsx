@@ -20,7 +20,7 @@ export const revalidate = 3600;
 export const dynamicParams = false;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -255,11 +255,11 @@ export default async function BlogArticlePage({ params }) {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="→"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="See how this works on your own files."
           lede="If this article describes something your team deals with, a walkthrough shows how Cevrynt handles it — against your criteria, with your underwriters making every decision."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

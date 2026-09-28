@@ -16,7 +16,7 @@ import { pageByPath } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("product/document-intelligence");
 
@@ -653,11 +653,11 @@ export default function DocumentIntelligencePage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring the submission that usually breaks things."
           lede="The interesting half of a walkthrough is the file nobody wants to open: the statement that arrived as photographs, the month that is missing, the name that does not match the filing. Describe one of those and we will run it against the real thing rather than a tidy demo."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

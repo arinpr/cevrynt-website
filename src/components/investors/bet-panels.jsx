@@ -30,13 +30,13 @@ import { useHasEntered, useReady } from "@/components/progressive";
  *
  * Server-rendered complete, every falsifier in place.
  */
-export function BetPanels({ bets, foot, close, note, readout }) {
+export function BetPanels({ bets, foot, close, note, readout, className = "" }) {
   const scope = useRef(null);
   const ready = useReady();
   const seen = useHasEntered(scope, 0.16);
 
   return (
-    <figure className={`bet${ready ? " is-ready" : ""}${seen ? " is-seen" : ""}`} ref={scope}>
+    <figure className={`bet${className ? ` ${className}` : ""}${ready ? " is-ready" : ""}${seen ? " is-seen" : ""}`} ref={scope}>
       <p className="bet-head hx-mono">{readout.head}</p>
 
       <PointerField className="bet-field" selector=".bet-panel">

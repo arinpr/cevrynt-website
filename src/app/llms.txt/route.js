@@ -36,7 +36,7 @@ Key facts:
 - Workflow: ${workflow.join(" → ")}.
 - Cevrynt is AI-assisted infrastructure. It is not a lender, does not make or guarantee funding offers, and does not replace lender judgment. Lenders retain final approval authority in every case.
 - Cevrynt × SHOPLINE is a documented development and referral partnership around e-commerce merchant-underwriting workflows. It is not a generally available live integration and does not imply guaranteed funding or universal merchant eligibility.
-- Pricing is not published. Evaluation is through a founder-led walkthrough or a scoped pilot.
+- Pricing is not published. Evaluation is through a guided walkthrough or a scoped pilot.
 - Product screens and figures on the website are illustrative and use a synthetic example business (Cedar & Stone LLC).
 
 ${section("Platform", byGroup("Platform", "Why Cevrynt", "Trust", "Pilot"))}
@@ -69,7 +69,8 @@ ${blogLines.join("\n")}
 ## Contact
 
 - Book a walkthrough: https://calendly.com/arin-cevrynt/cevrynt-demo
-- Founder-led sales: arin@cevrynt.com
+- Sales: sales@cevrynt.com
+- Investor enquiries: arin@cevrynt.com
 - Sales enquiries: sales@cevrynt.com
 - Contact page: ${siteConfig.url}/contact
 - LinkedIn: ${siteConfig.linkedinUrl}

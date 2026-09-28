@@ -362,11 +362,11 @@ export default function SecurityPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="05"
-          kicker="FOUNDER-LED SECURITY REVIEW"
+          kicker="SECURITY REVIEW"
           heading="Bring your security requirements."
           lede="Walk through your questionnaire, access model, retention rules, data-processing requirements, audit expectations, and deployment constraints directly with the team responsible for the product."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

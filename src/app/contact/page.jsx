@@ -15,7 +15,7 @@ import { siteConfig } from "@/config/site";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const investorEmail = "arin@cevrynt.com";
 const salesEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("contact");
@@ -48,7 +48,7 @@ const routerReadout = {
 const routerReasons = [
   {
     k: "You underwrite or fund SMB deals",
-    channelK: "Channel · founder-led underwriting review",
+    channelK: "Channel · guided underwriting review",
     channel: "Review a deal your team already knows.",
     b: "See Cevrynt against a familiar underwriting case so your team can inspect the evidence, policy results, exceptions, and final review rather than judge a polished demo.",
     expect: [
@@ -69,12 +69,12 @@ const routerReasons = [
       "Explore how Cevrynt could fit around your existing workflow.",
       "Discuss partnership or integration scope before making technical assumptions.",
     ],
-    action: `Email ${founderEmail}`,
-    href: `mailto:${founderEmail}`,
+    action: `Email ${salesEmail}`,
+    href: `mailto:${salesEmail}`,
   },
   {
     k: "You are evaluating Cevrynt as an investment",
-    channelK: "Channel · investors page, then the founder",
+    channelK: "Channel · investors page, then a meeting",
     channel: "Start with the public thesis.",
     b: "The investor page covers the market entry, product, go-to-market motion, team, and assumptions already embedded in Cevrynt. A direct conversation can go deeper into the parts that belong in context.",
     expect: [
@@ -95,12 +95,12 @@ const routerReasons = [
       "Integration and data-handling questions.",
       "Security, deployment, or technical evaluation context.",
     ],
-    action: `Email ${founderEmail}`,
-    href: `mailto:${founderEmail}`,
+    action: `Email ${salesEmail}`,
+    href: `mailto:${salesEmail}`,
   },
 ];
 
-const routerFoot = `If none of these fit, email ${founderEmail} with a short description of what you are trying to solve and it can be routed from there.`;
+const routerFoot = `If none of these fit, email ${salesEmail} with a short description of what you are trying to solve and it can be routed from there.`;
 
 const routerNote =
   "Cevrynt provides AI-assisted underwriting infrastructure for business financing workflows. It is not a lender, and contacting Cevrynt does not constitute an application, approval, offer, or guarantee of financing.";
@@ -112,15 +112,15 @@ const linesReadout = { refusalsK: "What will not happen" };
 const directLines = [
   {
     k: "Schedule an underwriting review",
-    to: "calendly.com/arin-cevrynt",
+    to: "Book on Calendly",
     href: calendlyUrl,
-    hint: "For lenders and underwriting teams that want to walk through a file, policy workflow, or product evaluation directly with the founder.",
+    hint: "For lenders and underwriting teams that want to walk through a file, policy workflow, or product evaluation directly with the Cevrynt team.",
   },
   {
-    k: "Founder, directly",
-    to: founderEmail,
-    href: `mailto:${founderEmail}`,
-    hint: "For lender conversations, partnerships, investor discussions, product questions, and anything that benefits from direct founder context.",
+    k: "Investor conversations",
+    to: investorEmail,
+    href: `mailto:${investorEmail}`,
+    hint: "For investor discussions and requests for the pitch deck, which is shared after a meeting or by email.",
   },
   {
     k: "General enquiries",
@@ -137,7 +137,7 @@ const directLines = [
 ];
 
 const refusals = [
-  "Founder-led conversations for early lender, partnership, and investor discussions.",
+  "Direct conversations with the Cevrynt team for lender, partnership, and investor discussions.",
   "No financing application or borrower marketplace on this page.",
   "No gated deck required before starting a relevant conversation.",
   "Product and integration questions can begin with the exact workflow or constraint.",
@@ -219,7 +219,7 @@ export default function ContactPage() {
     name: "Cevrynt",
     legalName: "Cevrynt, Inc.",
     url: siteConfig.url,
-    email: founderEmail,
+    email: salesEmail,
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -308,7 +308,7 @@ export default function ContactPage() {
             />
           </div>
           <p className="eg-lede t-lede">
-            No contact form and no gated download before the conversation. Choose the route that matches what you need — underwriting review, a direct founder conversation, a general enquiry, or access to the product workspace.
+            No contact form and no gated download before the conversation. Choose the route that matches what you need — underwriting review, a direct conversation with the team, a general enquiry, or access to the product workspace.
           </p>
         </div>
 
@@ -362,11 +362,11 @@ export default function ContactPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="04"
-          kicker="FOUNDER-LED"
+          kicker="TALK TO CEVRYNT"
           heading="Bring the question that actually decides fit."
           lede="Ask about the messy file, the policy exception, the integration constraint, the security requirement, or the part of the workflow Cevrynt cannot handle yet. The useful conversation is the one that tests where the product holds up and where it does not."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={salesEmail}
         />
       </section>
     </main>
