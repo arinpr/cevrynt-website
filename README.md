@@ -125,7 +125,7 @@ pnpm run deploy
 
 Use `pnpm run deploy`, not `pnpm deploy`, which is a built-in pnpm command.
 
-Then, in the Cloudflare dashboard, attach the custom domains `www.cevrynt.com` and `cevrynt.com` to the `cevrynt-website` Worker. The apex redirects to `www` in `next.config.js`.
+Then, in the Cloudflare dashboard, attach the custom domains `www.cevrynt.com` and `cevrynt.com` to the `cevrynt-main-website` Worker. The apex redirects to `www` in `next.config.js`.
 
 ### Continuous deployment (Workers Builds)
 
