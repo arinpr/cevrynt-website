@@ -5,13 +5,13 @@ import { PageHeroCopy } from "@/components/page-hero-copy";
 import { FounderClose } from "@/components/home/founder-close";
 import { RevealLines } from "@/components/home/reveal-lines";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { RetentionLines } from "@/components/why/retention-lines";
 import { ReadingSpread } from "@/components/why/reading-spread";
 import { PolicyDivergence } from "@/components/why/policy-divergence";
 import { FileRevision } from "@/components/why/file-revision";
 import { BoundaryLines } from "@/components/why/boundary-lines";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -20,17 +20,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("why-cevrynt");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /**
@@ -411,15 +401,7 @@ const spreadNote =
   "Cevrynt does not force underwriters to agree. It removes avoidable disagreement by giving every reviewer the same facts, source evidence, material signals, and lender-policy context.";
 
 export default function WhyCevryntPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

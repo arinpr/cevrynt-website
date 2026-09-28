@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "@/components/icons";
+import { track } from "@/lib/analytics";
 
 const STORAGE_KEY = "cevrynt_demo_prompt_v1";
 const SESSION_KEY = "cevrynt_demo_prompt_seen";
@@ -14,14 +15,17 @@ export function TimedDemoPopup() {
   const closeRef = useRef(null);
   const reduceMotion = useReducedMotion();
   const dismiss = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ dismissedUntil: Date.now() + DISMISS_FOR }));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ dismissedUntil: Date.now() + DISMISS_FOR })); } catch {}
+    track("demo_prompt_dismiss");
     setIsOpen(false);
   }, []);
 
   useEffect(() => {
     let stored = {};
     try { stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch {}
-    if (sessionStorage.getItem(SESSION_KEY) || Number(stored.dismissedUntil) > Date.now()) return undefined;
+    let seen = false;
+    try { seen = Boolean(sessionStorage.getItem(SESSION_KEY)); } catch {}
+    if (seen || Number(stored.dismissedUntil) > Date.now()) return undefined;
 
     let remaining = ACTIVE_DELAY;
     let startedAt = document.visibilityState === "visible" ? Date.now() : null;
@@ -30,7 +34,8 @@ export function TimedDemoPopup() {
       if (document.visibilityState !== "visible" || remaining <= 0) return;
       startedAt = Date.now();
       timer = window.setTimeout(() => {
-        sessionStorage.setItem(SESSION_KEY, "1");
+        try { sessionStorage.setItem(SESSION_KEY, "1"); } catch {}
+        track("demo_prompt_view");
         setIsOpen(true);
       }, remaining);
     };
@@ -61,7 +66,7 @@ export function TimedDemoPopup() {
           <motion.section className="demo-prompt" role="dialog" aria-modal="true" aria-labelledby="demo-prompt-title" initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.99 }} transition={{ duration: reduceMotion ? 0.01 : 0.52, ease: [0.16, 1, 0.3, 1] }}>
             <div className="demo-prompt-product" aria-hidden="true">
               <div className="demo-app-tabs"><span>Documents</span><span>Financials</span><span>Verification</span><span>Policy</span></div>
-              <div className="demo-app-card"><small>BUSINESS &amp; IDENTITY</small><strong>Blue Ribbon Lawns Inc.</strong><div><span>Registry status</span><b>Active</b></div><div><span>Jurisdiction</span><b>Florida</b></div></div>
+              <div className="demo-app-card"><small>BUSINESS &amp; IDENTITY</small><strong>Cedar &amp; Stone LLC</strong><div><span>Registry status</span><b>Active</b></div><div><span>Jurisdiction</span><b>Florida</b></div></div>
               <div className="demo-app-grid"><div><small>Bank statements</small><b>Reviewed</b></div><div><small>Risk signals</small><b>Needs review</b></div><div><small>Policy evaluation</small><b>3 conditions</b></div><div><small>Underwriting report</small><b>Ready</b></div></div>
               <div className="demo-app-status"><b>Sources compared</b><span>Evidence linked to source</span></div>
             </div>

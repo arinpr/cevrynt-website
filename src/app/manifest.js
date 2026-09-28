@@ -3,7 +3,7 @@ export default function manifest() {
     name: "Cevrynt — AI Underwriting Infrastructure",
     short_name: "Cevrynt",
     description:
-      "From borrower documents to decision-ready underwriting for alternative lenders and SMB finance teams.",
+      "AI underwriting for MCA and alternative lenders: turn borrower documents, bank statements and business signals into evidence-linked, decision-ready analysis.",
     start_url: "/",
     display: "standalone",
     background_color: "#f7faf9",

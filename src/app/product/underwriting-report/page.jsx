@@ -11,8 +11,8 @@ import { DecisionSeal } from "@/components/report/decision-seal";
 import { WaitingLanes } from "@/components/report/waiting-lanes";
 import { ReopenFork } from "@/components/report/reopen-fork";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -22,17 +22,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("product/underwriting-report");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -612,15 +602,7 @@ const forkNote =
   "An illustrative reopening on the illustrative file used throughout this site. Cevrynt is not a lender, takes no decision in either branch, and a new evaluation is a new record rather than a revised outcome.";
 
 export default function UnderwritingReportPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

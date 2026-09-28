@@ -10,8 +10,8 @@ import { EvidenceLoupe } from "@/components/lenders/evidence-loupe";
 import { LedgerSpan } from "@/components/lenders/ledger-span";
 import { FinalCall } from "@/components/lenders/final-call";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -20,17 +20,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("solutions/alternative-lenders");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -385,15 +375,7 @@ const memoReadout = {
 const memoNote =
   "Cevrynt assembles the financial findings, business verification, policy results, open exceptions, and supporting evidence into one review-ready memo. Anything unresolved stays visible for the lender to address. Cevrynt does not issue the approval, decline, condition, or recommendation — the final credit decision and accountability remain with your team. Illustrative deal · synthetic borrower data.";
 export default function AlternativeLendersPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

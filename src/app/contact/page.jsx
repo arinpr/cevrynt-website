@@ -8,6 +8,7 @@ import { RouterPanes } from "@/components/contact/router-panes";
 import { DirectLines } from "@/components/contact/direct-lines";
 import { PrepList } from "@/components/contact/prep-list";
 import { JsonLd } from "@/components/json-ld";
+import { organizationId, pageMetadata, pageBreadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
 import { siteConfig } from "@/config/site";
 
@@ -20,17 +21,7 @@ const salesEmail = "sales@cevrynt.com";
 const page = pageByPath.get("contact");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -219,12 +210,15 @@ const prepClose =
 const prepNote =
   "The checklist is only an on-page preparation aid. It is not a request to upload borrower data or submit underwriting information through this page.";
 export default function ContactPage() {
+  const contactJsonLd = webPageJsonLd(page, "ContactPage");
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": organizationId,
     name: "Cevrynt",
+    legalName: "Cevrynt, Inc.",
     url: siteConfig.url,
-    description: page.description,
     email: founderEmail,
     contactPoint: [
       {
@@ -238,7 +232,9 @@ export default function ContactPage() {
 
   return (
     <main id="main-content">
+      <JsonLd data={contactJsonLd} />
       <JsonLd data={orgJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       {/* Hero unchanged — the same composition PageShell renders for this page. */}
       <HeroMotion>

@@ -483,7 +483,7 @@ body:has(.page-hero) .site-header { background: transparent; }
 }
 .hero-dashboard-wrap { position: relative; z-index: 1; width: min(1600px, calc(100vw - 80px)); margin: -38px auto 0; padding: 0; }
 .hero-dashboard-frame { --dashboard-fold: polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 13%); position: relative; overflow: hidden; border: 0; border-radius: 0; padding: 0; background: transparent; box-shadow: none; }
-.hero-dashboard-frame::after { position: absolute; z-index: 3; top: 0; left: 0; width: 10%; height: 13%; background-image: url("/media/cevrynt-dashboard-website.webp"); background-position: top left; background-repeat: no-repeat; background-size: 1000% auto; clip-path: polygon(0 0, 100% 0, 0 100%); content: ""; pointer-events: none; transform-origin: center; animation: dashboard-photo-fold 2400ms cubic-bezier(0.65, 0, 0.35, 1) 1.2s both; }
+.hero-dashboard-frame::after { position: absolute; z-index: 3; top: 0; left: 0; width: 10%; height: 13%; clip-path: polygon(0 0, 100% 0, 0 100%); content: ""; pointer-events: none; transform-origin: center; animation: dashboard-photo-fold 2400ms cubic-bezier(0.65, 0, 0.35, 1) 1.2s both; }
 .hero-dashboard-float { position: relative; z-index: 1; clip-path: var(--dashboard-fold); animation: dashboard-float 7s ease-in-out 4s infinite alternate both; width: 100%; }
 .hero-dashboard-float img { display: block; width: 100%; height: auto; object-fit: cover; object-position: center center; filter: saturate(0.92) contrast(1.04); }
 @keyframes dashboard-float { to { transform: translate3d(0, -8px, 0); } }
@@ -2737,7 +2737,7 @@ body:has(.error-404) .nav-feature-copy span.nav-feature-more { color: #0f6e5e; }
   .page-hero-inner { padding-top: 150px; }
   .hero-dashboard-wrap { width: calc(100vw - 28px); margin-top: -74px; padding: 0; }
   .hero-dashboard-frame { --dashboard-fold: polygon(11% 0, 100% 0, 100% 100%, 0 100%, 0 10%); border-radius: 0; padding: 0; }
-  .hero-dashboard-frame::after { width: 11%; height: 10%; background-size: 909% auto; }
+  .hero-dashboard-frame::after { width: 11%; height: 10%; }
   .point-grid { grid-template-columns: 1fr; }
   .walkthrough-band, .page-content > div:first-child { grid-template-columns: 1fr; gap: 42px; }
   .footer-nav { grid-template-columns: repeat(3, 1fr); }
@@ -14115,8 +14115,10 @@ body:has(.article-header) .nav-use-cases a:hover {
 .fq1-toggle::after { rotate: 90deg; }
 .fq1-row.is-open .fq1-toggle::after { rotate: 0deg; }
 
-.fq1-a { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 360ms cubic-bezier(0.33, 1, 0.68, 1), visibility 0s linear 360ms; }
-.fq1-row.is-open .fq1-a { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows 360ms cubic-bezier(0.33, 1, 0.68, 1), visibility 0s; }
+.fq1-a { display: grid; grid-template-rows: 1fr; }
+/* Collapsed only once hydrated, so the server HTML reads with every answer open. */
+.fq1.is-ready .fq1-a { grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 360ms cubic-bezier(0.33, 1, 0.68, 1), visibility 0s linear 360ms; }
+.fq1.is-ready .fq1-row.is-open .fq1-a { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows 360ms cubic-bezier(0.33, 1, 0.68, 1), visibility 0s; }
 .fq1-a-in { min-height: 0; overflow: hidden; }
 /* The answer starts exactly under its question. */
 .fq1-a-b { grid-column: 2 / 4; max-width: 74ch; margin: 0; padding: 0 0 18px; color: var(--muted); font-size: 0.94rem; line-height: 1.64; }
@@ -15243,3 +15245,55 @@ body:has(.article-header) .nav-use-cases a:hover {
   .pi6-claim { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
   .pi6-truth { padding-left: 0; }
 }
+
+/* Legal pages: the same hero, sized to its copy. There is no product
+   screenshot to make room for, so the full-height hero would read as an empty
+   green field. */
+.home-hero:has(.legal-hero-inner) { --hero-bottom-fold: 72px; min-height: 0; border-bottom-left-radius: 40px; }
+.legal-hero-inner { padding: 148px 0 104px; }
+@media (max-width: 560px) {
+  .home-hero:has(.legal-hero-inner) { --hero-bottom-fold: 44px; min-height: 0; border-bottom-left-radius: 28px; }
+  .legal-hero-inner { width: calc(100% - 32px); padding: 118px 0 76px; }
+  .legal-hero-inner .ar-hero-meta { flex-direction: column; row-gap: 6px; }
+  .legal-hero-inner .ar-hero-meta > * + *::before { content: none; }
+}
+.legal-read .article-body h2 { scroll-margin-top: 96px; }
+
+/* -- Cookie consent ---------------------------------------------------------
+   Fixed to the corner so it never shifts layout; rendered only after
+   hydration, and only where analytics runs. */
+.consent-bar { position: fixed; z-index: 70; bottom: 16px; left: 16px; display: flex; align-items: center; gap: 16px; width: min(560px, calc(100vw - 32px)); padding: 14px 14px 14px 18px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; background: var(--ink-deep); box-shadow: 0 18px 48px rgba(0, 24, 21, 0.28); color: rgba(234, 243, 240, 0.86); animation: consent-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.consent-copy { margin: 0; font-size: 0.8rem; line-height: 1.45; }
+.consent-copy a { color: var(--yellow); text-decoration: underline; text-underline-offset: 3px; }
+.consent-actions { display: flex; flex-shrink: 0; gap: 8px; }
+.consent-btn { min-width: 44px; min-height: 40px; padding: 0 16px; border: 1px solid #f7faf9; border-radius: 999px; background: #f7faf9; color: var(--ink); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 200ms ease, color 200ms ease; }
+.consent-btn.is-quiet { border-color: rgba(255, 255, 255, 0.28); background: transparent; color: #f7faf9; }
+.consent-btn:hover { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+.consent-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+@keyframes consent-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 560px) {
+  .consent-bar { right: 12px; bottom: 12px; left: 12px; flex-direction: column; align-items: stretch; width: auto; gap: 12px; }
+  .consent-actions .consent-btn { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .consent-bar { animation: none; } }
+.footer-cookie-btn { padding: 0; border: 0; background: none; color: rgba(234, 243, 240, 0.68); font: inherit; font-size: 0.79rem; line-height: 1.4; cursor: pointer; transition: color 260ms ease; }
+.footer-cookie-btn:hover { color: #f6fbf9; }
+
+/* -- Hero entrance ------------------------------------------------------------
+   Pure CSS, so it runs from first paint with or without JavaScript. Headline
+   lines rise in turn, then the lede and actions. The product screenshot only
+   rises — it is the LCP element, so it is never faded from zero. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero .hero-signal { animation: hero-in-signal 500ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both; }
+  .home-hero .hero-line-text,
+  .home-hero .page-hero-dark-heading { animation: hero-in-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both; }
+  .home-hero .hero-heading-line:nth-child(2) .hero-line-text { animation-delay: 260ms; }
+  .home-hero .home-hero-lede { animation: hero-in-soft 580ms cubic-bezier(0.22, 1, 0.36, 1) 480ms both; }
+  .home-hero .hero-actions,
+  .home-hero .ar-hero-meta { animation: hero-in-soft 580ms cubic-bezier(0.22, 1, 0.36, 1) 620ms both; }
+  .home-hero .hero-dashboard-frame { animation: hero-in-frame 960ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both; }
+}
+@keyframes hero-in-signal { from { opacity: 0; transform: translateY(8px) scale(0.84); } to { opacity: 1; transform: none; } }
+@keyframes hero-in-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes hero-in-soft { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes hero-in-frame { from { transform: translateY(30px) scale(0.985); } to { transform: none; } }

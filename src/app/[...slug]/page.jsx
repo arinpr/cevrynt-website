@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { pageByPath, sitePages } from "@/content/site-pages";
+import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 3600;
 export const dynamicParams = false;
@@ -27,6 +28,10 @@ const bespoke = new Set([
   "partners/shopline",
   "resources",
   "pilot",
+  "privacy",
+  "terms",
+  "cookie-policy",
+  "compare",
 ]);
 
 export function generateStaticParams() {
@@ -39,30 +44,8 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const path = slug.join("/");
-  const page = pageByPath.get(path);
-
-  if (!page) return {};
-
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: {
-      title,
-      description,
-      url: `/${page.path}`,
-    },
-    twitter: {
-      title,
-      description,
-    },
-    robots: page.legal ? { index: false, follow: true } : undefined,
-  };
+  const page = pageByPath.get(slug.join("/"));
+  return page ? pageMetadata(page) : {};
 }
 
 export default async function MarketingPage({ params }) {

@@ -10,8 +10,8 @@ import { StepStack } from "@/components/investors/step-stack";
 import { WeightedSides } from "@/components/investors/weighted-sides";
 import { BetPanels } from "@/components/investors/bet-panels";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -20,17 +20,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("investors");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -338,17 +328,13 @@ const betNote =
   "These describe product and market assumptions, not forecasts or claims of future adoption, revenue, or performance. Nothing on this page constitutes an offer to sell or a solicitation of an offer to buy any security.";
 
 export default function InvestorsPage() {
-  const orgJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Cevrynt",
-    url: siteConfig.url,
-    description: page.description,
-  };
+  const pageJsonLd = webPageJsonLd(page);
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">
-      <JsonLd data={orgJsonLd} />
+      <JsonLd data={pageJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       {/* Hero unchanged — the same composition PageShell renders for this page. */}
       <HeroMotion>

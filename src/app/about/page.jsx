@@ -12,8 +12,8 @@ import { PageField } from "@/components/about/page-field";
 import { AskMatrix } from "@/components/about/ask-matrix";
 import { GateLanes } from "@/components/about/gate-lanes";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -22,17 +22,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("about");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -189,7 +179,7 @@ const heldCommitments = [
 
 const heldSignature = {
   name: "Arin",
-  role: "Founder, Cevrynt",
+  role: "Founder, Cevrynt, Inc.",
   email: "arin@cevrynt.com",
 };
 
@@ -623,17 +613,13 @@ const gateNote =
   "These lanes describe Cevrynt's current product focus, not customer relationships or a statement about how any particular lender operates. They do not imply that a named lender uses Cevrynt, nor do they constitute an offer, approval, or guarantee of financing.";
 
 export default function AboutPage() {
-  const orgJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Cevrynt",
-    url: siteConfig.url,
-    description: page.description,
-  };
+  const aboutJsonLd = webPageJsonLd(page, "AboutPage");
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">
-      <JsonLd data={orgJsonLd} />
+      <JsonLd data={aboutJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       {/* Hero unchanged — the same composition PageShell renders for this page. */}
       <HeroMotion>
@@ -830,7 +816,7 @@ export default function AboutPage() {
         <div className="eg sec-head">
           <span className="eg-rail hx-mono">06</span>
           <div className="eg-head">
-            <p className="hx-kicker hx-kicker-invert">WHAT WE WON'T OPTIMIZE AWAY</p>
+            <p className="hx-kicker hx-kicker-invert">WHAT WE WON&rsquo;T OPTIMIZE AWAY</p>
             <RevealLines
               as="h2"
               className="t-display-2"

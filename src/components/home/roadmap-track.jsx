@@ -71,18 +71,21 @@ export function RoadmapTrack({ stations }) {
       return { pts, len: draw.getTotalLength() };
     };
 
-    /** Where each node sits along the path, as a 0–1 ratio. */
+    /** Where each node sits along the path, as a 0–1 ratio.
+        getPointAtLength walks the whole path on every call, so the path is
+        sampled once and every node is matched against the same samples —
+        301 calls per measure instead of 301 per node. */
     const nodeRatios = (pts, len) => {
       const samples = 300;
+      const along = [];
+      for (let i = 0; i <= samples; i++) along.push(draw.getPointAtLength((i / samples) * len));
       return pts.map((p) => {
         let best = 0;
         let bestDist = Infinity;
-        for (let i = 0; i <= samples; i++) {
-          const l = (i / samples) * len;
-          const q = draw.getPointAtLength(l);
+        along.forEach((q, i) => {
           const dist = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
-          if (dist < bestDist) { bestDist = dist; best = l / len; }
-        }
+          if (dist < bestDist) { bestDist = dist; best = i / samples; }
+        });
         return best;
       });
     };
@@ -90,10 +93,16 @@ export function RoadmapTrack({ stations }) {
     // Mutable so the single trigger below always reads current measurements.
     let len = 0;
     let ratios = [];
+    let geometry = "";
 
     const measure = () => {
       const built = buildPath();
       if (!built) return;
+      // Refreshes, font loads and resizes often leave the layout unchanged;
+      // only re-sample when the nodes actually moved.
+      const key = built.pts.map((p) => `${Math.round(p.x)},${Math.round(p.y)}`).join(" ");
+      if (key === geometry) return;
+      geometry = key;
       len = built.len;
       ratios = nodeRatios(built.pts, built.len);
       gsap.set(draw, { strokeDasharray: len });

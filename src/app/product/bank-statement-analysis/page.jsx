@@ -28,8 +28,8 @@ import {
   sumRange,
 } from "@/content/cedar-stone-statements";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -42,17 +42,7 @@ const page = pageByPath.get("product/bank-statement-analysis");
 const usd = (d) => `$${d.toLocaleString("en-US")}`;
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -488,15 +478,7 @@ const statementNote =
   "Illustrative statements on the illustrative file used throughout this site. February and April were also supplied and sit outside this window; the two July exports are compared line by line on the Fraud Signals page. Account numbers are shortened and page counts are worked-example detail. Cevrynt checks continuity and structure; it issues no approval, decline or verdict on the documents.";
 
 export default function BankStatementAnalysisPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

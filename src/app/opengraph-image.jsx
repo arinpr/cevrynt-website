@@ -1,6 +1,5 @@
 import { renderOgImage, ogImageSize, ogImageContentType } from "@/lib/og-image";
 
-export const runtime = "nodejs";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 export const alt = "Cevrynt — AI Underwriting Infrastructure for Alternative Lenders";

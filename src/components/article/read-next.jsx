@@ -32,7 +32,7 @@ export function ReadNext({ items, readout }) {
         <ol className="ar-nx-list">
           {items.map((p, i) => (
             <li className="ar-nx-i" key={p.slug} style={{ "--i": i }}>
-              <Link className="ar-nx-a" href={`/blog/${p.slug}`}>
+              <Link className="ar-nx-a" href={p.href || `/blog/${p.slug}`}>
                 <span className="ar-nx-meta">
                   <span className="ar-nx-cat">{p.category}</span>
                   <span className="ar-nx-min">
@@ -46,7 +46,7 @@ export function ReadNext({ items, readout }) {
           ))}
         </ol>
         <p className="ar-nx-all" style={{ "--i": items.length }}>
-          <Link className="ar-nx-all-a" href="/blog">
+          <Link className="ar-nx-all-a" href={readout.allHref || "/blog"}>
             {readout.allK}
             <span aria-hidden="true" className="ar-nx-all-arrow">
               →
@@ -55,7 +55,7 @@ export function ReadNext({ items, readout }) {
           {/* The hub that sorts every guide by workflow stage, with the
               question index and the glossary. Reachable from the navigation
               only, until here. */}
-          <Link className="ar-nx-all-a" href="/resources">
+          <Link className="ar-nx-all-a" href={readout.hubHref || "/resources"}>
             {readout.hubK}
             <span aria-hidden="true" className="ar-nx-all-arrow">
               →

@@ -1,6 +1,6 @@
 # Cevrynt Marketing Website — Canonical Project Context
 
-Last updated: 2026-08-10
+Last updated: 2026-09-28
 
 This is the durable handoff document for Claude Code and other coding agents working on the Cevrynt launch website. Read this file before making product, copy, design, navigation, animation, SEO, performance, caching, or asset decisions.
 
@@ -28,6 +28,9 @@ If this document conflicts with those files, follow the most specific product co
 - Development must not serve stale page content. `next.config.js` applies development no-cache headers and image cache TTL `0`.
 - `DevelopmentCacheReset` may clear Cache Storage and unregister service workers in development, but must never reload the page on `pageshow`, focus, or visibility changes.
 - Do not add service workers or persistent browser caching during active development without explicit approval.
+- Canonical origin: `https://www.cevrynt.com`. The apex redirects to www (`next.config.js`). `siteConfig.url` drives canonicals, sitemap, JSON-LD and og:image, so set `NEXT_PUBLIC_SITE_URL` at build time on any host that is not www.cevrynt.com.
+- Deployment target: Cloudflare Workers. Keep request-time code free of Node-only APIs (`fs`, `path`, `process.cwd`); share cards are prerendered and embed the logo from `src/lib/og-logo.js`.
+- All page metadata goes through `src/lib/seo.js` (`pageMetadata` / `buildMetadata`) so every route keeps site name, locale, type and a share image.
 
 ## Product definition
 
@@ -317,6 +320,8 @@ Implementation requirements:
 - Dynamically import heavy below-fold interactions.
 - Avoid third-party scripts in the critical path.
 - Do not add fingerprinting or invasive visitor tracking. Any analytics/consent implementation must be privacy-aware and explicitly approved.
+- Approved analytics: Google Analytics 4 (`G-80SL6B8WHP`) via `src/lib/analytics.js` and `src/components/analytics.jsx`, in Consent Mode v2 (ads always denied; analytics denied by default in EEA/UK/CH; GPC honored), loaded `lazyOnload`, production host only. Any change to tracking, cookies or storage must update the Privacy and Cookie policies in `src/content/legal.js` in the same change.
+- `/compare` names competitors. Describe them only from their own public sites, link the source, keep `reviewedAt` current, and never state their pricing, accuracy or weaknesses.
 
 ## Verification checklist
 

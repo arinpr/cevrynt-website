@@ -26,6 +26,10 @@ import { post as buyersGuideMca } from "./posts/buyers-guide-merchant-cash-advan
 import { post as brokersIsosCleanerDeals } from "./posts/how-brokers-isos-submit-cleaner-deals-faster-decisions";
 import { post as ecommerceMerchantUnderwriting } from "./posts/ecommerce-merchant-underwriting-shopify-marketplace-sellers";
 import { post as revenueBasedFinancing } from "./posts/revenue-based-financing-underwriting-vs-term-loans";
+import { post as typesOfAiUnderwriting } from "./posts/types-of-ai-underwriting-software-mca-smb-lenders";
+import { post as aiCreditMemo } from "./posts/ai-credit-memo-small-business-lending";
+import { post as mcaSubmissionIntake } from "./posts/mca-submission-intake-automation";
+import { post as statementAnalysisVsPlatform } from "./posts/bank-statement-analysis-software-vs-underwriting-platform";
 
 export const categoryMeta = {
   "Underwriting Workflow": { shortLabel: "Workflow", thumbClass: "blog-thumb-a" },
@@ -67,6 +71,10 @@ const allPosts = [
   brokersIsosCleanerDeals,
   ecommerceMerchantUnderwriting,
   revenueBasedFinancing,
+  typesOfAiUnderwriting,
+  aiCreditMemo,
+  mcaSubmissionIntake,
+  statementAnalysisVsPlatform,
 ];
 
 export const posts = [...allPosts].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
