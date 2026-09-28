@@ -29,10 +29,19 @@ const nextConfig = {
   async redirects() {
     return [
       // One canonical host: the apex answers with a permanent redirect to www,
-      // so search engines index a single copy of every page.
+      // so search engines index a single copy of every page. The host value is
+      // a regex; anchor it, or OpenNext on Workers also matches www.cevrynt.com
+      // and redirects www to itself forever. The root gets its own rule because
+      // OpenNext leaves ":path*" unsubstituted in the destination for "/".
+      {
+        source: "/",
+        has: [{ type: "host", value: "^cevrynt\\.com$" }],
+        destination: "https://www.cevrynt.com/",
+        permanent: true,
+      },
       {
         source: "/:path*",
-        has: [{ type: "host", value: "cevrynt.com" }],
+        has: [{ type: "host", value: "^cevrynt\\.com$" }],
         destination: "https://www.cevrynt.com/:path*",
         permanent: true,
       },
