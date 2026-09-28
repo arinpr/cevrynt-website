@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cevrynt-website",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-25",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      // Self-reference for ISR background revalidation; must match "name".
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "cevrynt-website"
+    }
+  ],
+  "r2_buckets": [
+    {
+      // ISR / incremental cache. Create once: wrangler r2 bucket create cevrynt-website-cache
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "cevrynt-website-cache"
+    }
+  ],
+  "images": {
+    // next/image optimization through Cloudflare Images.
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
