@@ -1,5 +1,5 @@
 {
-  "name": "cevrynt-starter",
+  "name": "cevrynt-website",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,6 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "cf:build": "opennextjs-cloudflare build --openNextConfigPath open-next.config.js",
+    "preview": "pnpm cf:build && opennextjs-cloudflare preview",
+    "deploy": "pnpm cf:build && opennextjs-cloudflare deploy",
+    "upload": "pnpm cf:build && opennextjs-cloudflare upload",
     "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
@@ -22,11 +26,13 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.6",
     "@tailwindcss/postcss": "^4",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "wrangler": "^4.141.0"
   },
   "packageManager": "pnpm@11.16.0"
 }
