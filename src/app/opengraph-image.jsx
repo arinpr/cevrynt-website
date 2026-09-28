@@ -1,13 +1,11 @@
-import { renderOgImage, ogImageSize, ogImageContentType } from "@/lib/og-image";
+import { renderBrandOgImage, ogImageSize, ogImageContentType } from "@/lib/og-image";
 
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
-export const alt = "Cevrynt — AI Underwriting Infrastructure for Alternative Lenders";
+export const alt = "Cevrynt logo — From borrower documents to decision-ready underwriting.";
 
 export default async function Image() {
-  return renderOgImage({
-    eyebrow: "AI Underwriting Infrastructure",
-    title: "From borrower documents to decision-ready underwriting.",
-    subtitle: "For alternative lenders and SMB finance teams.",
+  return renderBrandOgImage({
+    tagline: "From borrower documents to decision-ready underwriting.",
   });
 }
