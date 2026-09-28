@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "cevrynt-website",
+  "name": "cevrynt-main-website",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-25",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -12,7 +12,7 @@
     {
       // Self-reference for ISR background revalidation; must match "name".
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "cevrynt-website"
+      "service": "cevrynt-main-website"
     }
   ],
   "r2_buckets": [
@@ -27,6 +27,9 @@
     "binding": "IMAGES"
   },
   "observability": {
-    "enabled": true
+    "logs": {
+      "enabled": false,
+      "invocation_logs": true
+    }
   }
 }
