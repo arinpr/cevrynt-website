@@ -9,8 +9,8 @@ import { SettlementRedaction } from "@/components/ecommerce/settlement-redaction
 import { PartnerClause } from "@/components/ecommerce/partner-clause";
 import { NoNeedle } from "@/components/ecommerce/no-needle";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -19,17 +19,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("solutions/ecommerce-merchant-underwriting");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -216,15 +206,7 @@ const needleNote =
   "Commerce activity can strengthen the underwriting record without becoming a universal merchant score. Cevrynt applies the lender's configured criteria, keeps exceptions and supporting evidence visible, and preserves the policy context used for the review. Approval, decline, pricing, and funding decisions remain with the lender. Illustrative merchant · synthetic data.";
 
 export default function EcommerceMerchantUnderwritingPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

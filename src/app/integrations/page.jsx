@@ -5,10 +5,10 @@ import { FounderClose } from "@/components/home/founder-close";
 import { RevealLines } from "@/components/home/reveal-lines";
 import Image from "next/image";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { PackageStacks } from "@/components/integrations/package-stacks";
 import { HandoffLog } from "@/components/integrations/handoff-log";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -17,17 +17,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("integrations");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /**
@@ -273,15 +263,7 @@ const scopeSteps = [
 ];
 
 export default function IntegrationsPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

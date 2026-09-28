@@ -11,9 +11,9 @@ export function AnimatedHeroCopy() {
   return (
     <>
       <SignalMark className="hero-signal" />
-      <h1 className="hero-animated-heading" aria-label={headingLines.join(" ")}>
+      <h1 className="hero-animated-heading">
         {headingLines.map((line) => (
-          <span className="hero-heading-line" aria-hidden="true" key={line}>
+          <span className="hero-heading-line" key={line}>
             <span className="hero-line-text">{line}</span>
           </span>
         ))}

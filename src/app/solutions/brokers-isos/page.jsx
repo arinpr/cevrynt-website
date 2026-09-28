@@ -10,8 +10,8 @@ import { OwnerTriage } from "@/components/brokers/owner-triage";
 import { IntakeScan } from "@/components/brokers/intake-scan";
 import { VersionScrub } from "@/components/brokers/version-scrub";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -20,17 +20,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("solutions/brokers-isos");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -393,15 +383,7 @@ const rerunNote =
   "Cevrynt keeps the previous review beside the updated one, highlights the findings affected by new evidence, and carries unresolved items forward. A policy result can move without becoming an approval or decline — the lender still makes the credit decision. Illustrative deal · synthetic borrower data.";
 
 export default function BrokersIsosPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

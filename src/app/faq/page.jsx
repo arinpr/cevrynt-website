@@ -9,6 +9,7 @@ import { BoundaryLine } from "@/components/faq/boundary-line";
 import { ResolutionTrack } from "@/components/faq/resolution-track";
 import { FinalCall } from "@/components/faq/final-call";
 import { JsonLd } from "@/components/json-ld";
+import { buildMetadata } from "@/lib/seo";
 import { posts } from "@/content/blog";
 import { siteConfig } from "@/config/site";
 
@@ -17,17 +18,14 @@ export const revalidate = 3600;
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const founderEmail = "arin@cevrynt.com";
 
-export const metadata = {
-  title: "Frequently Asked Questions",
-  description: "Straightforward answers about what Cevrynt does, who it is for, how lender control is preserved, and how a pilot works.",
-  keywords: ["Cevrynt FAQ", "AI underwriting platform questions", "MCA underwriting software FAQ"],
-  alternates: { canonical: "/faq" },
-  openGraph: {
-    title: "Frequently Asked Questions | Cevrynt",
-    description: "Straightforward answers about what Cevrynt does, who it is for, and how lender control is preserved.",
-    url: "/faq",
-  },
-};
+export const metadata = buildMetadata({
+  path: "faq",
+  absoluteTitle: "Cevrynt FAQ — AI Underwriting for MCA & Alternative Lenders",
+  description:
+    "Straight answers about what Cevrynt does, who it is for, how lenders keep control of every credit decision, how data is handled and how a pilot works.",
+  keywords: ["Cevrynt FAQ", "AI underwriting platform questions", "MCA underwriting software FAQ", "AI underwriting for alternative lenders"],
+  image: "/faq/opengraph-image",
+});
 
 /* --------------------------------------------------------------------------
    The FAQ, same architecture as the product pages: the shared dark hero, then

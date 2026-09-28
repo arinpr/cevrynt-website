@@ -10,8 +10,8 @@ import { RunningCheck } from "@/components/signals/running-check";
 import { CheckRegister } from "@/components/signals/check-register";
 import { ClaimHinge } from "@/components/signals/claim-hinge";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 import { flows, DAILY_DEBIT, WEEKLY_DEBIT, dailyDebits, weeklyDebits } from "@/content/cedar-stone-statements";
 
 export const revalidate = 3600;
@@ -22,17 +22,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("product/fraud-signals");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -553,15 +543,7 @@ const claimNote =
   "Illustrative application figures on the illustrative file used throughout this site. Names and addresses are compared on the Business Verification page. Cevrynt compares and reports; it issues no fraud determination, score or decision.";
 
 export default function FraudSignalsPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

@@ -11,8 +11,8 @@ import { SettleMatrix } from "@/components/pilot/settle-matrix";
 import { AfterSplit } from "@/components/pilot/after-split";
 import { LimitsList } from "@/components/pilot/limits-list";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath, workflow } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -22,17 +22,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("pilot");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -340,15 +330,7 @@ const limitsClose =
   "None of this is hedging. A pilot that claimed any of the five would be measuring something other than the work, and you would find out at the point it mattered rather than before you started.";
 
 export default function PilotPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

@@ -10,6 +10,7 @@ import { PublishingCalendar } from "@/components/blog/publishing-calendar";
 import { ArticleAnatomy } from "@/components/blog/article-anatomy";
 import { TopicDesks } from "@/components/blog/topic-desks";
 import { JsonLd } from "@/components/json-ld";
+import { buildMetadata } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
 import { productViews, productViewOf } from "@/content/product-views";
 
@@ -18,20 +19,14 @@ export const revalidate = 3600;
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const founderEmail = "arin@cevrynt.com";
 
-export const metadata = {
+export const metadata = buildMetadata({
+  path: "blog",
   title: "Underwriting Insights for Alternative Lenders",
   description:
-    "Practical guides on document intelligence, bank statement analysis, business verification, fraud signals, and policy for alternative lending underwriting teams.",
-  keywords: ["AI underwriting insights", "alternative lending blog", "MCA underwriting guides"],
-  alternates: { canonical: "/blog" },
-  openGraph: {
-    title: "Underwriting Insights for Alternative Lenders | Cevrynt",
-    description:
-      "Practical guides on document intelligence, bank statement analysis, business verification, fraud signals, and policy for alternative lending underwriting teams.",
-    url: "/blog",
-    type: "website",
-  },
-};
+    "Practical guides on MCA underwriting, bank statement analysis, business verification, fraud signals and credit policy for alternative lending teams.",
+  keywords: ["AI underwriting insights", "alternative lending blog", "MCA underwriting guides", "bank statement analysis guide", "KYB for lenders"],
+  image: "/blog/opengraph-image",
+});
 
 /* --------------------------------------------------------------------------
    The blog index, same architecture as the product pages: the shared dark

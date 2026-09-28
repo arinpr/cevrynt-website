@@ -9,8 +9,8 @@ import { DaySplit } from "@/components/mca/day-split";
 import { PolicyMargins } from "@/components/mca/policy-margins";
 import { SourceAddress } from "@/components/mca/source-address";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -19,17 +19,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("solutions/merchant-cash-advance");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -244,15 +234,7 @@ const sourceNote =
   "Cevrynt keeps each material finding connected to the evidence behind it. Some values come from a single field, others from a wider statement range or calculation, and the source trace preserves that difference. Illustrative deal · synthetic borrower data.";
 
 export default function MerchantCashAdvancePage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

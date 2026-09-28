@@ -13,6 +13,7 @@ import { ArticleFaq } from "@/components/article-faq";
 import { ArticleIndex } from "@/components/article/article-index";
 import { ReadNext } from "@/components/article/read-next";
 import { JsonLd } from "@/components/json-ld";
+import { buildMetadata } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
@@ -30,25 +31,21 @@ export async function generateMetadata({ params }) {
   const post = getPostBySlug(slug);
   if (!post) return {};
 
-  return {
+  return buildMetadata({
+    path: `blog/${post.slug}`,
     title: post.metaTitle,
     description: post.metaDescription,
     keywords: post.keywords,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
-      title: post.metaTitle,
-      description: post.metaDescription,
-      url: `/blog/${post.slug}`,
-      type: "article",
+    image: `/blog/${post.slug}/opengraph-image`,
+    type: "article",
+    article: {
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
-      authors: ["Cevrynt"],
+      authors: [siteConfig.legalName],
+      section: post.category,
+      tags: post.keywords,
     },
-    twitter: {
-      title: post.metaTitle,
-      description: post.metaDescription,
-    },
-  };
+  });
 }
 
 /* --------------------------------------------------------------------------

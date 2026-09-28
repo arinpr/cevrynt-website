@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHasEntered, useReady } from "@/components/progressive";
+import { track } from "@/lib/analytics";
 import { RichText } from "@/components/rich-text";
 
 /**
@@ -38,14 +39,16 @@ export function AnswerLedger({ groups, guides, readout, aside, close, note }) {
   const allOpen = open.size === items.length;
 
   const toggle = useCallback(
-    (id) =>
+    (id) => {
+      if (!open.has(id)) track("faq_expand", { question_id: id });
       setOpen((cur) => {
         const next = new Set(cur);
         if (next.has(id)) next.delete(id);
         else next.add(id);
         return next;
-      }),
-    [],
+      });
+    },
+    [open],
   );
 
   // A link to a question's anchor opens it — on arrival, on hash changes, and

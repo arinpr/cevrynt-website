@@ -9,6 +9,7 @@ import { ReadThenSee } from "@/components/resources/read-then-see";
 import { QuestionIndex } from "@/components/resources/question-index";
 import { TermGlossary } from "@/components/resources/term-glossary";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath, workflow } from "@/content/site-pages";
 import { posts } from "@/content/blog";
 import { siteConfig } from "@/config/site";
@@ -21,17 +22,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("resources");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -506,15 +497,7 @@ const glossaryNote =
   "General plain-language definitions for lending teams. Where a lender's own policy defines a term differently, the lender's definition applies.";
 
 export default function ResourcesPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   const shelved = [...stageShelves.flatMap((s) => s.guides), ...acrossGuides];
   const itemListJsonLd = {

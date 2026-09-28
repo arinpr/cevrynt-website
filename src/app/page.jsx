@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "@/components/icons";
 import { HeroMotion } from "@/components/hero-motion";
@@ -24,6 +25,9 @@ import { ProductShot } from "@/components/home/product-shot";
 import { ScrollProgress, PointerField } from "@/components/home/fx";
 import { RainbowCta } from "@/components/ui/rainbow-cta";
 import { sitePages } from "@/content/site-pages";
+import { JsonLd } from "@/components/json-ld";
+import { siteConfig } from "@/config/site";
+import { organizationId } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -301,9 +305,36 @@ function SectionHead({ index, kicker, heading, lede, invert, id }) {
   );
 }
 
+/* What the homepage describes: the product itself. No offers, prices or
+   ratings — none are published, so none are claimed. */
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "@id": `${siteConfig.url}/#software`,
+  name: "Cevrynt",
+  url: siteConfig.url,
+  applicationCategory: "BusinessApplication",
+  applicationSubCategory: "AI underwriting software",
+  operatingSystem: "Web",
+  description:
+    "AI-assisted underwriting infrastructure for U.S. merchant cash advance funders and alternative lenders. Cevrynt structures borrower documents, bank statements, business verification, fraud signals and lender policy into evidence-linked analysis for human underwriters, who retain final decision authority.",
+  featureList: [
+    "Document classification and source-linked extraction",
+    "Bank statement and cash-flow analysis",
+    "Business verification (KYB)",
+    "Fraud and risk signals",
+    "Lender-defined policy evaluation",
+    "Reviewer notes, overrides and audit history",
+    "Evidence-linked underwriting reports",
+  ],
+  audience: { "@type": "BusinessAudience", audienceType: "MCA funders, alternative lenders, revenue-based finance companies, brokers and ISOs" },
+  publisher: { "@id": organizationId },
+};
+
 export default function Home() {
   return (
     <main id="main-content">
+      <JsonLd data={softwareJsonLd} />
       <ScrollProgress />
       <HeroMotion>
         <div className="home-hero-inner">
@@ -329,222 +360,248 @@ export default function Home() {
         </div>
       </HeroMotion>
 
-      <SystemsBar />
+      <Suspense>
+        <SystemsBar />
+      </Suspense>
 
       {/* 02 — Problem */}
-      <section className="pb band-deep" aria-labelledby="problem-heading">
-        <div className="eg sec-head">
-          <span className="eg-rail hx-mono">02</span>
-          <div className="eg-head">
-            <p className="hx-kicker hx-kicker-invert">THE UNDERWRITING CONTEXT PROBLEM</p>
-            {/* <h2 className="sr-only" id="problem-heading">Why underwriting context gets lost between tools</h2> */}
-            <ScrubStatement
-              className="t-display-1"
-              text="The numbers may be in the file.The reason behind the decision usually isn’t."
-            />
+      <Suspense>
+        <section className="pb band-deep" aria-labelledby="problem-heading">
+          <div className="eg sec-head">
+            <span className="eg-rail hx-mono">02</span>
+            <div className="eg-head">
+              <p className="hx-kicker hx-kicker-invert">THE UNDERWRITING CONTEXT PROBLEM</p>
+              {/* <h2 className="sr-only" id="problem-heading">Why underwriting context gets lost between tools</h2> */}
+              <ScrubStatement
+                className="t-display-1"
+                text="The numbers may be in the file.The reason behind the decision usually isn’t."
+              />
+            </div>
           </div>
-        </div>
-        <ParallaxLayers />
-        <div className="eg pb-body">
-          <ProblemCards items={problems} />
-        </div>
-      </section>
+          <ParallaxLayers />
+          <div className="eg pb-body">
+            <ProblemCards items={problems} />
+          </div>
+        </section>
+      </Suspense>
 
       {/* 03 — Audience routing */}
-      <section className="au band-light" aria-labelledby="audience-heading">
-        <SectionHead
-          index="03"
-          id="audience-heading"
-          kicker="Who it's for"
-          heading="Same deal. Different pressure depending on where you sit."
-          lede="Cevrynt is built around the funder-side underwriting workflow first, while giving every team around the deal a cleaner way to prepare, review and understand the same borrower story."
-        />
-        <div className="eg au-body">
-          <PointerField className="au-full" selector=".ar-card" tilt>
-            <AudienceRouter audiences={audiences} />
-          </PointerField>
-        </div>
-      </section>
+      <Suspense>
+        <section className="au band-light" aria-labelledby="audience-heading">
+          <SectionHead
+            index="03"
+            id="audience-heading"
+            kicker="Who it's for"
+            heading="Same deal. Different pressure depending on where you sit."
+            lede="Cevrynt is built around the funder-side underwriting workflow first, while giving every team around the deal a cleaner way to prepare, review and understand the same borrower story."
+          />
+          <div className="eg au-body">
+            <PointerField className="au-full" selector=".ar-card" tilt>
+              <AudienceRouter audiences={audiences} />
+            </PointerField>
+          </div>
+        </section>
+      </Suspense>
 
-      <HowItWorks stages={stages} />
+      <Suspense>
+        <HowItWorks stages={stages} />
+      </Suspense>
 
       {/* 05 — Outcome rows */}
-      <section className="bs band-light" aria-labelledby="benefits-heading">
-        <SectionHead
-          index="05"
-          id="benefits-heading"
-          kicker="What changes"
-          heading="The difference shows up in the work your underwriters stop repeating."
-          lede="For MCA funders and alternative lenders, the payoff is practical: less re-reading, earlier conflict detection, more consistent policy review, and a decision record that still makes sense months later."
-        />
-        <div className="eg bs-body">
-          <div className="bs-full">
-            <BenefitRows rows={benefits} />
+      <Suspense>
+        <section className="bs band-light" aria-labelledby="benefits-heading">
+          <SectionHead
+            index="05"
+            id="benefits-heading"
+            kicker="What changes"
+            heading="The difference shows up in the work your underwriters stop repeating."
+            lede="For MCA funders and alternative lenders, the payoff is practical: less re-reading, earlier conflict detection, more consistent policy review, and a decision record that still makes sense months later."
+          />
+          <div className="eg bs-body">
+            <div className="bs-full">
+              <BenefitRows rows={benefits} />
+            </div>
           </div>
-        </div>
-        <div className="eg sec-cta">
-          <p className="eg-head t-lede">See how Cevrynt handles your own underwriting files.</p>
-          <a className="inline-cta" href={calendlyUrl} target="_blank" rel="noreferrer">
-            Book a walkthrough <ArrowUpRight />
-          </a>
-        </div>
-      </section>
+          <div className="eg sec-cta">
+            <p className="eg-head t-lede">See how Cevrynt handles your own underwriting files.</p>
+            <a className="inline-cta" href={calendlyUrl} target="_blank" rel="noreferrer">
+              Book a walkthrough <ArrowUpRight />
+            </a>
+          </div>
+        </section>
+      </Suspense>
 
       {/* 06 — Platform */}
-      <section className="pf band-light" aria-labelledby="capabilities-heading">
-        <SectionHead
-          index="06"
-          id="capabilities-heading"
-          kicker="THE UNDERWRITING VIEW"
-          heading="Six questions every deal should answer before your team makes the call."
-          lede="Cevrynt brings the answers into one review — financial behaviour, business identity, existing obligations, file integrity and policy fit — with the evidence behind each one."
-        />
-        <div className="eg pf-body">
-          <div className="pf-full">
-            <RoadmapTrack stations={products} />
+      <Suspense>
+        <section className="pf band-light" aria-labelledby="capabilities-heading">
+          <SectionHead
+            index="06"
+            id="capabilities-heading"
+            kicker="THE UNDERWRITING VIEW"
+            heading="Six questions every deal should answer before your team makes the call."
+            lede="Cevrynt brings the answers into one review — financial behaviour, business identity, existing obligations, file integrity and policy fit — with the evidence behind each one."
+          />
+          <div className="eg pf-body">
+            <div className="pf-full">
+              <RoadmapTrack stations={products} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       {/* 07 — Worked example */}
-      <section className="wk band-deep" aria-labelledby="worked-heading">
-        <SectionHead
-          index="07"
-          id="worked-heading"
-          kicker="A worked example"
-          heading="A deal should leave behind more than a status."
-          lede="Here's one illustrative MCA underwriting file after Cevrynt has worked through it — the numbers, conflicts, policy exceptions and source evidence are still there when it reaches the underwriter."
-          invert
-        />
-        <ParallaxLayers />
-        <div className="eg wk-body">
-          <div className="wk-full">
-            <ProductShot
-              src="/media/placeholder/cevrynt-worked.png"
-              alt="Underwriting workspace showing the full audit trail for one illustrative deal"
-              width={1600}
-              height={900}
-              label="Audit trail"
-              sizes="(max-width: 860px) 92vw, 1100px"
-              parallax={false}
-              className="wk-shot"
-            />
-            <WorkedExample deal={deal} entries={ledger} />
+      <Suspense>
+        <section className="wk band-deep" aria-labelledby="worked-heading">
+          <SectionHead
+            index="07"
+            id="worked-heading"
+            kicker="A worked example"
+            heading="A deal should leave behind more than a status."
+            lede="Here's one illustrative MCA underwriting file after Cevrynt has worked through it — the numbers, conflicts, policy exceptions and source evidence are still there when it reaches the underwriter."
+            invert
+          />
+          <ParallaxLayers />
+          <div className="eg wk-body">
+            <div className="wk-full">
+              <ProductShot
+                src="/media/placeholder/cevrynt-worked.png"
+                alt="Underwriting workspace showing the full audit trail for one illustrative deal"
+                width={1600}
+                height={900}
+                label="Audit trail"
+                sizes="(max-width: 860px) 92vw, 1100px"
+                parallax={false}
+                className="wk-shot"
+              />
+              <WorkedExample deal={deal} entries={ledger} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       {/* 08 — Why Cevrynt */}
-      <section className="wy band-light" aria-labelledby="why-heading">
-        <SectionHead
-          index="08"
-          id="why-heading"
-          kicker="Why Cevrynt"
-          heading="Underwriting automation that shows its work."
-          lede="Cevrynt does the repetitive work around an MCA or SMB underwriting file, but it does not hide how it got there. The evidence, lender policy, exceptions and human judgment remain visible all the way to the final review."
-        />
-        <div className="eg wy-body">
-          <div className="wy-full">
-            <WhyList items={principles} />
+      <Suspense>
+        <section className="wy band-light" aria-labelledby="why-heading">
+          <SectionHead
+            index="08"
+            id="why-heading"
+            kicker="Why Cevrynt"
+            heading="Underwriting automation that shows its work."
+            lede="Cevrynt does the repetitive work around an MCA or SMB underwriting file, but it does not hide how it got there. The evidence, lender policy, exceptions and human judgment remain visible all the way to the final review."
+          />
+          <div className="eg wy-body">
+            <div className="wy-full">
+              <WhyList items={principles} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       {/* 09 — Lender control */}
-      <section className="ct band-light" aria-labelledby="control-heading">
-        <SectionHead
-          index="09"
-          id="control-heading"
-          kicker="Lender control"
-          heading="Automate the review. Keep the credit authority."
-          lede="Cevrynt prepares the underwriting work — structuring evidence, applying lender-defined policy, surfacing exceptions and building the decision record. Your team keeps control of risk appetite, judgment and the final credit or funding decision."
-        />
-        <div className="eg ct-body">
-          <div className="ct-full">
-            <ControlBoundary rows={boundaries} />
+      <Suspense>
+        <section className="ct band-light" aria-labelledby="control-heading">
+          <SectionHead
+            index="09"
+            id="control-heading"
+            kicker="Lender control"
+            heading="Automate the review. Keep the credit authority."
+            lede="Cevrynt prepares the underwriting work — structuring evidence, applying lender-defined policy, surfacing exceptions and building the decision record. Your team keeps control of risk appetite, judgment and the final credit or funding decision."
+          />
+          <div className="eg ct-body">
+            <div className="ct-full">
+              <ControlBoundary rows={boundaries} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       {/* 10 — SHOPLINE */}
-      <section className="pt band-deep" aria-labelledby="partner-heading">
-        <ParallaxLayers />
-        <div className="eg pt-head">
-          <span className="eg-rail hx-mono">10</span>
-          <div className="eg-head">
-            <p className="hx-kicker hx-kicker-invert">Cevrynt × SHOPLINE</p>
-            <RevealLines as="h2" className="t-display-2" id="partner-heading" text="Bringing underwriting closer to where commerce actually happens." />
+      <Suspense>
+        <section className="pt band-deep" aria-labelledby="partner-heading">
+          <ParallaxLayers />
+          <div className="eg pt-head">
+            <span className="eg-rail hx-mono">10</span>
+            <div className="eg-head">
+              <p className="hx-kicker hx-kicker-invert">Cevrynt × SHOPLINE</p>
+              <RevealLines as="h2" className="t-display-2" id="partner-heading" text="Bringing underwriting closer to where commerce actually happens." />
+            </div>
+            <p className="eg-lede t-lede pt-lede">
+              Cevrynt and SHOPLINE are working through a development and referral partnership around a simple question: how can e-commerce merchant underwriting use real operating context without taking the credit decision away from the lender?
+            </p>
           </div>
-          <p className="eg-lede t-lede pt-lede">
-            Cevrynt and SHOPLINE are working through a development and referral partnership around a simple question: how can e-commerce merchant underwriting use real operating context without taking the credit decision away from the lender?
-          </p>
-        </div>
-        <div className="eg pt-body">
-          <div className="pt-full">
-           
-            <PartnerQuestion
-              question="What changes when the underwriting file can understand the business behind it?"
-              scope={partnershipScope}
-              href="/partners/shopline"
-            />
+          <div className="eg pt-body">
+            <div className="pt-full">
+             
+              <PartnerQuestion
+                question="What changes when the underwriting file can understand the business behind it?"
+                scope={partnershipScope}
+                href="/partners/shopline"
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       {/* 11 — Pilot */}
-      <section className="pl band-light" aria-labelledby="pilot-heading">
-        <SectionHead
-          index="11"
-          id="pilot-heading"
-          kicker="Founder-led pilot"
-          heading="Test Cevrynt on files your underwriters already know."
-          lede="A pilot starts small on purpose. Pick one underwriting workflow, agree what a useful result looks like, then run Cevrynt against representative historical files your team has already reviewed."
-        />
-        <div className="eg pl-body">
-          <div className="pl-full">
-            <PilotTimeline
-              stages={pilotStages}
-            />
+      <Suspense>
+        <section className="pl band-light" aria-labelledby="pilot-heading">
+          <SectionHead
+            index="11"
+            id="pilot-heading"
+            kicker="Founder-led pilot"
+            heading="Test Cevrynt on files your underwriters already know."
+            lede="A pilot starts small on purpose. Pick one underwriting workflow, agree what a useful result looks like, then run Cevrynt against representative historical files your team has already reviewed."
+          />
+          <div className="eg pl-body">
+            <div className="pl-full">
+              <PilotTimeline
+                stages={pilotStages}
+              />
+            </div>
           </div>
-        </div>
-        <div className="eg sec-cta">
-          <p className="eg-head t-lede">Bring a workflow and a small set of representative files.</p>
-          <a className="inline-cta" href="mailto:arin@cevrynt.com">
-            arin@cevrynt.com <ArrowUpRight />
-          </a>
-        </div>
-      </section>
+          <div className="eg sec-cta">
+            <p className="eg-head t-lede">Bring a workflow and a small set of representative files.</p>
+            <a className="inline-cta" href="mailto:arin@cevrynt.com">
+              arin@cevrynt.com <ArrowUpRight />
+            </a>
+          </div>
+        </section>
+      </Suspense>
 
       {/* 12 — Resources */}
-      <section className="rs band-light" aria-labelledby="resources-heading">
-        <SectionHead
-          index="12"
-          id="resources-heading"
-          kicker="Resources"
-          heading="Practical guidance for MCA and SMB underwriting teams."
-          lede="Deep dives on bank statement analysis, existing positions, fraud signals and the evidence an underwriting decision should leave behind."
-        />
-        <div className="eg rs-body">
-          <div className="rs-full">
-            <ResourceLines items={resources} />
+      <Suspense>
+        <section className="rs band-light" aria-labelledby="resources-heading">
+          <SectionHead
+            index="12"
+            id="resources-heading"
+            kicker="Resources"
+            heading="Practical guidance for MCA and SMB underwriting teams."
+            lede="Deep dives on bank statement analysis, existing positions, fraud signals and the evidence an underwriting decision should leave behind."
+          />
+          <div className="eg rs-body">
+            <div className="rs-full">
+              <ResourceLines items={resources} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Suspense>
 
       <ObjectionBlock items={objections} links={keepReading} />
 
       {/* 14 — Finale */}
-      <section className="fn band-white" aria-labelledby="cta-heading">
-        <div className="fn-glow" aria-hidden="true" />
-        <FounderClose
-          index="14"
-          kicker="FOUNDER-LED WALKTHROUGH"
-          heading="Bring one underwriting workflow. Leave with a clear plan."
-          lede="Walk through how a deal moves through your team today. We’ll identify where Cevrynt fits, what should stay with your underwriters, and what a focused pilot would need to prove before you change anything."
-          calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
-        />
-      </section>
+      <Suspense>
+        <section className="fn band-white" aria-labelledby="cta-heading">
+          <div className="fn-glow" aria-hidden="true" />
+          <FounderClose
+            index="14"
+            kicker="FOUNDER-LED WALKTHROUGH"
+            heading="Bring one underwriting workflow. Leave with a clear plan."
+            lede="Walk through how a deal moves through your team today. We’ll identify where Cevrynt fits, what should stay with your underwriters, and what a focused pilot would need to prove before you change anything."
+            calendlyUrl={calendlyUrl}
+            email="arin@cevrynt.com"
+          />
+        </section>
+      </Suspense>
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { RainbowCta } from "@/components/ui/rainbow-cta";
 import { FounderClose } from "@/components/home/founder-close";
 import { RevealLines } from "@/components/home/reveal-lines";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { SignalMark } from "@/components/icons";
 import { LayerStack } from "@/components/platform/layer-stack";
 import { ProvenancePlanes } from "@/components/platform/provenance-planes";
@@ -11,7 +12,6 @@ import { SignalTree } from "@/components/platform/signal-tree";
 import { PolicySheet } from "@/components/platform/policy-sheet";
 import { ChangeRecord } from "@/components/platform/change-record";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -20,17 +20,7 @@ const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 const page = pageByPath.get("platform");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /**
@@ -248,15 +238,7 @@ const recordChanges = [
 
 
 export default function PlatformPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

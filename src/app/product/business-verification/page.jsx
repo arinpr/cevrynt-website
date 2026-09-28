@@ -10,8 +10,8 @@ import { ChangePlot } from "@/components/verification/change-plot";
 import { HolderPlot } from "@/components/verification/holder-plot";
 import { CoverageSpan } from "@/components/verification/coverage-span";
 import { JsonLd } from "@/components/json-ld";
+import { pageMetadata, pageBreadcrumbJsonLd } from "@/lib/seo";
 import { pageByPath } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 
 export const revalidate = 3600;
 
@@ -21,17 +21,7 @@ const founderEmail = "arin@cevrynt.com";
 const page = pageByPath.get("product/business-verification");
 
 export function generateMetadata() {
-  const title = page.metaTitle || page.title;
-  const description = page.metaDescription || page.description;
-
-  return {
-    title,
-    description,
-    keywords: page.keywords,
-    alternates: { canonical: `/${page.path}` },
-    openGraph: { title, description, url: `/${page.path}` },
-    twitter: { title, description },
-  };
+  return pageMetadata(page);
 }
 
 /* --------------------------------------------------------------------------
@@ -462,15 +452,7 @@ const spanNote =
   "Cevrynt is AI-assisted infrastructure for human underwriting. It is not a lender, makes no identity, sanctions or credit determination, issues no approval or decline, and lenders retain final approval authority.";
 
 export default function BusinessVerificationPage() {
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
 
   return (
     <main id="main-content">

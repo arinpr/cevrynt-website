@@ -29,6 +29,7 @@ const descriptions = {
   Resources: "Explore practical underwriting guidance.",
   Blog: "Read product and market perspectives.",
   FAQ: "Get concise answers about Cevrynt.",
+  Compare: "See how Cevrynt compares with other tools.",
 };
 
 const useCases = [
@@ -42,8 +43,8 @@ const secondaryNavigation = {
   Platform: ["Workflow", [["Document intake", "/product/document-intelligence"], ["Financial review", "/product/bank-statement-analysis"], ["Human decision", "/platform"]]],
   Product: ["For underwriting teams", [["MCA funders", "/solutions/merchant-cash-advance"], ["Risk and operations", "/why-cevrynt"], ["Policy review", "/product/policy-engine"]]],
   Solutions: ["By use case", useCases],
-  Company: ["Company", [["Founder-led pilot", "/pilot"], ["Contact", "/company/contact"], ["Investors", "/company/investors"]]],
-  Resources: ["Explore", [["Resource hub", "/resources"], ["Blog", "/blog"], ["FAQ", "/faq"]]],
+  Company: ["Company", [["Founder-led pilot", "/pilot"], ["Contact", "/contact"], ["Investors", "/investors"]]],
+  Resources: ["Explore", [["Resource hub", "/resources"], ["Compare tools", "/compare"], ["Blog", "/blog"], ["FAQ", "/faq"]]],
 };
 
 const visualCopy = {

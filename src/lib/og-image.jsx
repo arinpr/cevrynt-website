@@ -1,46 +1,11 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { ImageResponse } from "next/og";
+import { ogLogoDataUri } from "@/lib/og-logo";
 
 export const ogImageSize = { width: 1200, height: 630 };
 export const ogImageContentType = "image/png";
 
-const PNG_CHUNK_ALLOWLIST = new Set(["IHDR", "PLTE", "tRNS", "IDAT", "IEND"]);
-
-// Some PNG exports embed non-standard ancillary chunks (e.g. a stray "orNT" chunk).
-// Browsers and image tools safely ignore unknown chunks per the PNG spec, but satori's
-// raster decoder does not, so we strip anything outside the allowlist before embedding.
-function sanitizePng(buffer) {
-  const signature = buffer.subarray(0, 8);
-  const chunks = [signature];
-  let offset = 8;
-
-  while (offset < buffer.length) {
-    const length = buffer.readUInt32BE(offset);
-    const type = buffer.toString("ascii", offset + 4, offset + 8);
-    const chunkEnd = offset + 8 + length + 4;
-    if (PNG_CHUNK_ALLOWLIST.has(type)) {
-      chunks.push(buffer.subarray(offset, chunkEnd));
-    }
-    offset = chunkEnd;
-  }
-
-  return Buffer.concat(chunks);
-}
-
-let logoDataUriPromise;
-
-function getLogoDataUri() {
-  if (!logoDataUriPromise) {
-    logoDataUriPromise = readFile(path.join(process.cwd(), "public/brand/cevrynt-logo-v2.png")).then(
-      (buffer) => `data:image/png;base64,${sanitizePng(buffer).toString("base64")}`
-    );
-  }
-  return logoDataUriPromise;
-}
-
 export async function renderOgImage({ eyebrow, title, subtitle }) {
-  const logoSrc = await getLogoDataUri();
+  const logoSrc = ogLogoDataUri;
   const titleSize = title.length > 70 ? 52 : title.length > 44 ? 62 : 74;
 
   return new ImageResponse(

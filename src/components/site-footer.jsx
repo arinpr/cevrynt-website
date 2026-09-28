@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { navGroups } from "@/content/site-pages";
+import { siteConfig } from "@/config/site";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { CookieSettingsButton } from "@/components/analytics";
 
 const WORDMARK = "Cevrynt";
 
@@ -83,6 +85,8 @@ export function SiteFooter() {
               <Link href="/investors"><span>Investors</span></Link>
               <Link href="/contact"><span>Contact</span></Link>
               <Link href="/partners/shopline"><span>Cevrynt × SHOPLINE</span></Link>
+              <Link href="/compare"><span>Compare</span></Link>
+              <a href={siteConfig.linkedinUrl} target="_blank" rel="noopener me"><span>LinkedIn</span></a>
             </div>
           </nav>
         </div>
@@ -90,11 +94,12 @@ export function SiteFooter() {
         {/* Only two short items cross the type now, one hard left and one hard
             right, where the letterforms are quietest. */}
         <div className="footer-meta">
-          <span className="hx-mono footer-copy">© {new Date().getFullYear()} Cevrynt</span>
+          <span className="hx-mono footer-copy">© {new Date().getFullYear()} Cevrynt, Inc.</span>
           <ul className="footer-legal">
             {legal.map(([label, href]) => (
               <li key={href}><Link href={href}><span>{label}</span></Link></li>
             ))}
+            <li><CookieSettingsButton className="footer-cookie-btn" /></li>
           </ul>
         </div>
       </div>

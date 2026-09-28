@@ -6,23 +6,15 @@ import { PageHeroCopy } from "@/components/page-hero-copy";
 import { RainbowCta } from "@/components/ui/rainbow-cta";
 import { RevealLines } from "@/components/home/reveal-lines";
 import { workflow } from "@/content/site-pages";
-import { siteConfig } from "@/config/site";
 import { JsonLd } from "@/components/json-ld";
+import { pageBreadcrumbJsonLd } from "@/lib/seo";
 import { WalkthroughBand } from "@/components/walkthrough-band";
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
 
 export function PageShell({ page }) {
   const ctaHref = page.ctaHref || calendlyUrl;
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: page.group, item: `${siteConfig.url}/${page.path}` },
-      { "@type": "ListItem", position: 3, name: page.title, item: `${siteConfig.url}/${page.path}` },
-    ],
-  };
+  const breadcrumbJsonLd = pageBreadcrumbJsonLd(page);
   const useDarkHero = page.group !== "Resources" && page.group !== "Article" && !page.legal;
 
   return (
