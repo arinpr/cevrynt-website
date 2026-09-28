@@ -565,11 +565,11 @@ export default function WhyCevryntPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="FOUNDER-LED EVALUATION"
+          kicker="EVALUATION"
           heading="Put Cevrynt against files your team already knows."
           lede="Bring representative historical deals and the underwriting criteria your team actually uses. Compare Cevrynt’s facts, source evidence, policy results, exceptions, and review history against the work you already trust."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

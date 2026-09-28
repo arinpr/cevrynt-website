@@ -38,7 +38,7 @@ const secondaryNavigation = {
   Platform: ["Workflow", [["Document intake", "/product/document-intelligence"], ["Financial review", "/product/bank-statement-analysis"], ["Human decision", "/platform"]]],
   Product: ["For underwriting teams", [["MCA funders", "/solutions/merchant-cash-advance"], ["Risk and operations", "/why-cevrynt"], ["Policy review", "/product/policy-engine"]]],
   Solutions: ["By use case", useCases],
-  Company: ["Company", [["Founder-led pilot", "/pilot"], ["Contact", "/contact"], ["Investors", "/investors"]]],
+  Company: ["Company", [["Pilot", "/pilot"], ["Contact", "/contact"], ["Investors", "/investors"]]],
   Resources: ["Explore", [["Resource hub", "/resources"], ["Compare tools", "/compare"], ["Blog", "/blog"], ["FAQ", "/faq"]]],
 };
 

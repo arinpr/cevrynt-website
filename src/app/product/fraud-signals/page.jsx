@@ -17,7 +17,7 @@ import { flows, DAILY_DEBIT, WEEKLY_DEBIT, dailyDebits, weeklyDebits } from "@/c
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("product/fraud-signals");
 
@@ -752,11 +752,11 @@ export default function FraudSignalsPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring the package that looked fine until it did not."
           lede="The file where something was off and it took a week to say what — two statements that did not quite agree, a debit nobody could explain, a document that was clean on its own and wrong next to the others. Walk us through it, and we will show you where it would have surfaced and what it would have been attached to."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

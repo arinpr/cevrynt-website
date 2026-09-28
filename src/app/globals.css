@@ -9585,6 +9585,129 @@ body:has(.article-header) .nav-use-cases a:hover {
   .bet-sheen { display: none; }
 }
 
+/* Roadmap: four milestones side by side on the same panel as the bets. */
+.bet.bet-4 .bet-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .bet.bet-4 .bet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 680px) { .bet.bet-4 .bet-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* -- Investors 01 · The seven sources, as a ledger ---------------------------
+   Seven rows: the source, and what the reviewer is actually checking in it.
+   Rows arrive one after another on entry; the list is complete without JS.
+   -------------------------------------------------------------------------- */
+.srl { margin-top: var(--s-block); }
+.srl-head { margin: 0 0 clamp(8px, 1vw, 12px); padding-bottom: clamp(14px, 1.8vw, 18px); border-bottom: 1px solid var(--ink); color: var(--label); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 1.7; text-transform: uppercase; }
+.srl-list { margin: 0; padding: 0; list-style: none; }
+.srl-row {
+  display: grid;
+  grid-template-columns: clamp(44px, 6vw, 84px) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(14px, 1.8vw, 22px) 0;
+  border-bottom: 1px solid var(--border);
+}
+.srl-n { color: var(--rail); font-size: 0.5rem; font-weight: 600; letter-spacing: 0.1em; }
+.srl-k { color: var(--ink); font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif; font-size: clamp(1.1rem, 2vw, 1.5rem); letter-spacing: -0.024em; line-height: 1.2; }
+.srl-v { color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+.srl.is-ready .srl-row { opacity: 0; transform: translateY(12px); }
+.srl.is-ready.is-seen .srl-row { opacity: 1; transform: none; transition: opacity 420ms ease calc(var(--i) * 70ms), transform 540ms cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i) * 70ms); }
+.srl-callout { max-width: 62ch; margin: clamp(24px, 3.2vw, 38px) 0 0; padding: clamp(16px, 2vw, 22px) clamp(18px, 2.2vw, 26px); border-left: 3px solid var(--rail); border-radius: 0 14px 14px 0; background: var(--soft-blue); color: var(--ink); font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 560; letter-spacing: -0.02em; line-height: 1.4; }
+.srl-note { max-width: 80ch; margin: clamp(18px, 2.4vw, 26px) 0 0; color: var(--muted); font-size: 0.86rem; line-height: 1.56; }
+@media (max-width: 680px) {
+  .srl-row { grid-template-columns: clamp(36px, 10vw, 44px) minmax(0, 1fr); row-gap: 6px; }
+  .srl-v { grid-column: 2; }
+}
+
+/* -- Investors 03 · Traction on real files ------------------------------------
+   Figures left, monthly count right. Bar height is data (--h), so the chart
+   is exact with no JavaScript; on entry each bar grows from the baseline.
+   -------------------------------------------------------------------------- */
+.trc { margin-top: var(--s-block); }
+.trc-head { margin: 0 0 clamp(20px, 2.6vw, 28px); padding-bottom: clamp(14px, 1.8vw, 18px); border-bottom: 1px solid var(--ink); color: var(--label); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 1.7; text-transform: uppercase; }
+.trc-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(16px, 2.2vw, 30px); align-items: stretch; }
+.trc-figures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); margin: 0; }
+.trc-figure { display: grid; align-content: start; gap: 8px; padding: clamp(20px, 2.4vw, 30px); border: 1px solid rgba(10, 92, 80, 0.16); border-radius: 18px; background: var(--soft-blue); }
+.trc-figure-k { order: 2; margin: 0; color: var(--label); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 1.6; text-transform: uppercase; }
+.trc-figure-v { order: 1; margin: 0; color: var(--ink); font-size: clamp(2rem, 4vw, 3.2rem); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.05em; line-height: 1; }
+.trc-figure-b { order: 3; margin: 0; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+.trc.is-ready .trc-figure { opacity: 0; transform: translateY(16px); }
+.trc.is-ready.is-seen .trc-figure { opacity: 1; transform: none; transition: opacity 440ms ease calc(var(--i) * 90ms), transform 560ms cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i) * 90ms); }
+
+.trc-chart { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(14px, 1.8vw, 20px); padding: clamp(20px, 2.4vw, 30px); border: 1px solid rgba(10, 92, 80, 0.16); border-radius: 18px; background: #fbfdfc; }
+.trc-chart-k { margin: 0; color: var(--label); font-size: 0.46rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.trc-bars { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; gap: clamp(8px, 1.4vw, 16px); min-height: clamp(200px, 22vw, 280px); margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--border); }
+.trc-bar { display: grid; grid-template-rows: auto 1fr; justify-items: center; align-items: end; gap: 8px; height: 100%; position: relative; padding-bottom: 28px; }
+.trc-bar-v { color: var(--ink); font-size: 0.86rem; font-variant-numeric: tabular-nums; font-weight: 600; align-self: end; }
+.trc-bar-fill { width: 100%; height: calc(var(--h) * 100%); min-height: 6px; border-radius: 8px 8px 2px 2px; background: linear-gradient(180deg, var(--rail), var(--ink)); transform-origin: bottom; }
+.trc-bar:last-child .trc-bar-fill { background: linear-gradient(180deg, rgba(10, 92, 80, 0.55), var(--rail)); }
+.trc-bar-k { position: absolute; bottom: 4px; color: var(--label); font-size: 0.46rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.trc.is-ready .trc-bar-fill { transform: scaleY(0); }
+.trc.is-ready.is-seen .trc-bar-fill { transform: scaleY(1); transition: transform 720ms cubic-bezier(0.33, 1, 0.68, 1) calc(240ms + var(--i) * 90ms); }
+.trc-chart-foot { margin: 0; color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
+
+.trc-close { max-width: 62ch; margin: clamp(24px, 3.2vw, 38px) 0 0; padding-top: clamp(16px, 2vw, 22px); border-top: 1px solid var(--ink); color: var(--ink); font-size: clamp(1rem, 1.6vw, 1.32rem); font-weight: 560; letter-spacing: -0.024em; line-height: 1.35; }
+.trc-note { max-width: 80ch; margin: clamp(18px, 2.4vw, 26px) 0 0; color: var(--muted); font-size: 0.86rem; line-height: 1.56; }
+@media (max-width: 1000px) { .trc-body { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 460px) { .trc-figures { grid-template-columns: minmax(0, 1fr); } }
+
+/* -- Investors 06 · The team, on the dark band ------------------------------- */
+.tmr { margin-top: var(--s-block); }
+.tmr-head { margin: 0 0 clamp(20px, 2.6vw, 28px); padding-bottom: clamp(14px, 1.8vw, 18px); border-bottom: 1px solid rgba(234, 243, 240, 0.34); color: rgba(234, 243, 240, 0.6); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 1.7; text-transform: uppercase; }
+.tmr-people { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 26px); margin: 0; padding: 0; list-style: none; }
+.tmr-person { display: grid; align-content: start; gap: 10px; padding: clamp(22px, 2.8vw, 36px); border: 1px solid rgba(234, 243, 240, 0.16); border-radius: 18px; background: rgba(234, 243, 240, 0.06); }
+.tmr-person-n { color: var(--yellow); font-size: clamp(2.4rem, 5vw, 4rem); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.05em; line-height: 0.95; }
+.tmr-person-k { color: #f4faf8; font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif; font-size: clamp(1.1rem, 1.9vw, 1.4rem); letter-spacing: -0.024em; line-height: 1.2; }
+.tmr-person-b { color: rgba(234, 243, 240, 0.64); font-size: 0.85rem; line-height: 1.55; }
+.tmr.is-ready .tmr-person { opacity: 0; transform: translateY(18px); }
+.tmr.is-ready.is-seen .tmr-person { opacity: 1; transform: none; transition: opacity 460ms ease calc(var(--i) * 110ms), transform 600ms cubic-bezier(0.33, 1, 0.68, 1) calc(var(--i) * 110ms); }
+
+.tmr-facts-k { margin: clamp(30px, 4vw, 48px) 0 0; padding-bottom: clamp(12px, 1.6vw, 16px); border-bottom: 1px solid rgba(234, 243, 240, 0.16); color: var(--yellow); font-size: 0.48rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; }
+.tmr-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 3vw, 44px); margin: 0; }
+.tmr-fact { display: grid; gap: 6px; padding: clamp(16px, 2vw, 22px) 0; border-bottom: 1px solid rgba(234, 243, 240, 0.12); }
+.tmr-fact-k { color: #f4faf8; font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; }
+.tmr-fact-b { margin: 0; color: rgba(234, 243, 240, 0.64); font-size: 0.85rem; line-height: 1.55; }
+.tmr-close { max-width: 62ch; margin: clamp(26px, 3.4vw, 40px) 0 0; padding-top: clamp(16px, 2vw, 22px); border-top: 1px solid rgba(234, 243, 240, 0.34); color: #f4faf8; font-size: clamp(1rem, 1.6vw, 1.32rem); font-weight: 560; letter-spacing: -0.024em; line-height: 1.35; }
+.tmr-note { max-width: 80ch; margin: clamp(18px, 2.4vw, 26px) 0 0; color: rgba(234, 243, 240, 0.56); font-size: 0.86rem; line-height: 1.56; }
+@media (max-width: 860px) {
+  .tmr-people { grid-template-columns: minmax(0, 1fr); }
+  .tmr-facts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* -- Investors 08 · The round, on the dark band ------------------------------
+   The amount at display size, the split as bars scaled to their share (--w),
+   exact without JavaScript and grown from the left edge on entry.
+   -------------------------------------------------------------------------- */
+.rnd { margin-top: var(--s-block); }
+.rnd-head { margin: 0 0 clamp(20px, 2.6vw, 28px); padding-bottom: clamp(14px, 1.8vw, 18px); border-bottom: 1px solid rgba(234, 243, 240, 0.34); color: rgba(234, 243, 240, 0.6); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 1.7; text-transform: uppercase; }
+.rnd-body { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.rnd-round { display: grid; gap: clamp(10px, 1.4vw, 16px); }
+.rnd-stage { margin: 0; color: var(--yellow); font-size: 0.48rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; }
+.rnd-amount { margin: 0; color: #f7fcfa; font-size: clamp(3.6rem, 9vw, 7rem); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.06em; line-height: 0.9; }
+.rnd-purpose { max-width: 36ch; margin: 0; color: rgba(234, 243, 240, 0.72); font-size: 0.95rem; line-height: 1.55; }
+.rnd-terms { display: grid; gap: 0; margin: clamp(8px, 1.4vw, 16px) 0 0; }
+.rnd-term { display: grid; grid-template-columns: minmax(96px, auto) minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid rgba(234, 243, 240, 0.14); }
+.rnd-term dt { color: rgba(234, 243, 240, 0.56); font-size: 0.46rem; letter-spacing: 0.12em; line-height: 2; text-transform: uppercase; }
+.rnd-term dd { margin: 0; color: #eef6f3; font-size: 0.86rem; line-height: 1.5; }
+.rnd-split { display: grid; gap: clamp(14px, 1.8vw, 20px); margin: 0; padding: 0; list-style: none; }
+.rnd-line { display: grid; grid-template-columns: clamp(52px, 6vw, 72px) minmax(0, 1fr); column-gap: clamp(12px, 1.6vw, 20px); row-gap: 8px; align-items: baseline; padding-bottom: clamp(14px, 1.8vw, 20px); border-bottom: 1px solid rgba(234, 243, 240, 0.12); }
+.rnd-pct { grid-row: span 3; color: var(--yellow); font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+.rnd-k { color: #f4faf8; font-size: 0.98rem; font-weight: 600; letter-spacing: -0.01em; }
+.rnd-track { display: block; height: 6px; border-radius: 999px; background: rgba(234, 243, 240, 0.12); overflow: hidden; }
+.rnd-fill { display: block; width: calc(var(--w) * 100%); height: 100%; border-radius: inherit; background: var(--yellow); transform-origin: left; }
+.rnd-b { color: rgba(234, 243, 240, 0.62); font-size: 0.84rem; line-height: 1.5; }
+.rnd.is-ready .rnd-fill { transform: scaleX(0); }
+.rnd.is-ready.is-seen .rnd-fill { transform: scaleX(1); transition: transform 760ms cubic-bezier(0.33, 1, 0.68, 1) calc(200ms + var(--i) * 100ms); }
+.rnd-close { max-width: 62ch; margin: clamp(26px, 3.4vw, 40px) 0 0; padding-top: clamp(16px, 2vw, 22px); border-top: 1px solid rgba(234, 243, 240, 0.34); color: #f4faf8; font-size: clamp(1rem, 1.6vw, 1.32rem); font-weight: 560; letter-spacing: -0.024em; line-height: 1.35; }
+.rnd-note { max-width: 80ch; margin: clamp(18px, 2.4vw, 26px) 0 0; color: rgba(234, 243, 240, 0.56); font-size: 0.86rem; line-height: 1.56; }
+@media (max-width: 1000px) { .rnd-body { grid-template-columns: minmax(0, 1fr); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .srl.is-ready .srl-row, .srl.is-ready.is-seen .srl-row,
+  .trc.is-ready .trc-figure, .trc.is-ready.is-seen .trc-figure,
+  .tmr.is-ready .tmr-person, .tmr.is-ready.is-seen .tmr-person { opacity: 1; transform: none; transition: none; }
+  .trc.is-ready .trc-bar-fill, .trc.is-ready.is-seen .trc-bar-fill,
+  .rnd.is-ready .rnd-fill, .rnd.is-ready.is-seen .rnd-fill { transform: none; transition: none; }
+}
+
 /* -- Contact 01 · The router ------------------------------------------------
    Pick the reason you are writing; the pane beside it changes. All four panes
    are in the markup, so without JavaScript they simply stack and every address

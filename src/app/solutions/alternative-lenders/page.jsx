@@ -564,11 +564,11 @@ export default function AlternativeLendersPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="FOUNDER-LED SMB UNDERWRITING REVIEW"
+          kicker="SMB UNDERWRITING REVIEW"
           heading="Bring one SMB file your team already knows."
           lede="Walk through the borrower package, cash-flow evidence, business verification, lender policy, and open exceptions with Cevrynt. Compare what the platform surfaces with the underwriting work your team already trusts."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

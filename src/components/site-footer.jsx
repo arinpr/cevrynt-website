@@ -55,8 +55,8 @@ export function SiteFooter() {
             <p className="footer-statement">
               Keep the evidence. Keep the context. Keep the decision yours.
             </p>
-            <a className="footer-mail" href="mailto:arin@cevrynt.com">
-              <span>arin@cevrynt.com</span>
+            <a className="footer-mail" href="mailto:sales@cevrynt.com">
+              <span>sales@cevrynt.com</span>
               <ArrowUpRight />
             </a>
             {/* Lives here rather than in the meta line. As a full sentence laid

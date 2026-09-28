@@ -577,11 +577,11 @@ export default function BrokersIsosPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="FOUNDER-LED SUBMISSION REVIEW"
+          kicker="SUBMISSION REVIEW"
           heading="Bring a deal that came back. See what should go back with it."
           lede="Walk through the borrower package, missing items, lender-facing signals, borrower follow-ups, and anything that changed since the first submission. Cevrynt shows what can be resolved before the file goes back to underwriting."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

@@ -16,7 +16,7 @@ import { siteConfig } from "@/config/site";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 export const metadata = buildMetadata({
   path: "faq",
@@ -151,16 +151,16 @@ const faqGroups = [
       {
         id: "what-happens-during-a-pilot",
         q: "What happens during a pilot?",
-        short: "A bounded, founder-led workflow",
+        short: "A bounded, scoped workflow",
         tone: "info",
-        a: "A pilot starts with a focused, bounded workflow: representative files, lender-specific review criteria, and clear evaluation goals defined directly with the founder. Human approval authority stays explicit throughout. See [pilot](/pilot) for more detail.",
+        a: "A pilot starts with a focused, bounded workflow: representative files, lender-specific review criteria, and clear evaluation goals defined directly with the Cevrynt team. Human approval authority stays explicit throughout. See [pilot](/pilot) for more detail.",
       },
       {
         id: "book-a-walkthrough",
         q: "How do I book a walkthrough?",
-        short: "Calendly, or email the founder",
+        short: "Calendly, or email the team",
         tone: "info",
-        a: "You can [book a walkthrough directly on Calendly](https://calendly.com/arin-cevrynt/cevrynt-demo), reach founder-led sales at arin@cevrynt.com, or contact sales@cevrynt.com for other enquiries.",
+        a: "You can [book a walkthrough directly on Calendly](https://calendly.com/arin-cevrynt/cevrynt-demo), or email sales@cevrynt.com.",
       },
       {
         id: "cedar-and-stone",
@@ -350,7 +350,7 @@ const trackSpecs = [
   { id: "loan-origination-integration", station: 1, because: "Integration needs are mapped on a case-by-case basis during a qualified walkthrough.", rest: "How Cevrynt fits around your own stack" },
   { id: "public-pricing", station: 1, because: "pricing and scope are discussed directly with your team", rest: "Pricing and scope for your team" },
   { id: "access-and-data-security", station: 2, because: "reviewed directly with the Cevrynt team before a pilot", rest: "Your access, data-handling, audit and deployment requirements" },
-  { id: "what-happens-during-a-pilot", station: 2, because: "representative files, lender-specific review criteria, and clear evaluation goals defined directly with the founder", rest: "Your files, your criteria and your evaluation goals" },
+  { id: "what-happens-during-a-pilot", station: 2, because: "representative files, lender-specific review criteria, and clear evaluation goals defined directly with the Cevrynt team", rest: "Your files, your criteria and your evaluation goals" },
 ];
 
 const trackRows = trackSpecs.map((spec) => ({
@@ -395,7 +395,7 @@ const trackClose =
   "Ten answers finished here, four in a walkthrough, two in a pilot. The page says which is which, and quotes itself to prove it.";
 
 const trackNote =
-  "Placement follows the wording of each answer in section 01. A walkthrough or pilot is scoped with the founder; nothing here is an offer, a guarantee or a commitment to a result.";
+  "Placement follows the wording of each answer in section 01. A walkthrough or pilot is scoped with the Cevrynt team; nothing here is an offer, a guarantee or a commitment to a result.";
 
 /* 04 — the final call ------------------------------------------------------- */
 
@@ -672,11 +672,11 @@ export default function FaqPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="05"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Ask the question that is not on this page."
-          lede="If your team's question is about your own files, policy or stack, the quickest answer is a walkthrough with the founder — against your criteria, with your underwriters making every decision."
+          lede="If your team's question is about your own files, policy or stack, the quickest answer is a walkthrough with the Cevrynt team — against your criteria, with your underwriters making every decision."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

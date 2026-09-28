@@ -553,11 +553,11 @@ export default function IntegrationsPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
   index="06"
-  kicker="Founder-led integration walkthrough"
+  kicker="Integration walkthrough"
   heading="Bring your underwriting stack. We’ll map where Cevrynt fits."
   lede="Show us how a deal moves through your intake, CRM or LOS, review process, and system of record. We’ll identify what Cevrynt should receive, what can be returned, and which handoffs are worth connecting."
   calendlyUrl={calendlyUrl}
-  email="arin@cevrynt.com"
+  email="sales@cevrynt.com"
 />
       </section>
     </main>

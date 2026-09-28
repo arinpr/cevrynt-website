@@ -178,14 +178,14 @@ const heldCommitments = [
 ];
 
 const heldSignature = {
-  name: "Arin",
-  role: "Founder, Cevrynt, Inc.",
-  email: "arin@cevrynt.com",
+  name: "Cevrynt, Inc.",
+  role: "Delaware C-Corp · AI underwriting infrastructure",
+  email: "sales@cevrynt.com",
 };
 
 const heldInsight = {
   k: "What that means today",
-  v: "Cevrynt is early and founder-led. Product reviews, lender conversations, workflow questions, and feedback still come directly to the founder.",
+  v: "Cevrynt is early-stage and close to its users. Product reviews, lender conversations, workflow questions, and feedback come directly to the team building the product.",
 };
 
 /* The page's one full statement of the position. It is not repeated under
@@ -626,7 +626,7 @@ export default function AboutPage() {
         <div className="page-hero-dark-inner">
           <PageHeroCopy heading={page.title} lede={page.description} />
           <div className="hero-actions">
-            <RainbowCta href={page.ctaHref || calendlyUrl} label={page.cta || "Talk to the founder"} />
+            <RainbowCta href={page.ctaHref || calendlyUrl} label={page.cta || "Book a walkthrough"} />
           </div>
         </div>
         {/* The same illustrative workspace the homepage opens on, in the same
@@ -880,11 +880,11 @@ export default function AboutPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="08"
-          kicker="FOUNDER-LED"
+          kicker="TALK TO CEVRYNT"
           heading="Bring the messy file. Ask the hard questions."
           lede="If you are evaluating Cevrynt, bring the underwriting case, policy exception, evidence conflict, workflow constraint, or edge case your team actually deals with. We will show you what Cevrynt can handle today, where it still needs work, and how it fits around the judgment your team already owns."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

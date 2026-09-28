@@ -76,11 +76,11 @@ The website is optimized for qualified demo/walkthrough bookings, not broad self
 Conversion details:
 
 - Demo/Calendly: `https://calendly.com/arin-cevrynt/cevrynt-demo`
-- Founder-led sales: `arin@cevrynt.com`
-- Sales enquiries: `sales@cevrynt.com`
+- Default contact on every page: `sales@cevrynt.com`.
+- Investor contact: `arin@cevrynt.com` — only on the Investors page, investor routes on Contact, and legal pages. The site speaks as Cevrynt, Inc. ("our team"), not as the founder; do not name Arin or use founder-led framing outside the Investors page.
 - Sign In should link to the separate Cevrynt application through `siteConfig.appUrl`.
 - Current top-level CTA label: `Get Demo` / `Get a demo` depending on available space.
-- Other approved CTA language: `Book a walkthrough`, `Discuss a pilot`, and `Talk to the founder`.
+- Other approved CTA language: `Book a walkthrough`, `Discuss a pilot`, and `Talk to our team`.
 
 ## Claims and trust rules
 
@@ -92,7 +92,9 @@ Never fabricate or imply:
 - Performance metrics, approval rates, accuracy, guarantees, or universal eligibility.
 - Public pricing.
 
-Cevrynt has a functional MVP internally evaluated using 200+ real-world underwriting files. Do not publish this proof point unless the user explicitly approves it.
+Cevrynt has a functional MVP internally evaluated using 200+ real-world underwriting files. This proof point is approved for publication (Investors page), always framed as internal evaluation — not customers, pilots, revenue or accuracy.
+
+Investors page (`/investors`) is the public version of the pre-seed deck (approved 2026-09-28): $250K pre-seed, use of funds, roadmap exit criteria, monthly evaluation counts, and team size (founder + 6+ engineering/product + 2 marketing). The deck file itself is never published; it is shared after a Calendly meeting or by email. Keep the securities disclaimer, name no competitors, and keep market-size figures off the page until they are sourced and reconcile.
 
 Use one persistent illustrative deal across homepage product storytelling and label it clearly as illustrative. Current illustrative deal: `Cedar & Stone LLC`.
 

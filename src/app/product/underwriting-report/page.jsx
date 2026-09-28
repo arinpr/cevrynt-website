@@ -17,7 +17,7 @@ import { pageByPath } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("product/underwriting-report");
 
@@ -837,11 +837,11 @@ export default function UnderwritingReportPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="07"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Send us the file that took the longest to write up."
           lede="Not the clean one. The file where the answer was obvious to whoever worked it and took two days to explain to anybody else, because the reasoning was spread across a spreadsheet, a thread and somebody's memory. That is the file worth walking through together."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

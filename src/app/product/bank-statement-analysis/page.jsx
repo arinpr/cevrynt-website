@@ -34,7 +34,7 @@ import { pageByPath } from "@/content/site-pages";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("product/bank-statement-analysis");
 
@@ -721,11 +721,11 @@ export default function BankStatementAnalysisPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="07"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring three months that argued with each other."
           lede="A file where the deposits looked fine and the balance did not, or where the monthly average was comfortable and one week inside it was not. Walk us through how you read it and what you asked for next, and we will show you the same period the way this works."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>

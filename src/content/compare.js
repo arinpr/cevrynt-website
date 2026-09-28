@@ -60,7 +60,7 @@ export const compare = {
         "**Evidence-linked by design** — every figure keeps the statement page and line it came from, so an underwriter or auditor can check it rather than trust it.",
         "**Your policy, visibly applied** — results show what passed, what failed and what needs judgment against lender-defined rules, with reviewer notes, overrides and audit history.",
         "**Human decision authority stays explicit** — Cevrynt prepares the file; it never issues the approval or decline.",
-        "**Early-stage and founder-led** — you work directly with the founder on a scoped pilot rather than a large-vendor rollout.",
+        "**Early-stage and hands-on** — you work directly with the team building the product on a scoped pilot rather than a large-vendor rollout.",
       ],
     },
     {
@@ -141,7 +141,7 @@ export const compare = {
     { type: "h2", text: "About this comparison", id: "method" },
     {
       type: "p",
-      text: "Vendor descriptions summarize each company's own public website as reviewed on the date shown above, and link to it so you can check the source. Products change; confirm current capabilities with each vendor. All product and company names are trademarks of their respective owners and are used only for identification. Cevrynt is not affiliated with or endorsed by any company named here. Spot something out of date? Email [arin@cevrynt.com](mailto:arin@cevrynt.com) and we will correct it.",
+      text: "Vendor descriptions summarize each company's own public website as reviewed on the date shown above, and link to it so you can check the source. Products change; confirm current capabilities with each vendor. All product and company names are trademarks of their respective owners and are used only for identification. Cevrynt is not affiliated with or endorsed by any company named here. Spot something out of date? Email [sales@cevrynt.com](mailto:sales@cevrynt.com) and we will correct it.",
     },
   ],
   faqs: [

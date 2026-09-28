@@ -391,12 +391,12 @@ export default function PlatformPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="FOUNDER-LED PLATFORM WALKTHROUGH"
+          kicker="PLATFORM WALKTHROUGH"
           heading="See exactly where Cevrynt fits."
-          lede="Walk through a real MCA or SMB underwriting process with the founder. We’ll map the documents, analysis, verification, policy rules, exceptions,
+          lede="Walk through a real MCA or SMB underwriting process with the Cevrynt team. We’ll map the documents, analysis, verification, policy rules, exceptions,
            and reviewer decisions Cevrynt can support — without forcing you to change the workflow first."
           calendlyUrl={calendlyUrl}
-          email="arin@cevrynt.com"
+          email="sales@cevrynt.com"
         />
       </section>
     </main>

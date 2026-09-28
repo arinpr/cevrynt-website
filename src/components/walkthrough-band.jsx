@@ -7,7 +7,7 @@ export function WalkthroughBand() {
   return (
     <section className="walkthrough-band section-shell">
       <div>
-        <p className="section-kicker">Founder-led walkthrough</p>
+        <p className="section-kicker">Guided walkthrough</p>
         <RevealLines as="h2" text="See how Cevrynt fits your underwriting process." />
       </div>
       <div className="walkthrough-right">

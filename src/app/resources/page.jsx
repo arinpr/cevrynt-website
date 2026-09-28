@@ -17,7 +17,7 @@ import { siteConfig } from "@/config/site";
 export const revalidate = 3600;
 
 const calendlyUrl = "https://calendly.com/arin-cevrynt/cevrynt-demo";
-const founderEmail = "arin@cevrynt.com";
+const contactEmail = "sales@cevrynt.com";
 
 const page = pageByPath.get("resources");
 
@@ -395,7 +395,7 @@ const indexReadout = {
   manyK: "questions",
   noneK: "No matches",
   emptyB: "None of the guides answers that yet. If it is a question your team keeps coming back to, send it over — it may well become the next guide.",
-  askK: "Ask the founder",
+  askK: "Ask the team",
   moreK: "Show all",
   siteFaq: { label: "Questions about Cevrynt itself? The site FAQ", href: "/faq" },
   saidK: "Why the answers stay in the guides",
@@ -411,7 +411,7 @@ const indexAside = {
     { k: "Where questions come from", v: "Each guide's FAQ" },
     { k: "Where answers live", v: "In the guide" },
     { k: "Search", v: "As you type" },
-    { k: "Nothing matches", v: "Ask the founder" },
+    { k: "Nothing matches", v: "Ask the team" },
   ],
   note: "Questions are taken word for word from the guides' FAQ sections and update whenever a guide does. They are general answers about underwriting practice, not advice about a particular file or lender.",
 };
@@ -680,7 +680,7 @@ export default function ResourcesPage() {
               aside={indexAside}
               close={indexClose}
               note={indexNote}
-              askHref={`mailto:${founderEmail}`}
+              askHref={`mailto:${contactEmail}`}
             />
           </div>
         </div>
@@ -722,11 +722,11 @@ export default function ResourcesPage() {
         <div className="fn-glow" aria-hidden="true" />
         <FounderClose
           index="06"
-          kicker="Founder-led"
+          kicker="Book a walkthrough"
           heading="Bring the question your underwriting team keeps coming back to."
           lede="If a guide raised something your team handles differently, we will walk through how Cevrynt shows the evidence for it — against your own criteria, with your underwriters making every decision."
           calendlyUrl={calendlyUrl}
-          email={founderEmail}
+          email={contactEmail}
         />
       </section>
     </main>
