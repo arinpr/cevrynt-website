@@ -29,7 +29,7 @@ If this document conflicts with those files, follow the most specific product co
 - `DevelopmentCacheReset` may clear Cache Storage and unregister service workers in development, but must never reload the page on `pageshow`, focus, or visibility changes.
 - Do not add service workers or persistent browser caching during active development without explicit approval.
 - Canonical origin: `https://www.cevrynt.com`. The apex redirects to www (`next.config.js`). `siteConfig.url` drives canonicals, sitemap, JSON-LD and og:image, so set `NEXT_PUBLIC_SITE_URL` at build time on any host that is not www.cevrynt.com.
-- Deployment target: Cloudflare Workers. Keep request-time code free of Node-only APIs (`fs`, `path`, `process.cwd`); share cards are prerendered and embed the logo from `src/lib/og-logo.js`.
+- Deployment target: Cloudflare Workers. Keep request-time code free of Node-only APIs (`fs`, `path`, `process.cwd`); share cards are prerendered and embed the unaltered full-colour logo from `src/lib/og-logo-full.js` on the cool-white card surface (never a light patch behind the logo).
 - Cloudflare deploy uses `@opennextjs/cloudflare` with `wrangler.jsonc` (Worker `cevrynt-main-website`) and `open-next.config.js` (kept JS; scripts pass `--openNextConfigPath`). ISR pages are cached in R2 bucket `cevrynt-website-cache` behind a regional cache, revalidated via the memory queue and `WORKER_SELF_REFERENCE`; `next/image` uses the `IMAGES` binding. Deploy with `pnpm run deploy` (not `pnpm deploy`).
 - All page metadata goes through `src/lib/seo.js` (`pageMetadata` / `buildMetadata`) so every route keeps site name, locale, type and a share image.
 
