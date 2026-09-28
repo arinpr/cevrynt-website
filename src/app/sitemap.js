@@ -3,12 +3,14 @@ import { contentUpdatedAt, sitePages } from "@/content/site-pages";
 import { legalDocs } from "@/content/legal";
 import { compare } from "@/content/compare";
 import { posts } from "@/content/blog";
-import { ogImagePath } from "@/lib/seo";
 
 /* lastmod carries real dates — the page's own review date where it has one,
    otherwise contentUpdatedAt — never the build time, so search engines only
-   re-crawl pages that actually changed. Each entry lists its share card and,
-   for product pages, the product screenshot, for image search. */
+   re-crawl pages that actually changed.
+
+   No <image:image> entries: Next writes them before <lastmod>, which breaks
+   the sitemap schema's element order, and Search Console then reports the
+   sitemap as unreadable. Google finds page images by crawling the pages. */
 
 const priorityByGroup = {
   Product: 0.9,
@@ -24,7 +26,6 @@ const priorityByGroup = {
 };
 
 const abs = (path) => `${siteConfig.url}${path}`;
-const productShot = abs("/media/cevrynt-dashboard-website-analytics.webp");
 
 function lastModifiedOf(page) {
   if (legalDocs[page.path]) return legalDocs[page.path].updatedAt;
@@ -41,21 +42,18 @@ export default function sitemap() {
       lastModified: contentUpdatedAt,
       changeFrequency: "weekly",
       priority: 1,
-      images: [abs(ogImagePath("")), productShot],
     },
     {
       url: abs("/blog"),
       lastModified: newestPost > contentUpdatedAt ? newestPost : contentUpdatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
-      images: [abs("/blog/opengraph-image")],
     },
     {
       url: abs("/faq"),
       lastModified: contentUpdatedAt,
       changeFrequency: "monthly",
       priority: 0.7,
-      images: [abs("/faq/opengraph-image")],
     },
   ];
 
@@ -66,7 +64,6 @@ export default function sitemap() {
       lastModified: lastModifiedOf(page),
       changeFrequency: legal ? "yearly" : "monthly",
       priority: priorityByGroup[page.group] ?? 0.6,
-      images: legal ? undefined : [abs(ogImagePath(page.path)), ...(page.group === "Product" ? [productShot] : [])],
     });
   }
 
@@ -76,7 +73,6 @@ export default function sitemap() {
       lastModified: post.updatedAt || post.publishedAt,
       changeFrequency: "monthly",
       priority: 0.65,
-      images: [abs(`/blog/${post.slug}/opengraph-image`)],
     });
   }
 
